@@ -294,10 +294,6 @@ export default function SubscriptionDetails({ subscription }) {
 
             <header className={styles.header}>
                 <div className={styles.headerLeft}>
-                    <div className={styles.iconWrapper}>
-                        {/* Placeholder Icon or First Letter */}
-                        {subscription.name.charAt(0).toUpperCase()}
-                    </div>
                     <div className={styles.titleSection}>
                         <h1>
                             {subscription.name}
