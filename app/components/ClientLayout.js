@@ -41,14 +41,17 @@ export default function ClientLayout({ children, userProfile }) {
 
     return (
         <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--background)' }}>
-            {/* Hamburger for mobile */}
+            {/* Mobile Header */}
             {!isMobileOpen && (
-                <button
-                    onClick={toggleSidebar}
-                    className="mobile-hamburger-btn"
-                >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                </button>
+                <div className="mobile-header">
+                    <button
+                        onClick={toggleSidebar}
+                        className="mobile-hamburger-btn"
+                    >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <span className="mobile-logo-text">Keesha</span>
+                </div>
             )}
 
             {/* Backdrop for mobile */}

@@ -202,25 +202,48 @@ textarea {
     /* Clear fixed hamburger button */
   }
 
-  .mobile-hamburger-btn {
+  .mobile-header {
     display: flex !important;
     position: fixed;
-    top: 1rem;
-    left: 1rem;
-    z-index: 1100;
-    padding: 8px;
-    border-radius: 8px;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
     background: white;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
+    border-bottom: 1px solid var(--border);
+    z-index: 1000;
+    padding: 0 1rem;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .mobile-hamburger-btn {
+    display: flex !important;
+    background: none;
+    border: none;
+    padding: 4px;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    color: var(--text-primary);
+  }
+
+  .mobile-logo-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+    display: block;
   }
 }
 
-.mobile-hamburger-btn {
-  display: none;
+@media (min-width: 769px) {
+
+  .mobile-header,
+  .mobile-logo-text,
+  .mobile-hamburger-btn {
+    display: none !important;
+  }
 }
 
 .page-transition {
