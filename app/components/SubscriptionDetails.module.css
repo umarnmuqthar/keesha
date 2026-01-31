@@ -134,7 +134,27 @@
 
 
 
+
 @media (max-width: 600px) {
+    .container {
+        padding: 0 1rem;
+        overflow-x: hidden;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .headerActions {
+        width: 100%;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        /* Space for scrollbar if needed */
+    }
+
     .titleSection h1 {
         font-size: 1.25rem;
     }
@@ -163,6 +183,20 @@
     .actionBtn {
         font-size: 0.8125rem;
         padding: 0.5rem 1rem;
+        flex-shrink: 0;
+        /* Prevent buttons from squishing */
+    }
+
+    .tableContainer {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.5rem;
+    }
+
+    .tableHeader,
+    .tableRow {
+        min-width: 600px;
+        /* Force table to have width so it scroll */
     }
 }
 
