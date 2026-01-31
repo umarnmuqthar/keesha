@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Subscription {
+  id              Int      @id @default(autoincrement())
+  name            String
+  status          String   // Active, Paused, Cancelled, Free Trial
+  billingCycle    String   // Monthly, Yearly
+  currentCost     Float?
+  nextRenewalDate DateTime?
+  trialEndDate    DateTime? // If set, subscription is in trial until this date
+  autoPayActive   Boolean  @default(false)
+  paymentMethod   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  ledger          TransactionLedger[]
+}
+
+model TransactionLedger {
+  id             Int          @id @default(autoincrement())
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+  subscriptionId Int
+  date           DateTime     @default(now())
+  amount         Float
+  type           String       // Payment, Refund, Trial Start, Status Change, Note
+}
+
+model UserProfile {
+  id    Int     @id @default(autoincrement())
+  name  String?
+  email String?
+  phone String?
+  image String? // URL
+}

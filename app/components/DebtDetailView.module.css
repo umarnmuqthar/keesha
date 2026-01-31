@@ -1,0 +1,344 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.headerTrailing {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.iconBtn {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1.1rem;
+}
+
+.iconBtn:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+}
+
+.deleteIconBtn {
+    background: #fff5f5;
+    border-color: #fee2e2;
+}
+
+.deleteIconBtn:hover {
+    background: #fef2f2;
+    border-color: #fca5a5;
+}
+
+/* Heavy Header Card */
+.headerCard {
+    background: white;
+    border-radius: 32px;
+    padding: 2.5rem;
+    border: 1px solid #f3f4f6;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
+}
+
+.headerTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2.5rem;
+}
+
+.headerTitle {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #111827;
+    letter-spacing: -0.05em;
+    margin: 0 0 0.75rem 0;
+}
+
+.statusBadge {
+    display: inline-flex;
+    padding: 4px 14px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: capitalize;
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.statusBadge[data-status="active"] {
+    background: #ecfdf5;
+    color: #059669;
+}
+
+.primaryActionBtn {
+    background: #2563eb;
+    color: white;
+    padding: 0.875rem 1.75rem;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.plusSign {
+    font-size: 1.25rem;
+}
+
+.primaryActionBtn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+.headerStats {
+    display: flex;
+    gap: 4rem;
+    margin-bottom: 2rem;
+}
+
+.headerStatItem {
+    display: flex;
+    flex-direction: column;
+}
+
+.statLabel {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #9ca3af;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+}
+
+.statValue {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #111827;
+    margin: 0;
+}
+
+.statSubtext {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+}
+
+.recoverText {
+    color: #10b981;
+}
+
+.payText {
+    color: #ef4444;
+}
+
+.headerFooter {
+    border-top: 1px solid #f3f4f6;
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.settleButton {
+    background: #111827;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.settleButton:hover:not(:disabled) {
+    background: #000;
+    transform: scale(1.02);
+}
+
+.settleButton:disabled {
+    opacity: 0.3;
+    filter: grayscale(1);
+    cursor: not-allowed;
+}
+
+/* Analytics */
+.sectionTitleRow {
+    margin-bottom: 1rem;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111827;
+    margin: 0;
+}
+
+.analyticsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.analyticCard {
+    background: white;
+    padding: 2rem;
+    border-radius: 24px;
+    border: 1px solid #f3f4f6;
+}
+
+.label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #6b7280;
+    margin-bottom: 1rem;
+}
+
+.value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #10b981;
+    margin: 0 0 0.5rem 0;
+}
+
+.subtext {
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+/* Ledger */
+.ledgerSection {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 32px;
+    border: 1px solid #f3f4f6;
+}
+
+.ledgerTable {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.ledgerRow {
+    display: flex;
+    align-items: center;
+    padding: 1.25rem 2rem;
+    border-radius: 20px;
+    background: #f9fafb;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.ledgerRow:hover {
+    background: white;
+    border-color: #f3f4f6;
+    box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
+}
+
+.rowDate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-right: 2rem;
+    border-right: 1px solid #e5e7eb;
+    min-width: 70px;
+}
+
+.day {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+.month {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #6b7280;
+}
+
+.rowMain {
+    flex: 1;
+    padding: 0 2rem;
+}
+
+.rowDesc {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.rowBadges {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.typeBadge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: #e5e7eb;
+    color: #4b5563;
+}
+
+.typeBadge[data-type="GIVE"] {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.typeBadge[data-type="GOT"] {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.statusBadge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.statusBadge[data-status="settled"] {
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+.rowAmount {
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-align: right;
+    min-width: 150px;
+}
+
+.giveText {
+    color: #10b981;
+}
+
+.gotText {
+    color: #ef4444;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 5rem 0;
+    color: #9ca3af;
+    font-size: 1.125rem;
+    font-weight: 500;
+}

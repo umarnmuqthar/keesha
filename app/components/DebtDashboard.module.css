@@ -1,0 +1,224 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.summaryGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.summaryCard {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 20px;
+    border: 1px solid #f3f4f6;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.summaryLabel {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.summaryValue {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+}
+
+.summarySubtext {
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+.recoverText {
+    color: #10b981;
+}
+
+.payText {
+    color: #ef4444;
+}
+
+.controls {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.viewToggle {
+    background: #f3f4f6;
+    padding: 4px;
+    border-radius: 10px;
+    display: flex;
+    gap: 4px;
+}
+
+.toggleBtn {
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.toggleBtn.active {
+    background: white;
+    color: #111827;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 20px;
+    border: 1px solid #f3f4f6;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cardTitle {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+.statusBadge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.statusBadge[data-status="active"] {
+    background: #ecfdf5;
+    color: #059669;
+}
+
+.balanceSection {
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.balanceLabel {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #9ca3af;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+}
+
+.balanceValue {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+}
+
+.balanceStatus {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.cardFooter {
+    border-top: 1px solid #f9fafb;
+    padding-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lastActivity {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+/* List View */
+.listView {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #f3f4f6;
+    overflow: hidden;
+}
+
+.listRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid #f3f4f6;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s;
+}
+
+.listRow:last-child {
+    border-bottom: none;
+}
+
+.listRow:hover {
+    background: #f9fafb;
+}
+
+.listMain {
+    display: flex;
+    flex-direction: column;
+}
+
+.listName {
+    font-weight: 700;
+    color: #111827;
+}
+
+.listType {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.listBalance {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+}
+
+.listBalance strong {
+    font-size: 1.125rem;
+}
+
+.listBalance span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}

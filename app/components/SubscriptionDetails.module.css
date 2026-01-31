@@ -1,0 +1,433 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    /* padding: 2rem; user requested removal */
+    color: var(--text-primary);
+}
+
+/* Back Link */
+.backLink {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    transition: color 0.2s;
+}
+
+.backLink:hover {
+    color: var(--text-primary);
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.headerLeft {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+
+
+.titleSection h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.statusBadge {
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.statusActive {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.statusCancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.headerActions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.actionBtn {
+    padding: 0.625rem 1.25rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text-primary);
+}
+
+.actionBtn:hover {
+    background: var(--background);
+}
+
+.deleteBtn {
+    background: #fee2e2;
+    color: #dc2626;
+    border-color: #fee2e2;
+}
+
+.deleteBtn:hover {
+    background: #fecaca;
+}
+
+/* Main Grid Layout */
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Cards */
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    position: relative;
+    overflow: hidden;
+}
+
+
+
+@media (max-width: 600px) {
+    .titleSection h1 {
+        font-size: 1.25rem;
+    }
+
+    .metricValue {
+        font-size: 1.125rem;
+    }
+
+    .yearlyAmount {
+        font-size: 1.375rem;
+    }
+
+    .lifetimeCard .lifetimeHeader {
+        font-size: 0.8125rem;
+    }
+
+    .lifetimeCard div:last-child {
+        font-size: 1.5rem !important;
+    }
+
+    .statusBadge {
+        font-size: 0.6875rem;
+        padding: 3px 10px;
+    }
+
+    .actionBtn {
+        font-size: 0.8125rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* Overview Card Specifics */
+.overviewHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+    font-size: 1.125rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.markPaidBtn {
+    background: var(--primary);
+    /* Keep using variable or fallback to new pink/red */
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 4px rgba(255, 59, 48, 0.2);
+}
+
+.metricsRow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.metricLabel {
+    color: var(--text-tertiary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.metricValue {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-feature-settings: "tnum";
+}
+
+.metricValueLarge {
+    font-size: 2rem;
+}
+
+.paymentMethodRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.methodInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.methodIcon {
+    width: 40px;
+    height: 40px;
+    background: var(--background);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.updateMethodLink {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Sidebar Cards */
+.yearlyCard {
+    background: linear-gradient(135deg, #FF3B30 0%, #FF2D55 100%);
+    color: white;
+    border: none;
+    margin-bottom: 0;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.yearlyHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.yearlyLabel {
+    opacity: 0.9;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.yearlyAmount {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+}
+
+
+
+.lifetimeCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.lifetimeHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* Payment History Section */
+.historySection {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+}
+
+.historyHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.logPaymentBtn {
+    background: #fff0f1;
+    color: var(--primary);
+    border: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.logPaymentBtn:hover {
+    background: #ffe0e1;
+}
+
+/* Table Styles */
+.tableContainer {
+    width: 100%;
+}
+
+.tableHeader {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr 3fr 1fr;
+    padding: 0 0.5rem 0.75rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-tertiary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tableRow {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr 3fr 1fr;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    transition: background 0.1s;
+}
+
+.tableRow:hover {
+    background: var(--surface);
+}
+
+.tableRow:last-child {
+    border-bottom: none;
+}
+
+.dateCell {
+    display: flex;
+    flex-direction: column;
+}
+
+.dayText {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9375rem;
+}
+
+.timeText {
+    color: var(--text-tertiary);
+    font-size: 0.75rem;
+    margin-top: 2px;
+}
+
+.amountCell {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-feature-settings: "tnum";
+}
+
+.statusCellBadge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.descCell {
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+}
+
+.actionsCell {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+.iconBtn {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+}
+
+.iconBtn:hover {
+    color: var(--text-primary);
+    background: var(--background);
+}
+
+.iconBtnDanger:hover {
+    color: var(--danger);
+    background: #fee2e2;
+}

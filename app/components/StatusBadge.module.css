@@ -1,0 +1,34 @@
+.statusPill {
+    background: #f3f4f6;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    height: fit-content;
+}
+
+.statusPill[data-status="active"],
+.statusPill[data-status="free trial"] {
+    color: #10b981;
+}
+
+.statusPill[data-status="cancelled"],
+.statusPill[data-status="expired"] {
+    color: #ef4444;
+}
+
+.statusPill[data-status="paused"] {
+    color: #f59e0b;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
