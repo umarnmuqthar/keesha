@@ -447,7 +447,7 @@ export default function SubscriptionDetails({ subscription }) {
                             <div key={tx.id} className={styles.tableRow}>
                                 <div className={styles.dateCell}>
                                     <span className={styles.dayText}>{new Date(tx.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-                                    <span className={styles.timeText}>{new Date(tx.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+
                                 </div>
                                 <div className={styles.amountCell}>{formatCurrency(tx.amount)}</div>
                                 <div>

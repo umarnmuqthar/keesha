@@ -415,11 +415,7 @@
     font-size: 0.9375rem;
 }
 
-.timeText {
-    color: var(--text-tertiary);
-    font-size: 0.75rem;
-    margin-top: 2px;
-}
+
 
 .amountCell {
     font-weight: 700;
