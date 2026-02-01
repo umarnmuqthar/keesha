@@ -41,9 +41,7 @@ async function getDebtData(userId) {
 
 export default async function DebtPage() {
     const session = await getSession();
-    console.log('[DebtPage] Session UID:', session?.uid);
     const accounts = await getDebtData(session?.uid);
-    console.log('[DebtPage] Fetched accounts:', accounts.length, accounts.map(a => a.name));
 
     return (
         <main className="min-h-screen">
