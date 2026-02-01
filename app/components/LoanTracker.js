@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { addLoan } from '../actions';
-import PageHeader from './PageHeader';
+import PageHeaderActions from './PageHeaderActions';
 
 export default function LoanTracker({ initialLoans }) {
     const router = useRouter();
@@ -30,7 +30,6 @@ export default function LoanTracker({ initialLoans }) {
         <div>
             <PageHeader
                 title="EMI Tracker"
-                subtitle="Track your loans and monthly installments."
                 actionLabel="Add New Loan"
                 onAction={() => setIsModalOpen(true)}
             />

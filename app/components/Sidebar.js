@@ -6,8 +6,16 @@ import styles from './Sidebar.module.css';
 import { ChevronLeft, ChevronRight, User, LogOut, Menu, X, LayoutDashboard, Repeat, CalendarDays, TrendingDown, CreditCard, PiggyBank, Banknote, Receipt, Users } from 'lucide-react';
 import { logout } from '../actions/authActions';
 
-export default function Sidebar({ isCollapsed, isMobileOpen, toggleSidebar, userProfile, isMounted }) {
+import { useState, useEffect } from 'react';
+
+export default function Sidebar({ isCollapsed, isMobileOpen, toggleSidebar, userProfile, isMounted, onNavigateStart }) {
     const pathname = usePathname();
+    const [pendingPath, setPendingPath] = useState(null);
+
+    useEffect(() => {
+        setPendingPath(null);
+    }, [pathname]);
+
     const isAdmin = pathname?.startsWith('/admin');
 
     const navItems = isAdmin ? [
@@ -38,12 +46,27 @@ export default function Sidebar({ isCollapsed, isMobileOpen, toggleSidebar, user
 
                 <nav className={styles.nav}>
                     {navItems.map((item) => {
-                        const isActive = pathname === item.path || (item.path === '/subscriptions' && pathname.startsWith('/subscription'));
+                        let isActive = pathname === item.path;
+
+                        // Handle internal/detail pages
+                        if (item.path === '/subscriptions' && pathname.startsWith('/subscription')) isActive = true;
+                        if (item.path === '/loans' && pathname.startsWith('/loan')) isActive = true;
+                        if (item.path === '/debt' && pathname.startsWith('/debt')) isActive = true;
+                        if (item.path === '/creditcards' && pathname.startsWith('/creditcard')) isActive = true;
+
+                        const isPending = pendingPath === item.path;
+
                         return (
                             <Link
                                 key={item.path}
                                 href={item.path}
-                                className={`${styles.navItem} ${isActive ? styles.active : ''}`}
+                                onClick={() => {
+                                    if (item.path !== pathname) {
+                                        setPendingPath(item.path);
+                                        if (onNavigateStart) onNavigateStart(item.path);
+                                    }
+                                }}
+                                className={`${styles.navItem} ${isActive ? styles.active : ''} ${isPending ? 'sidebar-item-pending' : ''}`}
                                 title={isCollapsed && !isMobileOpen ? item.name : ''}
                             >
                                 <span className={styles.icon}>{item.icon}</span>

@@ -1,26 +1,35 @@
 import React from 'react';
-import PageHeader from '../components/PageHeader';
 import CreditCardDashboard from '../components/CreditCardDashboard';
 import { db } from '@/lib/firebase-admin';
+import PageHeaderActions from '../components/PageHeaderActions';
 import { getSession } from '../actions/authActions';
+import { redirect } from 'next/navigation';
 
-export default async function CreditCardsPage() {
-    const session = await getSession();
-    if (!session) return null;
-
-    // Fetch cards without orderBy initially to avoid index requirements
+async function getCreditCards(userId) {
     const cardsSnapshot = await db.collection('creditcards')
-        .where('userId', '==', session.uid)
+        .where('userId', '==', userId)
         .get();
 
-    const cards = cardsSnapshot.docs.map(doc => ({
+    return cardsSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
     }));
+}
+
+export default async function CreditCardsPage() {
+    const user = await getSession();
+    if (!user) redirect('/login');
+
+    const cards = await getCreditCards(user.uid);
 
     return (
         <main className="min-h-screen">
             <div className="max-w-7xl mx-auto">
+                <PageHeaderActions
+                    title="Credit Cards"
+                    subtitle="Track your card balances and statement cycles."
+                    backPath="/"
+                />
                 <CreditCardDashboard cards={cards} />
             </div>
         </main>

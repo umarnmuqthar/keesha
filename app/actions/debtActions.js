@@ -18,17 +18,22 @@ export async function addDebtAccount(formData) {
 
     if (!name) return { error: 'Name is required' };
 
-    await db.collection('debt_accounts').add({
+    const newAccount = {
         userId: session.uid,
         name,
         type,
         status: 'Active',
         createdAt: new Date().toISOString(),
         lastInteraction: new Date().toISOString()
-    });
+    };
+
+    const docRef = await db.collection('debt_accounts').add(newAccount);
 
     revalidatePath('/debt');
-    return { success: true };
+    return {
+        success: true,
+        account: { id: docRef.id, ...newAccount, transactions: [], netBalance: 0 }
+    };
 }
 
 /**

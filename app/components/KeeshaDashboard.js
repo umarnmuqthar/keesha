@@ -9,12 +9,12 @@ import {
     calculateAmortizedMonthlyCost
 } from '@/lib/keesha-logic';
 import AddSubscriptionModal from './AddSubscriptionModal';
-import PageHeader from './PageHeader';
 import StatusBadge from './StatusBadge';
+import PageHeaderActions from './PageHeaderActions';
 
 import { useRouter } from 'next/navigation';
 
-export default function KeeshaDashboard({ subscriptions, userProfile }) {
+export default function KeeshaDashboard({ subscriptions: initialSubscriptions = [] }) {
     const router = useRouter();
 
     // Helper functions
@@ -29,12 +29,12 @@ export default function KeeshaDashboard({ subscriptions, userProfile }) {
     // State
     // State
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const [activeTab, setActiveTab] = React.useState('All'); // All, Active, Cancelled
+    const [activeTab, setActiveTab] = React.useState('Active'); // Active, Cancelled, All
     const [searchQuery, setSearchQuery] = React.useState('');
 
     // Data Processing
     // 1. Filter by Tab
-    const tabFiltered = subscriptions.filter(sub => {
+    const tabFiltered = initialSubscriptions.filter(sub => {
         if (activeTab === 'All') return true;
         if (activeTab === 'Active') return sub.status === 'Active' || sub.status === 'Free Trial';
         if (activeTab === 'Cancelled') return sub.status === 'Cancelled' || sub.status === 'Expired';
@@ -57,7 +57,7 @@ export default function KeeshaDashboard({ subscriptions, userProfile }) {
     }).sort((a, b) => {
         // Primary Sort: Status Priority (Active First, Cancelled/Expired Last)
         const getPriority = (status) => {
-            const s = status.toLowerCase();
+            const s = (status || '').toLowerCase();
             if (s === 'active' || s === 'free trial') return 1;
             return 2; // Cancelled, Expired, etc.
         };
@@ -75,7 +75,7 @@ export default function KeeshaDashboard({ subscriptions, userProfile }) {
     });
 
     // Stats Calculation
-    const activeSubs = subscriptions.filter(s => s.status === 'Active' || s.status === 'Free Trial');
+    const activeSubs = initialSubscriptions.filter(s => s.status === 'Active' || s.status === 'Free Trial');
     const totalMonthlySpend = activeSubs.reduce((acc, sub) => acc + calculateAmortizedMonthlyCost(sub.currentCost, sub.billingCycle), 0);
 
     // Nearest Upcoming Bill
@@ -86,45 +86,23 @@ export default function KeeshaDashboard({ subscriptions, userProfile }) {
 
     return (
         <div className={styles.container}>
-            <PageHeader
+            <PageHeaderActions
                 title="My Subscriptions"
-                subtitle="Manage all your recurring payments in one place."
-                actionLabel="Add New Subscription"
+                subtitle="Track your recurring payments and renewals."
+                actionLabel="Add Subscription"
                 onAction={() => setIsModalOpen(true)}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search subscriptions..."
+                tabs={['Active', 'Cancelled', 'All']}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
             />
-
-            {/* Controls */}
-            {/* Controls */}
-            <header className={styles.controls}>
-                {/* Search */}
-                <div className={styles.searchWrapper}>
-                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input
-                        className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all text-sm text-gray-900"
-                        placeholder="Search..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-
-                {/* Tabs */}
-                <div className={styles.tabs}>
-                    {['All', 'Active', 'Cancelled'].map(tab => (
-                        <button
-                            key={tab}
-                            onClick={() => setActiveTab(tab)}
-                            className={`${styles.tabBtn} ${activeTab === tab ? styles.activeTab : ''}`}
-                        >
-                            {tab}
-                        </button>
-                    ))}
-                </div>
-            </header>
 
             <AddSubscriptionModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                existingNames={subscriptions.map(s => s.name)}
+                existingNames={initialSubscriptions.map(s => s.name)}
             />
 
 
@@ -138,7 +116,7 @@ export default function KeeshaDashboard({ subscriptions, userProfile }) {
                         >
                             <div className={styles.cardContent}>
                                 <div className={styles.cardHeader}>
-                                    <h3 className={styles.cardTitle}>{sub.name}</h3>
+                                    <h3 className={styles.cardTitle} title={sub.name}>{sub.name}</h3>
                                     <StatusBadge status={sub.status} />
                                 </div>
 

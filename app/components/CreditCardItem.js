@@ -40,7 +40,7 @@ export default function CreditCardItem({ card }) {
         <Link href={`/creditcard/${id}`} className={styles.card}>
             <div className={styles.cardTop}>
                 <div className={styles.cardInfo}>
-                    <h3>{name}</h3>
+                    <h3 title={name}>{name}</h3>
                     <div className={styles.cardNumber}>•••• {last4}</div>
                 </div>
                 <div

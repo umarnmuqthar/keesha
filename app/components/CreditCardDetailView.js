@@ -6,12 +6,15 @@ import { ArrowLeft, Plus, History, TrendingDown, ArrowUpRight, ArrowDownRight, T
 import { deleteCreditCard, deleteCardTransaction } from '../actions';
 import AddCardTransactionModal from './AddCardTransactionModal';
 import EditCreditCardModal from './EditCreditCardModal';
+import DeleteConfirmModal from './DeleteConfirmModal';
 import styles from './CreditCardDetailView.module.css';
 
 export default function CreditCardDetailView({ card, transactions = [] }) {
     const router = useRouter();
     const [isTxModalOpen, setIsTxModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const remainingDue = Math.max(0, card.statementBalance - card.totalPaid);
     const last4 = card.number.replace(/\s+/g, '').slice(-4);
@@ -25,9 +28,21 @@ export default function CreditCardDetailView({ card, transactions = [] }) {
     };
 
     const handleDelete = async () => {
-        if (confirm('Are you sure you want to delete this card and all its transactions?')) {
-            await deleteCreditCard(card.id);
-            router.push('/creditcards');
+        setIsDeleting(true);
+        try {
+            const result = await deleteCreditCard(card.id);
+            if (result.success) {
+                router.push('/creditcards');
+            } else {
+                alert(result.message || 'Failed to delete card');
+                setIsDeleting(false);
+                setIsDeleteModalOpen(false);
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert('An unexpected error occurred');
+            setIsDeleting(false);
+            setIsDeleteModalOpen(false);
         }
     };
 
@@ -51,6 +66,15 @@ export default function CreditCardDetailView({ card, transactions = [] }) {
                 card={card}
             />
 
+            <DeleteConfirmModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDelete}
+                title="Delete Credit Card"
+                message={`Are you sure you want to delete "${card.name}" and all its transactions? This action cannot be undone.`}
+                disabled={isDeleting}
+            />
+
             <a href="/creditcards" className={styles.backLink}>
                 <ArrowLeft size={16} /> Back to Credit Cards
             </a>
@@ -62,7 +86,7 @@ export default function CreditCardDetailView({ card, transactions = [] }) {
                 </div>
                 <div className={styles.headerActions}>
                     <button className={styles.actionBtn} onClick={() => setIsEditModalOpen(true)}>Edit Card</button>
-                    <button className={`${styles.actionBtn} ${styles.deleteBtn}`} onClick={handleDelete}>
+                    <button className={`${styles.actionBtn} ${styles.deleteBtn}`} onClick={() => setIsDeleteModalOpen(true)}>
                         <Trash2 size={18} style={{ color: 'var(--danger)' }} />
                     </button>
                 </div>

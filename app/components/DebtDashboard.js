@@ -1,15 +1,33 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './DebtDashboard.module.css';
-import PageHeader from './PageHeader';
 import Link from 'next/link';
 import AddDebtModal from './AddDebtModal';
-import { User, Clock, ChevronRight } from 'lucide-react';
+import { User, Clock, ChevronRight, TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
+import PageHeaderActions from './PageHeaderActions';
 
-export default function DebtDashboard({ initialAccounts }) {
+export default function DebtDashboard({ accounts: initialAccounts = [] }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [accounts] = useState(initialAccounts);
+    const [accounts, setAccounts] = useState(initialAccounts);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [activeTab, setActiveTab] = useState('Active'); // Default to Active as per new order
+
+    const handleAddAccount = (newAccount) => {
+        setAccounts(prev => [newAccount, ...prev]);
+    };
+
+    // Sync state with props when they change (e.g. after router.refresh)
+    useEffect(() => {
+        setAccounts(initialAccounts);
+    }, [initialAccounts]);
+
+
+    const filteredAccounts = accounts.filter(acc => {
+        const matchesSearch = acc.name.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesTab = activeTab === 'All' || acc.status === activeTab;
+        return matchesSearch && matchesTab;
+    });
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('en-IN', {
@@ -19,59 +37,81 @@ export default function DebtDashboard({ initialAccounts }) {
         }).format(Math.abs(amount));
     };
 
-    const totalToRecover = accounts.reduce((acc, curr) => curr.netBalance > 0 ? acc + curr.netBalance : acc, 0);
-    const totalToPay = accounts.reduce((acc, curr) => curr.netBalance < 0 ? acc + Math.abs(curr.netBalance) : acc, 0);
+    const totalToRecover = accounts.reduce((sum, curr) => curr.netBalance > 0 ? sum + curr.netBalance : sum, 0);
+    const totalToPay = accounts.reduce((sum, curr) => curr.netBalance < 0 ? sum + Math.abs(curr.netBalance) : sum, 0);
 
     return (
         <div className={styles.container}>
-            <PageHeader
+            <PageHeaderActions
                 title="Debt Tracker"
-                subtitle="Manage personal lending and borrowing effortlessly."
+                subtitle="Manage your lending and borrowings easily."
                 actionLabel="New Account"
                 onAction={() => setIsModalOpen(true)}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search person or account..."
+                tabs={['Active', 'Closed', 'All']}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
             />
 
             {/* Summary Widgets */}
             <div className={styles.summaryRow}>
-                <div className={styles.summaryCard}>
-                    <p className={styles.summaryLabel}>To Recover</p>
-                    <h2 className={`${styles.summaryValue} ${styles.recoverText}`}>{formatCurrency(totalToRecover)}</h2>
-                    <p className={styles.summarySubtext}>Money you lent out</p>
+                <div className={`${styles.summaryCard} ${styles.recoverCard}`}>
+                    <div className={styles.summaryInfo}>
+                        <p className={styles.summaryLabel}>TO RECOVER</p>
+                        <h2 className={`${styles.summaryValue} ${styles.recoverText}`}>
+                            {formatCurrency(totalToRecover)}
+                        </h2>
+                        <p className={styles.summarySubtext}>
+                            <TrendingUp size={14} /> Money you lent out
+                        </p>
+                    </div>
+                    <div className={`${styles.iconCircle} ${styles.recoverBg}`}>
+                        <TrendingUp size={24} className={styles.recoverText} />
+                    </div>
                 </div>
-                <div className={styles.summaryCard}>
-                    <p className={styles.summaryLabel}>To Pay</p>
-                    <h2 className={`${styles.summaryValue} ${styles.payText}`}>{formatCurrency(totalToPay)}</h2>
-                    <p className={styles.summarySubtext}>Money you borrowed</p>
+                <div className={`${styles.summaryCard} ${styles.payCard}`}>
+                    <div className={styles.summaryInfo}>
+                        <p className={styles.summaryLabel}>TO PAY</p>
+                        <h2 className={`${styles.summaryValue} ${styles.payText}`}>
+                            {formatCurrency(totalToPay)}
+                        </h2>
+                        <p className={styles.summarySubtext}>
+                            <TrendingDown size={14} /> Money you borrowed
+                        </p>
+                    </div>
+                    <div className={`${styles.iconCircle} ${styles.payBg}`}>
+                        <TrendingDown size={24} className={styles.payText} />
+                    </div>
                 </div>
             </div>
 
-            {/* Content - List View */}
-            <div className={styles.listContainer}>
-                {accounts.length === 0 ? (
-                    <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-tertiary)' }}>
-                        No debt accounts found. Create one to get started.
+            {/* Content - Grid View */}
+            <div className={styles.accountsGrid}>
+                {filteredAccounts.length === 0 ? (
+                    <div style={{ gridColumn: '1 / -1', padding: '3rem', textAlign: 'center', color: 'var(--text-tertiary)' }}>
+                        {searchQuery ? `No accounts found matching "${searchQuery}"` : 'No debt accounts found. Create one to get started.'}
                     </div>
                 ) : (
-                    accounts.map(account => (
-                        <Link href={`/debt/${account.id}`} key={account.id} className={styles.listRow}>
-                            <div className={styles.accountInfo}>
-                                <div className={styles.accountName}>{account.name}</div>
-                                <div className={styles.accountSubtitle}>
-                                    <Clock size={12} />
-                                    Last active: {new Date(account.lastInteraction).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
-                                </div>
+                    filteredAccounts.map(account => (
+                        <Link href={`/debt/${account.id}`} key={account.id} className={styles.accountCard}>
+                            <div className={styles.cardLeft}>
+                                <h3 className={styles.accountName} title={account.name}>{account.name}</h3>
+                                <p className={styles.cardSubtitle}>
+                                    Last active: {new Date(account.lastInteraction).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                </p>
                             </div>
 
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-                                <div className={styles.balanceInfo}>
-                                    <div className={`${styles.balanceValue} ${account.netBalance >= 0 ? styles.recoverText : styles.payText}`}>
-                                        {formatCurrency(account.netBalance)}
-                                    </div>
-                                    <div className={styles.balanceLabel} style={{ color: account.netBalance >= 0 ? 'var(--success)' : 'var(--danger)' }}>
-                                        {account.netBalance >= 0 ? 'They owe you' : 'You owe them'}
-                                    </div>
+                            <div className={styles.cardRight}>
+                                <div className={`${styles.cardAmount} ${account.netBalance > 0 ? styles.recoverText : account.netBalance < 0 ? styles.payText : styles.zeroText}`}>
+                                    {formatCurrency(account.netBalance)}
                                 </div>
-                                <ChevronRight size={18} style={{ color: 'var(--text-tertiary)' }} />
+                                {account.netBalance !== 0 && (
+                                    <div className={`${styles.statusBadge} ${account.netBalance > 0 ? styles.recoverBadge : styles.payBadge}`}>
+                                        {account.netBalance > 0 ? 'THEY OWE' : 'YOU OWE'}
+                                    </div>
+                                )}
                             </div>
                         </Link>
                     ))
@@ -81,6 +121,7 @@ export default function DebtDashboard({ initialAccounts }) {
             <AddDebtModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
+                onAccountAdded={handleAddAccount}
             />
         </div>
     );

@@ -2,15 +2,20 @@
 
 import React, { useState } from 'react';
 import styles from './LoanDashboard.module.css';
-import PageHeader from './PageHeader';
 import AddLoanModal from './AddLoanModal';
 import StatusBadge from './StatusBadge';
 import Link from 'next/link';
+import PageHeaderActions from './PageHeaderActions';
 
-export default function LoanDashboard({ initialLoans }) {
+export default function LoanDashboard({ initialLoans = [] }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState('Active'); // Active, Closed
+    const [loans, setLoans] = useState(initialLoans);
     const [searchQuery, setSearchQuery] = useState('');
+    const [activeTab, setActiveTab] = useState('Active'); // Active, Closed, All
+
+    const handleAddLoan = (newLoan) => {
+        setLoans(prev => [newLoan, ...prev]);
+    };
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('en-IN', {
@@ -20,11 +25,16 @@ export default function LoanDashboard({ initialLoans }) {
         }).format(amount);
     };
 
-    const filteredLoans = initialLoans.filter(loan => {
-        const matchesTab = activeTab === 'Active' ? (loan.status || 'Active') === 'Active' : (loan.status || 'Active') === 'Closed';
-        const matchesSearch = loan.name.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesTab && matchesSearch;
+    // Filter loans based on search and active tab
+    const filteredLoans = loans.filter(loan => {
+        const matchesSearch =
+            (loan.bankName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (loan.loanType || '').toLowerCase().includes(searchQuery.toLowerCase());
+
+        const matchesTab = activeTab === 'All' || (loan.status || 'Active') === activeTab;
+        return matchesSearch && matchesTab;
     });
+
 
     const sortedLoans = [...filteredLoans].sort((a, b) => {
         // Helper to find next due date
@@ -48,37 +58,18 @@ export default function LoanDashboard({ initialLoans }) {
 
     return (
         <div className={styles.container}>
-            <PageHeader
+            <PageHeaderActions
                 title="EMI Tracker"
-                subtitle="Track your loans and monthly installments."
-                actionLabel="Add New Loan"
+                subtitle="Manage your loans and upcoming EMI payments."
+                actionLabel="Add EMI"
                 onAction={() => setIsModalOpen(true)}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search loans..."
+                tabs={['Active', 'Closed', 'All']}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
             />
-
-            <div className={styles.controls}>
-                <div className={styles.searchWrapper}>
-                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input
-                        type="text"
-                        placeholder="Search loans..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all text-sm text-gray-900"
-                    />
-                </div>
-
-                <div className={styles.tabs}>
-                    {['Active', 'Closed'].map(tab => (
-                        <button
-                            key={tab}
-                            onClick={() => setActiveTab(tab)}
-                            className={`${styles.tabBtn} ${activeTab === tab ? styles.activeTab : ''}`}
-                        >
-                            {tab}
-                        </button>
-                    ))}
-                </div>
-            </div>
 
             <div className={styles.grid}>
                 {sortedLoans.map(loan => {
@@ -132,6 +123,7 @@ export default function LoanDashboard({ initialLoans }) {
             <AddLoanModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
+                onLoanAdded={handleAddLoan}
                 existingNames={initialLoans.map(l => l.name)}
             />
         </div>

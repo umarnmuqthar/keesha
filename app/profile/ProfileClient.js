@@ -5,7 +5,7 @@ import { updateProfile } from '../actions';
 import { logout } from '../actions/authActions';
 import ProfileImageUploader from '../components/ProfileImageUploader';
 import styles from './Profile.module.css';
-import PageHeader from '../components/PageHeader';
+import PageHeaderActions from '../components/PageHeaderActions';
 
 export default function ProfileClient({ initialProfile }) {
     const [profile, setProfile] = useState(initialProfile);
@@ -52,7 +52,7 @@ export default function ProfileClient({ initialProfile }) {
 
     return (
         <div className={styles.container}>
-            <PageHeader title="Profile" subtitle="Manage your personal information and account." />
+            <PageHeaderActions title="Profile" />
 
             {message.text && (
                 <div className={`${styles.statusMessage} ${message.type === 'success' ? styles.success : styles.error}`}>

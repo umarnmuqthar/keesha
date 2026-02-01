@@ -5,7 +5,7 @@ import styles from './AddDebtModal.module.css';
 import { addDebtAccount } from '../actions/debtActions';
 import { useRouter } from 'next/navigation';
 
-export default function AddDebtModal({ isOpen, onClose }) {
+export default function AddDebtModal({ isOpen, onClose, onAccountAdded }) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
@@ -18,6 +18,7 @@ export default function AddDebtModal({ isOpen, onClose }) {
         const result = await addDebtAccount(formData);
         if (result.success) {
             router.refresh();
+            if (onAccountAdded) onAccountAdded(result.account);
             onClose();
         } else {
             alert(result.error || 'Something went wrong');

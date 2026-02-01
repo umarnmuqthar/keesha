@@ -1,15 +1,14 @@
 'use client';
 
 import React from 'react';
-import PageHeader from '../components/PageHeader';
+import PageHeaderActions from '../components/PageHeaderActions';
 
 export default function SavingsPage() {
     return (
         <main className="min-h-screen">
             <div className="max-w-7xl mx-auto space-y-8">
-                <PageHeader
+                <PageHeaderActions
                     title="Savings"
-                    subtitle="Track your savings goals and emergency fund progress."
                 />
 
                 <div style={{ padding: '2rem', textAlign: 'center', background: 'white', borderRadius: '16px', border: '1px solid #f3f4f6' }}>

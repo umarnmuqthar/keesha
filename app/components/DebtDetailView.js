@@ -6,6 +6,7 @@ import { settleDebtAccount, deleteDebtAccount } from '../actions/debtActions';
 import { useRouter } from 'next/navigation';
 import AddDebtEntryModal from './AddDebtEntryModal';
 import EditDebtModal from './EditDebtModal';
+import DeleteConfirmModal from './DeleteConfirmModal';
 import {
     ArrowLeft,
     Edit2,
@@ -22,6 +23,8 @@ export default function DebtDetailView({ account }) {
     const router = useRouter();
     const [isEntryModalOpen, setIsEntryModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const { stats, transactions, netBalance } = account;
 
     const formatCurrency = (amount) => {
@@ -33,9 +36,21 @@ export default function DebtDetailView({ account }) {
     };
 
     const handleDelete = async () => {
-        if (confirm(`Are you sure you want to delete this account and all its history? This action cannot be undone.`)) {
-            await deleteDebtAccount(account.id);
-            router.push('/debt');
+        setIsDeleting(true);
+        try {
+            const result = await deleteDebtAccount(account.id);
+            if (result.success) {
+                router.push('/debt');
+            } else {
+                alert(result.error || 'Failed to delete account');
+                setIsDeleting(false);
+                setIsDeleteModalOpen(false);
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert('An unexpected error occurred');
+            setIsDeleting(false);
+            setIsDeleteModalOpen(false);
         }
     };
 
@@ -57,6 +72,15 @@ export default function DebtDetailView({ account }) {
                     router.refresh();
                 }}
                 account={account}
+            />
+
+            <DeleteConfirmModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDelete}
+                title="Delete Debt Account"
+                message={`Are you sure you want to delete "${account.name}" and all its history? This action cannot be undone.`}
+                disabled={isDeleting}
             />
 
             {/* Breadcrumb */}
@@ -82,7 +106,7 @@ export default function DebtDetailView({ account }) {
                         <Edit2 size={18} />
                         Edit
                     </button>
-                    <button onClick={handleDelete} className={`${styles.actionBtn} ${styles.deleteBtn}`}>
+                    <button onClick={() => setIsDeleteModalOpen(true)} className={`${styles.actionBtn} ${styles.deleteBtn}`}>
                         <Trash2 size={18} />
                     </button>
                 </div>
