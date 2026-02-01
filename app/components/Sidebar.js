@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './Sidebar.module.css';
-import { ChevronLeft, ChevronRight, User, LogOut, Menu, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, User, LogOut, Menu, X, LayoutDashboard, Repeat, CalendarDays, TrendingDown, CreditCard, PiggyBank, Banknote, Receipt, Users } from 'lucide-react';
 import { logout } from '../actions/authActions';
 
 export default function Sidebar({ isCollapsed, isMobileOpen, toggleSidebar, userProfile, isMounted }) {
@@ -11,16 +11,16 @@ export default function Sidebar({ isCollapsed, isMobileOpen, toggleSidebar, user
     const isAdmin = pathname?.startsWith('/admin');
 
     const navItems = isAdmin ? [
-        { name: 'Users', path: '/admin/users', icon: '👥' }
+        { name: 'Users', path: '/admin/users', icon: <Users size={20} /> }
     ] : [
-        { name: 'Dashboard', path: '/', icon: '🏠' },
-        { name: 'Subscriptions', path: '/subscriptions', icon: '🔁' },
-        { name: 'EMI Tracker', path: '/loans', icon: '🗓️' },
-        { name: 'Debt Tracker', path: '/debt', icon: '📉' },
-        { name: 'Credit Cards', path: '/creditcards', icon: '💳' },
-        { name: 'Savings', path: '/savings', icon: '💰' },
-        { name: 'Incomes', path: '/incomes', icon: '💸' },
-        { name: 'Expenses', path: '/expenses', icon: '🧾' },
+        { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={20} /> },
+        { name: 'Subscriptions', path: '/subscriptions', icon: <Repeat size={20} /> },
+        { name: 'EMI Tracker', path: '/loans', icon: <CalendarDays size={20} /> },
+        { name: 'Debt Tracker', path: '/debt', icon: <TrendingDown size={20} /> },
+        { name: 'Credit Cards', path: '/creditcards', icon: <CreditCard size={20} /> },
+        { name: 'Savings', path: '/savings', icon: <PiggyBank size={20} /> },
+        { name: 'Incomes', path: '/incomes', icon: <Banknote size={20} /> },
+        { name: 'Expenses', path: '/expenses', icon: <Receipt size={20} /> },
     ];
 
     return (

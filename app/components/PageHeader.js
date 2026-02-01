@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { Plus } from 'lucide-react';
 
 export default function PageHeader({ title, subtitle, actionLabel, onAction, backPath, backLabel, trailingActions }) {
     return (
@@ -56,7 +57,7 @@ export default function PageHeader({ title, subtitle, actionLabel, onAction, bac
                         onClick={onAction}
                         className="action-btn"
                     >
-                        <span className="plus-icon">+</span>
+                        <Plus size={20} />
                         <span className="btn-label">{actionLabel}</span>
                     </button>
                 )}

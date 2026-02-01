@@ -24,6 +24,7 @@ export default function ClientLayout({ children, userProfile }) {
     }, []);
 
     const isAuthPage = pathname === '/login' || pathname === '/signup' || pathname === '/admin/login';
+    const isLoanDetailPage = pathname?.startsWith('/loan/');
 
     const toggleSidebar = () => {
         if (window.innerWidth <= 768) {
@@ -102,7 +103,7 @@ export default function ClientLayout({ children, userProfile }) {
                 isMounted={isMounted}
             />
             <div
-                className={`layout-main ${isCollapsed ? 'layout-collapsed' : ''}`}
+                className={`layout-main ${isCollapsed ? 'layout-collapsed' : ''} ${isLoanDetailPage ? 'layout-no-padding' : ''}`}
                 style={!isMounted ? { transition: 'none' } : undefined}
             >
                 <div key={pathname} className="page-transition">

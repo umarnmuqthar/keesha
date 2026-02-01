@@ -356,7 +356,18 @@
     grid-template-columns: 1fr;
   }
 
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .searchWrapper {
+    width: 100%;
+    order: -1;
+    /* Ensure it stays on top if flex order changes, though DOM order is first now */
+  }
+
   .searchWrapper input {
     min-width: 100%;
+    width: 100%;
   }
 }
