@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { ChevronLeft, ChevronRight, User, LogOut, Menu, X } from 'lucide-react';
 import Sidebar from './Sidebar';
 
 export default function ClientLayout({ children, userProfile }) {
@@ -51,6 +53,30 @@ export default function ClientLayout({ children, userProfile }) {
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                     </button>
                     <span className="mobile-logo-text">Keesha</span>
+
+                    <Link href="/profile" style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '50%',
+                            overflow: 'hidden',
+                            backgroundColor: '#f1f5f9',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            border: '1px solid var(--border)'
+                        }}>
+                            {userProfile?.image ? (
+                                <img
+                                    src={userProfile.image}
+                                    alt="Profile"
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
+                            ) : (
+                                <User size={20} color="var(--text-secondary)" />
+                            )}
+                        </div>
+                    </Link>
                 </div>
             )}
 

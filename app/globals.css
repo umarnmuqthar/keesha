@@ -283,9 +283,9 @@ textarea {
 @media (max-width: 768px) {
   .action-btn {
     position: fixed;
-    top: 1rem;
+    bottom: calc(2rem + env(safe-area-inset-bottom));
     right: 1rem;
-    z-index: 1000;
+    z-index: 9999;
     padding: 0;
     width: 40px;
     height: 40px;
@@ -309,5 +309,26 @@ textarea {
     height: 100%;
     line-height: 0;
     /* Remove line-height impact */
+  }
+}
+
+/* Page Header Base Styles */
+/* Page Header Base Styles - Standardized */
+.page-header-title {
+  font-size: 1.5rem;
+}
+
+.page-header-subtitle {
+  font-size: 0.875rem;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  /* Font sizes are now handled by base styles */
+
+  /* Fix FAB Visibility: Disable transform/animation on mobile to ensure fixed positioning works */
+  .page-transition {
+    animation: none !important;
+    transform: none !important;
   }
 }

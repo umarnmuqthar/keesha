@@ -32,17 +32,15 @@ export default function PageHeader({ title, subtitle, actionLabel, onAction, bac
                         <span style={{ fontSize: '1.2rem', marginTop: '-2px' }}>‹</span> {backLabel || 'Back'}
                     </Link>
                 )}
-                <h1 style={{
-                    fontSize: '2rem',
+                <h1 className="page-header-title" style={{
                     fontWeight: '800',
                     color: 'var(--text-primary)',
                     letterSpacing: '-0.03em',
                     margin: 0
                 }}>{title}</h1>
                 {subtitle && (
-                    <p style={{
+                    <p className="page-header-subtitle" style={{
                         color: 'var(--text-secondary)',
-                        fontSize: '1rem',
                         fontWeight: '500',
                         margin: '4px 0 0 0',
                         letterSpacing: '-0.01em'

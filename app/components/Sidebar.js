@@ -71,24 +71,27 @@ export default function Sidebar({ isCollapsed, isMobileOpen, toggleSidebar, user
                             ) : null}
                         </button>
                     ) : (
-                        <Link
-                            href="/profile"
-                            className={`${styles.profileSection} ${pathname === '/profile' ? styles.activeProfile : ''}`}
-                        >
-                            <div className={styles.avatar}>
-                                {userProfile?.image ? (
-                                    <img src={userProfile.image} alt="Profile" />
-                                ) : (
-                                    <User size={18} color="var(--text-secondary)" />
-                                )}
-                            </div>
-                            {!isCollapsed || isMobileOpen ? (
-                                <div className={styles.profileInfo}>
-                                    <p className={styles.profileName}>{userProfile?.name || 'User'}</p>
-                                    <p className={styles.profileEmail}>View Profile</p>
+                        // Hide profile section on mobile since it's in the header
+                        !isMobileOpen && (
+                            <Link
+                                href="/profile"
+                                className={`${styles.profileSection} ${pathname === '/profile' ? styles.activeProfile : ''}`}
+                            >
+                                <div className={styles.avatar}>
+                                    {userProfile?.image ? (
+                                        <img src={userProfile.image} alt="Profile" />
+                                    ) : (
+                                        <User size={18} color="var(--text-secondary)" />
+                                    )}
                                 </div>
-                            ) : null}
-                        </Link>
+                                {!isCollapsed || isMobileOpen ? (
+                                    <div className={styles.profileInfo}>
+                                        <p className={styles.profileName}>{userProfile?.name || 'User'}</p>
+                                        <p className={styles.profileEmail}>View Profile</p>
+                                    </div>
+                                ) : null}
+                            </Link>
+                        )
                     )}
                 </div>
             </aside>
