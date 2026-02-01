@@ -202,7 +202,7 @@ textarea {
 @media (max-width: 768px) {
   .layout-main {
     margin-left: 0 !important;
-    padding-top: 5rem;
+    padding: 1rem;
     padding-top: 5rem;
     /* Clear fixed hamburger button */
   }
