@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { addLoan } from '../actions';
 import PageHeader from './PageHeader';
 
 export default function LoanTracker({ initialLoans }) {
+    const router = useRouter();
     const [loans, setLoans] = useState(initialLoans);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -84,9 +86,10 @@ export default function LoanTracker({ initialLoans }) {
                                                             // Optimistic update locally or full refresh? 
                                                             // Ideally use transition, but for now simple refresh/alert
                                                             const { toggleLoanPayment } = await import('../actions');
-                                                            await toggleLoanPayment(loan.id, monthKey, !isPaid);
-                                                            // Force refresh logic would be ideal, or pass router.refresh()
-                                                            window.location.reload();
+                                                            const res = await toggleLoanPayment(loan.id, monthKey, !isPaid);
+                                                            if (res.success) {
+                                                                router.refresh();
+                                                            }
                                                         }}
                                                         className={`text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-md transition-all shadow-sm ${isPaid
                                                             ? 'bg-green-50 text-green-600 hover:bg-green-100 border border-green-100'
@@ -136,8 +139,8 @@ function AddLoanModal({ isOpen, onClose }) {
                 <form action={async (formData) => {
                     const res = await addLoan(formData);
                     if (res.success) {
+                        router.refresh();
                         onClose();
-                        window.location.reload();
                     } else {
                         alert(res.message);
                     }

@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useRouter } from 'next/navigation';
 import styles from './AddLoanModal.module.css';
 import { addLoan, updateLoan } from '../actions';
 import { generatePaymentSchedule, calculateEffectiveInterestRate, getLoanAdvice, formatScheduleDate } from '@/lib/loan-utils';
 
 export default function AddLoanModal({ isOpen, onClose, initialData = null, existingNames = [] }) {
+    const router = useRouter();
     const [step, setStep] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [nameError, setNameError] = useState('');
@@ -295,6 +297,7 @@ export default function AddLoanModal({ isOpen, onClose, initialData = null, exis
                 : await addLoan(finalFormData);
 
             if (res.success) {
+                router.refresh();
                 onClose();
                 setStep(1);
             } else {

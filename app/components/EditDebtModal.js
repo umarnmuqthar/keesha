@@ -3,8 +3,10 @@
 import React, { useState } from 'react';
 import styles from './AddDebtModal.module.css'; // Reusing styles 
 import { updateDebtAccount } from '../actions/debtActions';
+import { useRouter } from 'next/navigation';
 
 export default function EditDebtModal({ isOpen, onClose, account }) {
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
 
     if (!isOpen) return null;
@@ -15,6 +17,7 @@ export default function EditDebtModal({ isOpen, onClose, account }) {
         const formData = new FormData(e.target);
         const result = await updateDebtAccount(account.id, formData);
         if (result.success) {
+            router.refresh();
             onClose();
         } else {
             alert(result.error || 'Something went wrong');

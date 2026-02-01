@@ -3,8 +3,10 @@
 import React, { useState } from 'react';
 import styles from './AddDebtEntryModal.module.css';
 import { addDebtEntry } from '../actions/debtActions';
+import { useRouter } from 'next/navigation';
 
 export default function AddDebtEntryModal({ isOpen, onClose, accountId }) {
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [type, setType] = useState('GIVE'); // GIVE or GOT
 
@@ -17,6 +19,7 @@ export default function AddDebtEntryModal({ isOpen, onClose, accountId }) {
         formData.append('type', type);
         const result = await addDebtEntry(accountId, formData);
         if (result.success) {
+            router.refresh();
             onClose();
         } else {
             alert(result.error || 'Something went wrong');

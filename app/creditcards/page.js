@@ -1,20 +1,27 @@
-'use client';
-
 import React from 'react';
 import PageHeader from '../components/PageHeader';
+import CreditCardDashboard from '../components/CreditCardDashboard';
+import { db } from '@/lib/firebase-admin';
+import { getSession } from '../actions/authActions';
 
-export default function CreditCardsPage() {
+export default async function CreditCardsPage() {
+    const session = await getSession();
+    if (!session) return null;
+
+    // Fetch cards without orderBy initially to avoid index requirements
+    const cardsSnapshot = await db.collection('creditcards')
+        .where('userId', '==', session.uid)
+        .get();
+
+    const cards = cardsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+
     return (
         <main className="min-h-screen">
-            <div className="max-w-7xl mx-auto space-y-8">
-                <PageHeader
-                    title="Credit Cards"
-                    subtitle="Monitor your credit card limits and statement cycles."
-                />
-
-                <div style={{ padding: '2rem', textAlign: 'center', background: 'white', borderRadius: '16px', border: '1px solid #f3f4f6' }}>
-                    <p style={{ color: '#6b7280' }}>Credit card management features coming soon.</p>
-                </div>
+            <div className="max-w-7xl mx-auto">
+                <CreditCardDashboard cards={cards} />
             </div>
         </main>
     );

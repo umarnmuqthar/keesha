@@ -3,16 +3,19 @@
 import React, { useState } from 'react';
 import styles from './LoanDetails.module.css';
 import AddLoanModal from './AddLoanModal';
-import { deleteLoan, toggleLoanPayment } from '../actions';
+import EditPaymentModal from './EditPaymentModal';
+import { deleteLoan, toggleLoanPayment, updateLoanPayment, deleteLoanPayment } from '../actions';
 import { useRouter } from 'next/navigation';
 import DeleteConfirmModal from './DeleteConfirmModal';
-import { ChevronLeft, Edit2, Trash2, CheckCircle, PieChart, TrendingUp, Calendar, ArrowLeft } from 'lucide-react';
+import { ChevronLeft, Edit2, Trash2, CheckCircle, PieChart, TrendingUp, Calendar, ArrowLeft, MoreVertical, X } from 'lucide-react';
 
 export default function LoanDetails({ loan }) {
     const router = useRouter();
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isEditPaymentModalOpen, setIsEditPaymentModalOpen] = useState(false);
+    const [paymentToEdit, setPaymentToEdit] = useState(null);
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('en-IN', {
@@ -45,10 +48,39 @@ export default function LoanDetails({ loan }) {
         try {
             const res = await toggleLoanPayment(loan.id, monthYear, isPaid);
             if (res.success) {
-                // Next.js will revalidate via server actions
+                router.refresh();
             }
         } catch (error) {
             console.error('Toggle Payment Error:', error);
+        }
+    };
+
+    const handleDeletePayment = async (monthYear) => {
+        if (!confirm('Are you sure you want to delete this payment record? This will mark it as pending.')) return;
+        try {
+            const res = await deleteLoanPayment(loan.id, monthYear);
+            if (res.success) {
+                router.refresh();
+            }
+        } catch (error) {
+            console.error('Delete Payment Error:', error);
+        }
+    };
+
+    const handleEditPayment = async (oldDate, newData) => {
+        try {
+            const res = await updateLoanPayment(loan.id, oldDate, {
+                amount: newData.amount,
+                newDate: newData.date,
+                description: newData.description
+            });
+            if (res.success) {
+                router.refresh();
+            } else {
+                alert(res.message);
+            }
+        } catch (error) {
+            console.error('Edit Payment Error:', error);
         }
     };
 
@@ -82,6 +114,16 @@ export default function LoanDetails({ loan }) {
                 onConfirm={handleDelete}
                 title="Delete Loan"
                 message={`Are you sure you want to delete "${loan.name}"? This action cannot be undone.`}
+            />
+
+            <EditPaymentModal
+                isOpen={isEditPaymentModalOpen}
+                onClose={() => {
+                    setIsEditPaymentModalOpen(false);
+                    setPaymentToEdit(null);
+                }}
+                onSave={(newData) => handleEditPayment(paymentToEdit.date, newData)}
+                initialData={paymentToEdit}
             />
 
             {/* Breadcrumb */}
@@ -190,30 +232,61 @@ export default function LoanDetails({ loan }) {
 
                 <div className={styles.tableContainer}>
                     <div className={styles.tableHeader}>
-                        <div>#</div>
                         <div>Due Date</div>
                         <div>Amount</div>
-                        <div>Status</div>
+                        <div>Actions</div>
                     </div>
 
                     {schedule.map((entry, idx) => {
-                        const isPaid = !!payments[entry.date];
+                        const payment = payments[entry.date];
+                        const isPaid = !!payment;
                         return (
                             <div key={entry.id || idx} className={styles.tableRow}>
-                                <div style={{ color: 'var(--text-tertiary)', fontSize: '0.875rem' }}>{idx + 1}</div>
                                 <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
                                     {new Date(entry.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-')}
                                 </div>
-                                <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{formatCurrency(entry.amount)}</div>
                                 <div>
+                                    <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
+                                        {formatCurrency(isPaid && payment.amount ? payment.amount : entry.amount)}
+                                    </div>
+                                    {isPaid && payment.description && (
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px', fontStyle: 'italic' }}>
+                                            {payment.description}
+                                        </div>
+                                    )}
+                                </div>
+                                <div className={styles.statusActionGroup}>
                                     {isPaid ? (
-                                        <span className={styles.statusCellBadge} style={{ background: '#dcfce7', color: '#166534' }}>
-                                            <CheckCircle size={12} /> Paid
-                                        </span>
+                                        <div className={styles.entryActions}>
+                                            <button
+                                                onClick={() => {
+                                                    setPaymentToEdit({
+                                                        date: entry.date,
+                                                        amount: payment.amount || entry.amount,
+                                                        description: payment.description || ''
+                                                    });
+                                                    setIsEditPaymentModalOpen(true);
+                                                }}
+                                                className={styles.entryActionBtn}
+                                                title="Edit Payment"
+                                            >
+                                                <Edit2 size={14} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeletePayment(entry.date)}
+                                                className={`${styles.entryActionBtn} ${styles.entryDeleteBtn}`}
+                                                title="Delete Payment"
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
+                                        </div>
                                     ) : (
-                                        <span className={styles.statusCellBadge} style={{ background: '#fee2e2', color: '#991b1b' }}>
-                                            Pending
-                                        </span>
+                                        <button
+                                            onClick={() => handleTogglePayment(entry.date, true)}
+                                            className={styles.miniPayBtn}
+                                        >
+                                            Pay
+                                        </button>
                                     )}
                                 </div>
                             </div>

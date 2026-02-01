@@ -1,0 +1,205 @@
+.container {
+    padding: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.backLink {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.headerActions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.actionBtn {
+    padding: 0.625rem 1.25rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--border);
+    background: white;
+}
+
+/* Detail Cards Grid */
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.vibrantCard {
+    background: linear-gradient(135deg, var(--primary) 0%, #ff5e62 100%);
+    color: white;
+    border: none;
+}
+
+.vibrantHeader {
+    display: flex;
+    justify-content: space-between;
+    opacity: 0.9;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.vibrantValue {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0.5rem 0;
+}
+
+.vibrantSubtext {
+    font-size: 0.875rem;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+/* Ledger Styles */
+.ledgerHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+    font-size: 1.125rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.primaryBtn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.625rem 1.25rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tableContainer {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.tableHeader {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1.5fr 1fr;
+    padding: 1rem;
+    background: #f9fafb;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+}
+
+.tableRow {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1.5fr 1fr;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+}
+
+.tableRow:last-child {
+    border-bottom: none;
+}
+
+.dateCell {
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.descCell {
+    color: var(--text-primary);
+    font-size: 0.9375rem;
+    font-weight: 500;
+}
+
+.typeBadge {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.expenseBadge {
+    background: #fee2e2;
+    color: var(--danger);
+}
+
+.paymentBadge {
+    background: #dcfce7;
+    color: var(--success);
+}
+
+.amountCell {
+    font-weight: 700;
+    text-align: right;
+    font-feature-settings: "tnum";
+}
+
+.expenseAmount {
+    color: var(--danger);
+}
+
+.paymentAmount {
+    color: var(--success);
+}
+
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}

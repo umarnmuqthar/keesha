@@ -1,0 +1,141 @@
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
+    border-color: #e5e7eb;
+}
+
+.cardTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.cardInfo h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.cardNumber {
+    font-size: 0.8125rem;
+    color: var(--text-tertiary);
+    font-family: monospace;
+    margin-top: 2px;
+}
+
+.brandBadge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: white;
+}
+
+/* Utilization Section */
+.utilization {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.utilHeader {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.progressBar {
+    height: 8px;
+    background: #f3f4f6;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Payment Status Trio */
+.trio {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.trioItem {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.label {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+}
+
+.value {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.dueText {
+    color: var(--danger);
+}
+
+.settledBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--success);
+    font-size: 0.8125rem;
+    font-weight: 700;
+}
+
+/* Footer */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed var(--border);
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.dueDate {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.dueInSoon {
+    color: var(--danger);
+}
+
+.dueInFar {
+    color: var(--text-secondary);
+}
