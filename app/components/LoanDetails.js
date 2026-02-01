@@ -194,7 +194,6 @@ export default function LoanDetails({ loan }) {
                         <div>Due Date</div>
                         <div>Amount</div>
                         <div>Status</div>
-                        <div style={{ textAlign: 'right' }}>Action</div>
                     </div>
 
                     {schedule.map((entry, idx) => {
@@ -216,15 +215,6 @@ export default function LoanDetails({ loan }) {
                                             Pending
                                         </span>
                                     )}
-                                </div>
-                                <div className={styles.actionsCell}>
-                                    <button
-                                        onClick={() => handleTogglePayment(entry.date, !isPaid)}
-                                        className={styles.iconBtn}
-                                        title={isPaid ? "Mark as Pending" : "Mark as Paid"}
-                                    >
-                                        {isPaid ? <ChevronLeft size={18} /> : <CheckCircle size={18} />}
-                                    </button>
                                 </div>
                             </div>
                         );
