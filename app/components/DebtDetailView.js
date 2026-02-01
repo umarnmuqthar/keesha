@@ -2,11 +2,21 @@
 
 import React, { useState } from 'react';
 import styles from './DebtDetailView.module.css';
-import PageHeader from './PageHeader';
 import { settleDebtAccount, deleteDebtAccount } from '../actions/debtActions';
 import { useRouter } from 'next/navigation';
 import AddDebtEntryModal from './AddDebtEntryModal';
 import EditDebtModal from './EditDebtModal';
+import {
+    ArrowLeft,
+    Edit2,
+    Trash2,
+    Plus,
+    CheckCircle,
+    TrendingUp,
+    Briefcase,
+    Activity,
+    History
+} from 'lucide-react';
 
 export default function DebtDetailView({ account }) {
     const router = useRouter();
@@ -36,123 +46,8 @@ export default function DebtDetailView({ account }) {
         }
     };
 
-    const trailingActions = (
-        <div className={styles.headerTrailing}>
-            <button
-                onClick={() => setIsEditModalOpen(true)}
-                className={styles.iconBtn}
-                title="Edit Account"
-                style={{ padding: '8px', fontSize: '1.2rem' }}
-            >
-                ✏️
-            </button>
-            <button
-                onClick={handleDelete}
-                className={`${styles.iconBtn} ${styles.deleteIconBtn}`}
-                title="Delete Account"
-                style={{ padding: '8px', fontSize: '1.2rem' }}
-            >
-                🗑️
-            </button>
-        </div>
-    );
-
     return (
         <div className={styles.container}>
-            <PageHeader
-                title={account.name}
-                subtitle={`Manage your ledger with ${account.name}`}
-                backPath="/debt"
-                backLabel="Debt Tracker"
-                trailingActions={trailingActions}
-            />
-
-            {/* Heavy Header Card */}
-            <div className={styles.headerCard}>
-                <div className={styles.headerTop}>
-                    <div>
-                        <h2 className={styles.headerTitle}>{account.name}</h2>
-                        <div className={styles.statusBadge} data-status={account.status.toLowerCase()}>
-                            {account.status}
-                        </div>
-                    </div>
-                    <button
-                        onClick={() => setIsEntryModalOpen(true)}
-                        className={styles.primaryActionBtn}
-                    >
-                        <span className={styles.plusSign}>+</span> Add Transaction
-                    </button>
-                </div>
-
-                <div className={styles.headerStats}>
-                    <div className={styles.headerStatItem}>
-                        <p className={styles.statLabel}>TOTAL GIVEN</p>
-                        <h3 className={styles.statValue}>{formatCurrency(stats.totalGiven)}</h3>
-                    </div>
-                    <div className={styles.headerStatItem}>
-                        <p className={styles.statLabel}>TOTAL TAKEN</p>
-                        <h3 className={styles.statValue}>{formatCurrency(stats.totalTaken)}</h3>
-                    </div>
-                    <div className={styles.headerStatItem}>
-                        <p className={styles.statLabel}>NET BALANCE</p>
-                        <h3 className={`${styles.statValue} ${netBalance >= 0 ? styles.recoverText : styles.payText}`}>
-                            {formatCurrency(netBalance)}
-                        </h3>
-                        <p className={`${styles.statSubtext} ${netBalance >= 0 ? styles.recoverText : styles.payText}`}>
-                            {netBalance >= 0 ? 'They owe you' : 'You owe them'}
-                        </p>
-                    </div>
-                </div>
-
-                <div className={styles.headerFooter}>
-                    <button onClick={handleSettle} className={styles.settleButton} disabled={Math.abs(netBalance) < 1}>
-                        ✓ Settle Balance
-                    </button>
-                </div>
-            </div>
-
-            {/* Analytics Section */}
-            <div className={styles.sectionTitleRow}>
-                <h3 className={styles.sectionTitle}>Analytics</h3>
-            </div>
-            <div className={styles.analyticsGrid}>
-                <div className={styles.analyticCard}>
-                    <p className={styles.label}>Settled Amount</p>
-                    <h2 className={styles.value}>{formatCurrency(stats.settledAmount)}</h2>
-                    <p className={styles.subtext}>Total of all cleared entries</p>
-                </div>
-                {/* Could add more analytics cards here if needed */}
-            </div>
-
-            {/* Ledger */}
-            <div className={styles.ledgerSection}>
-                <h3 className={styles.sectionTitle}>Transaction Ledger</h3>
-                <div className={styles.ledgerTable}>
-                    {transactions.length === 0 ? (
-                        <div className={styles.emptyState}>No transactions yet.</div>
-                    ) : (
-                        transactions.map(t => (
-                            <div key={t.id} className={styles.ledgerRow}>
-                                <div className={styles.rowDate}>
-                                    <span className={styles.day}>{new Date(t.date).toLocaleDateString('en-GB', { day: '2-digit' })}</span>
-                                    <span className={styles.month}>{new Date(t.date).toLocaleDateString('en-GB', { month: 'short' })}</span>
-                                </div>
-                                <div className={styles.rowMain}>
-                                    <p className={styles.rowDesc}>{t.description || 'No description'}</p>
-                                    <div className={styles.rowBadges}>
-                                        <span className={styles.typeBadge} data-type={t.type}>{t.type}</span>
-                                        <span className={styles.statusBadge} data-status={t.status?.toLowerCase()}>{t.status}</span>
-                                    </div>
-                                </div>
-                                <div className={`${styles.rowAmount} ${t.type === 'GIVE' ? styles.giveText : styles.gotText}`}>
-                                    {t.type === 'GIVE' ? '+' : '-'} {formatCurrency(t.amount)}
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </div>
-            </div>
-
             <AddDebtEntryModal
                 isOpen={isEntryModalOpen}
                 onClose={() => {
@@ -170,6 +65,142 @@ export default function DebtDetailView({ account }) {
                 }}
                 account={account}
             />
+
+            {/* Breadcrumb */}
+            <a href="/debt" className={styles.backLink}>
+                <ArrowLeft size={16} />
+                Back to Debt Tracker
+            </a>
+
+            {/* Header */}
+            <header className={styles.header}>
+                <div className={styles.titleSection}>
+                    <h1>
+                        {account.name}
+                        <span className={`${styles.statusBadge} ${account.status === 'Active' ? styles.statusActive : styles.statusClosed}`}>
+                            {account.status}
+                        </span>
+                    </h1>
+                    <div className={styles.subtitle}>{`Manage your ledger with ${account.name}`}</div>
+                </div>
+
+                <div className={styles.headerActions}>
+                    <button onClick={() => setIsEditModalOpen(true)} className={styles.actionBtn}>
+                        <Edit2 size={18} />
+                        Edit
+                    </button>
+                    <button onClick={handleDelete} className={`${styles.actionBtn} ${styles.deleteBtn}`}>
+                        <Trash2 size={18} />
+                    </button>
+                </div>
+            </header>
+
+            {/* Grid Area */}
+            <div className={styles.grid}>
+                {/* Main Overview Card */}
+                <div className={styles.card}>
+                    <div className={styles.overviewHeader}>
+                        <div className={styles.sectionTitle}>
+                            <Briefcase size={20} />
+                            Account Overview
+                        </div>
+                        <button
+                            onClick={() => setIsEntryModalOpen(true)}
+                            className={styles.primaryBtn}
+                        >
+                            <Plus size={16} />
+                            Add Transaction
+                        </button>
+                    </div>
+
+                    <div className={styles.metricsRow}>
+                        <div>
+                            <div className={styles.metricLabel}>Total Given</div>
+                            <div className={styles.metricValue}>{formatCurrency(stats.totalGiven)}</div>
+                        </div>
+                        <div>
+                            <div className={styles.metricLabel}>Total Taken</div>
+                            <div className={styles.metricValue}>{formatCurrency(stats.totalTaken)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Sidebar Cards */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <div className={`${styles.card} ${styles.vibrantCard}`}>
+                        <div className={styles.vibrantHeader}>
+                            <div className={styles.vibrantLabel}>Net Balance</div>
+                            <TrendingUp size={20} style={{ opacity: 0.8 }} />
+                        </div>
+                        <div className={styles.vibrantValue}>{formatCurrency(netBalance)}</div>
+                        <div className={styles.vibrantSubtext}>
+                            {netBalance >= 0 ? 'They owe you' : 'You owe them'}
+                        </div>
+                    </div>
+
+                    <div className={styles.card} style={{ padding: '1.25rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Settled Total</div>
+                            <CheckCircle size={18} style={{ color: 'var(--success)' }} />
+                        </div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: '0.5rem' }}>{formatCurrency(stats.settledAmount)}</div>
+                        <button
+                            onClick={handleSettle}
+                            disabled={Math.abs(netBalance) < 1}
+                            className={styles.settleBtn}
+                        >
+                            Settle Balance
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Transaction Ledger Section */}
+            <div className={styles.ledgerSection}>
+                <div className={styles.overviewHeader}>
+                    <div className={styles.sectionTitle}>
+                        <History size={20} />
+                        Transaction Ledger
+                    </div>
+                </div>
+
+                <div className={styles.tableContainer}>
+                    <div className={styles.tableHeader}>
+                        <div>Date</div>
+                        <div>Description / Type</div>
+                        <div>Status</div>
+                        <div style={{ textAlign: 'right' }}>Amount</div>
+                    </div>
+
+                    {transactions.length === 0 ? (
+                        <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-tertiary)' }}>No transactions yet.</div>
+                    ) : (
+                        transactions.map(t => (
+                            <div key={t.id} className={styles.tableRow}>
+                                <div className={styles.cellDate}>
+                                    <span className={styles.day}>{new Date(t.date).toLocaleDateString('en-GB', { day: '2-digit' })}</span>
+                                    <span className={styles.month}>{new Date(t.date).toLocaleDateString('en-GB', { month: 'short' })}</span>
+                                </div>
+                                <div>
+                                    <div className={styles.rowDesc}>{t.description || 'Other'}</div>
+                                    <span className={`${styles.typeBadge} ${t.type === 'GIVE' ? styles.typeGIVE : styles.typeGOT}`}>
+                                        {t.type}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span className={styles.statusBadge} style={{ background: t.status === 'Settled' ? '#eff6ff' : '#f3f4f6', color: t.status === 'Settled' ? '#1e40af' : '#6b7280' }}>
+                                        {t.status}
+                                    </span>
+                                </div>
+                                <div className={`${styles.rowAmount} ${t.type === 'GIVE' ? styles.giveText : styles.gotText}`}>
+                                    {t.type === 'GIVE' ? '+' : '-'} {formatCurrency(t.amount)}
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
+

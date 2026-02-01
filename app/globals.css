@@ -288,12 +288,18 @@ textarea {
   .action-btn {
     /* Remove fixed positioning to place it in the header flow */
     padding: 0;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: 0;
+  }
+
+  .action-btn svg {
+    display: block;
+    margin: 0;
   }
 
   .btn-label {

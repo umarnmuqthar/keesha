@@ -5,10 +5,9 @@ import styles from './DebtDashboard.module.css';
 import PageHeader from './PageHeader';
 import Link from 'next/link';
 import AddDebtModal from './AddDebtModal';
-import StatusBadge from './StatusBadge';
+import { User, Clock, ChevronRight } from 'lucide-react';
 
 export default function DebtDashboard({ initialAccounts }) {
-    // const [viewMode, setViewMode] = useState('grid'); // Removed viewMode
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [accounts] = useState(initialAccounts);
 
@@ -28,53 +27,55 @@ export default function DebtDashboard({ initialAccounts }) {
             <PageHeader
                 title="Debt Tracker"
                 subtitle="Manage personal lending and borrowing effortlessly."
-                actionLabel="New Debt Account"
+                actionLabel="New Account"
                 onAction={() => setIsModalOpen(true)}
             />
 
             {/* Summary Widgets */}
-            <div className={styles.summaryGrid}>
+            <div className={styles.summaryRow}>
                 <div className={styles.summaryCard}>
-                    <p className={styles.summaryLabel}>Total to Recover</p>
+                    <p className={styles.summaryLabel}>To Recover</p>
                     <h2 className={`${styles.summaryValue} ${styles.recoverText}`}>{formatCurrency(totalToRecover)}</h2>
                     <p className={styles.summarySubtext}>Money you lent out</p>
                 </div>
                 <div className={styles.summaryCard}>
-                    <p className={styles.summaryLabel}>Total to Pay</p>
+                    <p className={styles.summaryLabel}>To Pay</p>
                     <h2 className={`${styles.summaryValue} ${styles.payText}`}>{formatCurrency(totalToPay)}</h2>
                     <p className={styles.summarySubtext}>Money you borrowed</p>
                 </div>
             </div>
 
-            {/* Controls - View Toggle Removed */}
-            {/* <div className={styles.controls}>...</div> */}
+            {/* Content - List View */}
+            <div className={styles.listContainer}>
+                {accounts.length === 0 ? (
+                    <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-tertiary)' }}>
+                        No debt accounts found. Create one to get started.
+                    </div>
+                ) : (
+                    accounts.map(account => (
+                        <Link href={`/debt/${account.id}`} key={account.id} className={styles.listRow}>
+                            <div className={styles.accountInfo}>
+                                <div className={styles.accountName}>{account.name}</div>
+                                <div className={styles.accountSubtitle}>
+                                    <Clock size={12} />
+                                    Last active: {new Date(account.lastInteraction).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
+                                </div>
+                            </div>
 
-            {/* Main Content - Forced Grid View */}
-            <div className={styles.grid}>
-                {accounts.map(account => (
-                    <Link href={`/debt/${account.id}`} key={account.id} className={styles.card}>
-                        <div className={styles.cardHeader}>
-                            <h3 className={styles.cardTitle}>{account.name}</h3>
-                            <StatusBadge status={account.status} />
-                        </div>
-
-                        <div className={styles.balanceSection}>
-                            <p className={styles.balanceLabel}>NET BALANCE</p>
-                            <h2 className={`${styles.balanceValue} ${account.netBalance >= 0 ? styles.recoverText : styles.payText}`}>
-                                {formatCurrency(account.netBalance)}
-                            </h2>
-                            <p className={styles.balanceStatus}>
-                                {account.netBalance >= 0 ? 'They owe you' : 'You owe them'}
-                            </p>
-                        </div>
-
-                        <div className={styles.cardFooter}>
-                            <span className={styles.lastActivity}>
-                                Last activity: {new Date(account.lastInteraction).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
-                            </span>
-                        </div>
-                    </Link>
-                ))}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+                                <div className={styles.balanceInfo}>
+                                    <div className={`${styles.balanceValue} ${account.netBalance >= 0 ? styles.recoverText : styles.payText}`}>
+                                        {formatCurrency(account.netBalance)}
+                                    </div>
+                                    <div className={styles.balanceLabel} style={{ color: account.netBalance >= 0 ? 'var(--success)' : 'var(--danger)' }}>
+                                        {account.netBalance >= 0 ? 'They owe you' : 'You owe them'}
+                                    </div>
+                                </div>
+                                <ChevronRight size={18} style={{ color: 'var(--text-tertiary)' }} />
+                            </div>
+                        </Link>
+                    ))
+                )}
             </div>
 
             <AddDebtModal
@@ -84,3 +85,4 @@ export default function DebtDashboard({ initialAccounts }) {
         </div>
     );
 }
+

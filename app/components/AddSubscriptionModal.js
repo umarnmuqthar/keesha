@@ -27,19 +27,26 @@ export default function AddSubscriptionModal({ isOpen, onClose, initialData = nu
 
     useEffect(() => {
         setMounted(true);
-        // ... (existing effects)
-        if (initialData) {
-            // Edit Mode
-            setIsFreeTrial(false);
-            setSubName(initialData.name || '');
-        } else {
-            // Add Mode Defaults
-            setIsFreeTrial(false);
-            setTrialDuration(1);
-            setTrialUnit('Months');
-            setSubName('');
+        if (isOpen) {
+            // Reset all states when opening
+            setShowHistoryStep(false);
+            setPotentialHistory([]);
+            setSelectedHistory(new Set());
+            setPendingFormData(null);
+            setNameError('');
+
+            if (initialData) {
+                // Edit Mode
+                setIsFreeTrial(false);
+                setSubName(initialData.name || '');
+            } else {
+                // Add Mode Defaults
+                setIsFreeTrial(false);
+                setTrialDuration(1);
+                setTrialUnit('Months');
+                setSubName('');
+            }
         }
-        setNameError('');
     }, [initialData, isOpen]);
 
     const isEditMode = !!initialData;
@@ -196,7 +203,11 @@ export default function AddSubscriptionModal({ isOpen, onClose, initialData = nu
                     <h2>{isEditMode ? 'Edit Subscription' : 'Add New Subscription'}</h2>
                 </div>
 
-                <form action={handleInitialSubmit} className={styles.form}>
+                <form
+                    key={`${isOpen}-${initialData?.id || 'new'}`}
+                    action={handleInitialSubmit}
+                    className={styles.form}
+                >
                     <div className={styles.formGroup}>
                         <label>Platform Name</label>
                         <input
