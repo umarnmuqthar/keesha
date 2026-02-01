@@ -7,7 +7,7 @@ import AddDebtModal from './AddDebtModal';
 import { User, Clock, ChevronRight, TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 import PageHeaderActions from './PageHeaderActions';
 
-export default function DebtDashboard({ accounts: initialAccounts = [] }) {
+export default function DebtDashboard({ initialAccounts = [] }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [accounts, setAccounts] = useState(initialAccounts);
     const [searchQuery, setSearchQuery] = useState('');
@@ -25,7 +25,9 @@ export default function DebtDashboard({ accounts: initialAccounts = [] }) {
 
     const filteredAccounts = accounts.filter(acc => {
         const matchesSearch = acc.name.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesTab = activeTab === 'All' || acc.status === activeTab;
+        // Treat accounts without a status as 'Active'
+        const accountStatus = acc.status || 'Active';
+        const matchesTab = activeTab === 'All' || accountStatus === activeTab;
         return matchesSearch && matchesTab;
     });
 
