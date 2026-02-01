@@ -32,13 +32,6 @@ export default function DebtDetailView({ account }) {
         }).format(Math.abs(amount));
     };
 
-    const handleSettle = async () => {
-        if (confirm(`Settle the balance of ${formatCurrency(netBalance)}?`)) {
-            await settleDebtAccount(account.id, netBalance);
-            router.refresh();
-        }
-    };
-
     const handleDelete = async () => {
         if (confirm(`Are you sure you want to delete this account and all its history? This action cannot be undone.`)) {
             await deleteDebtAccount(account.id);
@@ -136,21 +129,6 @@ export default function DebtDetailView({ account }) {
                         <div className={styles.vibrantSubtext}>
                             {netBalance >= 0 ? 'They owe you' : 'You owe them'}
                         </div>
-                    </div>
-
-                    <div className={styles.card} style={{ padding: '1.25rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Settled Total</div>
-                            <CheckCircle size={18} style={{ color: 'var(--success)' }} />
-                        </div>
-                        <div style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: '0.5rem' }}>{formatCurrency(stats.settledAmount)}</div>
-                        <button
-                            onClick={handleSettle}
-                            disabled={Math.abs(netBalance) < 1}
-                            className={styles.settleBtn}
-                        >
-                            Settle Balance
-                        </button>
                     </div>
                 </div>
             </div>
