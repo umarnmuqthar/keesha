@@ -1,5 +1,8 @@
 .container {
     width: 100%;
+    padding: 1.5rem 2rem 3rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .backLink {
@@ -267,6 +270,10 @@
 }
 
 @media (max-width: 640px) {
+    .container {
+        padding: 1rem 1.25rem 2rem 1.25rem;
+    }
+
     .metricsRow {
         grid-template-columns: 1fr;
         gap: 1.5rem;
