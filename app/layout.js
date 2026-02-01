@@ -1,5 +1,6 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import ClientLayout from './components/ClientLayout'
 import { getUserProfile } from './actions'
 
@@ -24,6 +25,7 @@ export default async function RootLayout({ children }) {
                 <ClientLayout userProfile={profile}>
                     {children}
                 </ClientLayout>
+                <SpeedInsights />
             </body>
         </html>
     )
