@@ -6,14 +6,21 @@ export default async function AdminDashboard() {
     const session = await getSession();
 
     // Strict Admin Check
-    if (!session || session.email !== 'admin@keesha.money') {
+    // Strict Admin Check
+    const { getAdminUsers } = await import('@/app/actions/adminActions');
+    // We can't easily call verifyAdmin directly here since it's not exported, 
+    // but getAdminUsers calls it internally. 
+    // Ideally we should export verifyAdmin or use session check here.
+
+    // Let's rely on the session check matching verifyAdmin logic
+    if (!session || (!session.admin && session.email !== 'admin@keesha.money')) {
         redirect('/admin/login');
     }
 
     const { users, error } = await getAdminUsers();
 
     return (
-        <div className="min-h-screen bg-gray-50 p-8">
+        <div className="min-h-screen bg-white p-8">
             <div className="max-w-7xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
                     <div>
@@ -22,7 +29,7 @@ export default async function AdminDashboard() {
                     </div>
                     <div>
                         <form action={logout}>
-                            <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            <button className="px-4 py-2 bg-black border border-black rounded-lg text-sm font-medium text-white hover:bg-gray-800 transition-colors">
                                 Logout
                             </button>
                         </form>
@@ -95,7 +102,7 @@ export default async function AdminDashboard() {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.email === 'admin@keesha.money' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.email === 'admin@keesha.money' ? 'bg-black text-white' : 'bg-gray-100 text-gray-800'}`}>
                                             {user.email === 'admin@keesha.money' ? 'Admin' : 'User'}
                                         </span>
                                     </td>

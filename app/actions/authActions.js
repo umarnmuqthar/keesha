@@ -19,7 +19,7 @@ export async function createSession(idToken, checkAdmin = false) {
             const db = getFirestore();
             const userDoc = await db.collection('users').doc(decodedToken.uid).get();
 
-            if (!userDoc.exists || userDoc.data().isAdmin !== true) {
+            if (!userDoc.exists || (userDoc.data().isAdmin !== true && userDoc.data().role !== 'admin')) {
                 return { success: false, error: 'Access Denied: Not an admin.' };
             }
         } catch (e) {

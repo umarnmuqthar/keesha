@@ -34,11 +34,11 @@ export default function Sidebar({ isCollapsed, isMobileOpen, toggleSidebar, user
     return (
         <>
             <aside
-                className={`${styles.sidebar} ${(isCollapsed && !isMobileOpen) ? styles.collapsed : ''} ${isMobileOpen ? styles.mobileOpen : ''}`}
+                className={`${styles.sidebar} ${isAdmin ? styles.adminSidebar : ''} ${(isCollapsed && !isMobileOpen) ? styles.collapsed : ''} ${isMobileOpen ? styles.mobileOpen : ''}`}
                 style={{ transition: !isMounted ? 'none' : undefined }}
             >
                 <div className={styles.header}>
-                    {(!isCollapsed || isMobileOpen) && <h1 className={styles.logoText}>{isAdmin ? 'Keesha Admin' : 'Keesha'}</h1>}
+                    {(!isCollapsed || isMobileOpen) && <h1 className={styles.logoText} style={isAdmin ? { fontSize: '1rem' } : undefined}>{isAdmin ? 'Keesha Admin' : 'Keesha'}</h1>}
                     <button onClick={toggleSidebar} className={styles.toggleBtn}>
                         {isMobileOpen ? <X size={20} /> : <Menu size={20} />}
                     </button>

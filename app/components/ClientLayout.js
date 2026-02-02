@@ -63,6 +63,7 @@ export default function ClientLayout({ children, userProfile }) {
 
     const isAuthPage = pathname === '/login' || pathname === '/signup' || pathname === '/admin/login';
     const isLoanDetailPage = pathname?.startsWith('/loan/');
+    const isAdminUsersPage = pathname === '/admin/users';
 
     const toggleSidebar = () => {
         if (window.innerWidth <= 768) {
@@ -191,7 +192,7 @@ export default function ClientLayout({ children, userProfile }) {
                 onNavigateStart={handleNavigateStart}
             />
             <div
-                className={`layout-main ${isCollapsed ? 'layout-collapsed' : ''} ${isLoanDetailPage ? 'layout-no-padding' : ''}`}
+                className={`layout-main ${isCollapsed ? 'layout-collapsed' : ''} ${isLoanDetailPage || isAdminUsersPage ? 'layout-no-padding' : ''}`}
                 style={!isMounted ? { transition: 'none' } : undefined}
             >
                 <div>

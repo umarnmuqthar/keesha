@@ -12,6 +12,47 @@
   transition: transform 0.3s ease, width 0.3s ease;
 }
 
+.adminSidebar {
+  background-color: #1a1a1a;
+  border-right: 1px solid #333;
+}
+
+.adminSidebar .logoText {
+  color: #ffffff;
+}
+
+.adminSidebar .navItem {
+  color: #a1a1aa;
+}
+
+.adminSidebar .navItem:hover {
+  background-color: #262626;
+  color: #ffffff;
+}
+
+.adminSidebar .navItem.active {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.adminSidebar .toggleBtn {
+  color: #a1a1aa;
+  border-color: #333;
+}
+
+.adminSidebar .toggleBtn:hover {
+  background-color: #262626;
+  color: #ffffff;
+}
+
+.adminSidebar .profileName {
+  color: #ffffff !important;
+}
+
+.adminSidebar .profileEmail {
+  color: #a1a1aa;
+}
+
 .sidebar.collapsed {
   width: 72px;
 }

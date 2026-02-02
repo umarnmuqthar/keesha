@@ -13,7 +13,8 @@ const ADMIN_EMAIL = 'admin@keesha.money';
  */
 async function verifyAdmin() {
     const session = await getSession();
-    if (!session || session.email !== ADMIN_EMAIL) {
+    // Check for custom claim OR hardcoded email (as backup/during transition)
+    if (!session || (!session.admin && session.email !== ADMIN_EMAIL)) {
         return false;
     }
     return true;
