@@ -32,6 +32,13 @@
 
 @media (max-width: 640px) {
     .button {
-        padding: 8px 16px;
+        padding: 10px;
+        border-radius: 50%;
+        aspect-ratio: 1;
+        justify-content: center;
+    }
+
+    .label {
+        display: none;
     }
 }
