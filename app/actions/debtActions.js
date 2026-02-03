@@ -1,9 +1,8 @@
 'use server';
 
-
 import { getSession } from './authActions';
-import { getFirestore } from 'firebase-admin/firestore';
-import { db } from '@/lib/firebase-admin';
+// import { getFirestore } from 'firebase-admin/firestore';
+// import { db } from '@/lib/firebase-admin';
 import { revalidatePath } from 'next/cache';
 
 /**
@@ -12,6 +11,7 @@ import { revalidatePath } from 'next/cache';
 export async function addDebtAccount(formData) {
     const session = await getSession();
     if (!session) return { error: 'Unauthorized' };
+    const { db } = await import('@/lib/firebase-admin');
 
     const name = formData.get('name');
     const type = formData.get('type') || 'Friend'; // Friend, Family, Business, etc.
@@ -40,6 +40,7 @@ export async function addDebtAccount(formData) {
  * Add a transaction entry (GIVE or GOT)
  */
 export async function addDebtEntry(accountId, formData) {
+    const { db } = await import('@/lib/firebase-admin');
     const amount = parseFloat(formData.get('amount'));
     const description = formData.get('description');
     const type = formData.get('type'); // GIVE or GOT
@@ -79,6 +80,7 @@ export async function addDebtEntry(accountId, formData) {
  * Settle the entire account balance
  */
 export async function settleDebtAccount(accountId, currentBalance) {
+    const { db } = await import('@/lib/firebase-admin');
     if (Math.abs(currentBalance) < 0.01) return { error: 'Balance is already zero' };
 
     const type = currentBalance > 0 ? 'GOT' : 'GIVE'; // If they owe you (pos), you get money to settle.
@@ -105,6 +107,7 @@ export async function settleDebtAccount(accountId, currentBalance) {
  * Update reminder date for an account
  */
 export async function updateDebtReminder(accountId, reminderDate) {
+    const { db } = await import('@/lib/firebase-admin');
     await db.collection('debt_accounts').doc(accountId).update({
         reminderDate
     });
@@ -116,6 +119,7 @@ export async function updateDebtReminder(accountId, reminderDate) {
  * Update a debt account's basic info
  */
 export async function updateDebtAccount(accountId, formData) {
+    const { db } = await import('@/lib/firebase-admin');
     const name = formData.get('name');
     const type = formData.get('type');
 
@@ -136,6 +140,7 @@ export async function updateDebtAccount(accountId, formData) {
  * Delete a debt account and all its transactions
  */
 export async function deleteDebtAccount(accountId) {
+    const { db } = await import('@/lib/firebase-admin');
     const accountRef = db.collection('debt_accounts').doc(accountId);
 
     // Delete transactions first

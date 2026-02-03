@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './Sidebar.module.css';
 import { ChevronLeft, ChevronRight, User, LogOut, Menu, X, LayoutDashboard, Repeat, CalendarDays, TrendingDown, CreditCard, PiggyBank, Banknote, Receipt, Users } from 'lucide-react';
-import { logout } from '../actions/authActions';
+import { logoutAdmin, logoutUser } from '../actions/authActions';
 
 import { useState, useEffect } from 'react';
 
@@ -49,10 +49,10 @@ export default function Sidebar({ isCollapsed, isMobileOpen, toggleSidebar, user
                         let isActive = pathname === item.path;
 
                         // Handle internal/detail pages
-                        if (item.path === '/subscriptions' && pathname.startsWith('/subscription')) isActive = true;
-                        if (item.path === '/loans' && pathname.startsWith('/loan')) isActive = true;
+                        if (item.path === '/subscriptions' && pathname.startsWith('/subscriptions')) isActive = true;
+                        if (item.path === '/loans' && pathname.startsWith('/loans')) isActive = true;
                         if (item.path === '/debt' && pathname.startsWith('/debt')) isActive = true;
-                        if (item.path === '/creditcards' && pathname.startsWith('/creditcard')) isActive = true;
+                        if (item.path === '/creditcards' && pathname.startsWith('/creditcards')) isActive = true;
 
                         const isPending = pendingPath === item.path;
 
@@ -79,7 +79,7 @@ export default function Sidebar({ isCollapsed, isMobileOpen, toggleSidebar, user
                 <div className={styles.footer}>
                     {isAdmin ? (
                         <button
-                            onClick={() => logout()}
+                            onClick={() => logoutAdmin()}
                             className={`${styles.profileSection} w-full text-left`}
                             style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}
                         >
@@ -89,7 +89,6 @@ export default function Sidebar({ isCollapsed, isMobileOpen, toggleSidebar, user
                             {!isCollapsed || isMobileOpen ? (
                                 <div className={styles.profileInfo}>
                                     <p className={styles.profileName} style={{ color: '#ef4444' }}>Logout</p>
-                                    <p className={styles.profileEmail}>Sign out of Admin</p>
                                 </div>
                             ) : null}
                         </button>

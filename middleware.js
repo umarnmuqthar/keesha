@@ -1,37 +1,47 @@
 import { NextResponse } from 'next/server';
 
 export async function middleware(request) {
-    const session = request.cookies.get('session')?.value;
+    const adminSession = request.cookies.get('session_admin')?.value;
+    const userSession = request.cookies.get('session_user')?.value;
     const { pathname } = request.nextUrl;
 
-    // Public routes that don't require authentication
-    const publicPaths = ['/login', '/signup'];
-    const isPublicPath = publicPaths.some(path => pathname.startsWith(path));
-
-    // Special handling for admin routes
+    // 1. Admin Handling
+    // NOTE: This middleware only checks for the existence of the cookie.
+    // It does NOT verify the signature or revocation status (requires Admin SDK).
+    // Secure pages MUST verify the session again in Server Actions or Page Components.
     if (pathname.startsWith('/admin')) {
-        // If unauthenticated and not on login page, go to admin/login
-        if (!session && pathname !== '/admin/login') {
-            return NextResponse.redirect(new URL('/admin/login', request.url));
-        }
-        // If authenticated and on login page, go to admin dashboard
-        // Note: We don't verify strict admin role here (cookie only), page does that.
-        // But preventing login page access if logged in is good UX.
-        // If authenticated and on login page, we allow access so they can switch accounts or see "Not Authorized" message.
-        // Previously: return NextResponse.redirect(new URL('/admin', request.url));
-        if (session && pathname === '/admin/login') {
+        // Admin Login Page
+        if (pathname === '/admin/login') {
+            if (adminSession) {
+                return NextResponse.redirect(new URL('/admin', request.url));
+            }
             return NextResponse.next();
         }
+
+        // Protected Admin Routes
+        if (!adminSession) {
+            return NextResponse.redirect(new URL('/admin/login', request.url));
+        }
+
         return NextResponse.next();
     }
 
-    // 1. Redirect authenticated users away from login/signup
-    if (session && isPublicPath) {
+    // 2. User Handling
+    const publicUserPaths = [
+        '/login',
+        '/signup',
+        '/forgot-password',
+        '/reset-password'
+    ];
+    const isPublicUserPath = publicUserPaths.some(path => pathname.startsWith(path));
+
+    // Authenticated User on Public Page -> Redirect to Dashboard
+    if (userSession && isPublicUserPath) {
         return NextResponse.redirect(new URL('/', request.url));
     }
 
-    // 2. Redirect unauthenticated users to login
-    if (!session && !isPublicPath) {
+    // Unauthenticated User on Protected Page -> Redirect to Login
+    if (!userSession && !isPublicUserPath) {
         // Exclude internal nextjs paths and static assets
         if (
             pathname.startsWith('/_next') ||

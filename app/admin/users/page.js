@@ -1,19 +1,12 @@
 import { getAdminUsers } from '@/app/actions/adminActions';
-import { getSession, logout } from '@/app/actions/authActions';
+import { getAdminSession, logoutAdmin } from '@/app/actions/authActions';
 import { redirect } from 'next/navigation';
 
 export default async function AdminDashboard() {
-    const session = await getSession();
+    const session = await getAdminSession();
 
     // Strict Admin Check
-    // Strict Admin Check
-    const { getAdminUsers } = await import('@/app/actions/adminActions');
-    // We can't easily call verifyAdmin directly here since it's not exported, 
-    // but getAdminUsers calls it internally. 
-    // Ideally we should export verifyAdmin or use session check here.
-
-    // Let's rely on the session check matching verifyAdmin logic
-    if (!session || (!session.admin && session.email !== 'admin@keesha.money')) {
+    if (!session || !session.email) {
         redirect('/admin/login');
     }
 
@@ -26,13 +19,6 @@ export default async function AdminDashboard() {
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
                         <p className="text-gray-500">Total Users: {users ? users.length : 0}</p>
-                    </div>
-                    <div>
-                        <form action={logout}>
-                            <button className="px-4 py-2 bg-black border border-black rounded-lg text-sm font-medium text-white hover:bg-gray-800 transition-colors">
-                                Logout
-                            </button>
-                        </form>
                     </div>
                 </div>
 

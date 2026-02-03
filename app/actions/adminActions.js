@@ -1,10 +1,5 @@
-import { db, auth } from '@/lib/firebase-admin';
 import { getSession } from './authActions';
-import { redirect } from 'next/navigation';
-
-// Initialization moved to lib/firebase-admin.js
-
-// Auth and DB are imported from lib
+// import { db, auth } from '@/lib/firebase-admin'; // REMOVED
 
 const ADMIN_EMAIL = 'admin@keesha.money';
 
@@ -13,8 +8,8 @@ const ADMIN_EMAIL = 'admin@keesha.money';
  */
 async function verifyAdmin() {
     const session = await getSession();
-    // Check for custom claim OR hardcoded email (as backup/during transition)
-    if (!session || (!session.admin && session.email !== ADMIN_EMAIL)) {
+    // Check for custom claim
+    if (!session || (!session.admin && session.role !== 'admin')) {
         return false;
     }
     return true;
@@ -30,6 +25,7 @@ export async function getAdminUsers() {
     }
 
     try {
+        const { auth } = await import('@/lib/firebase-admin');
         // List batch of users, 1000 at a time.
         const listUsersResult = await auth.listUsers(1000);
         const users = listUsersResult.users.map(userRecord => ({
@@ -55,6 +51,8 @@ export async function getAdminUsers() {
  */
 export async function seedAdminUser(password) {
     try {
+        const { auth, db } = await import('@/lib/firebase-admin');
+
         // Check if admin exists
         try {
             await auth.getUserByEmail(ADMIN_EMAIL);
@@ -67,14 +65,17 @@ export async function seedAdminUser(password) {
         }
 
         // Create admin user
-        await auth.createUser({
+        const userRecord = await auth.createUser({
             email: ADMIN_EMAIL,
             password: password,
             displayName: 'Admin',
         });
 
-        // Also create in Firestore if needed, though primarily Auth is used for login
-        await db.collection('users').doc(ADMIN_EMAIL).set({
+        // Set custom admin claims for role-based access
+        await auth.setCustomUserClaims(userRecord.uid, { admin: true, role: 'admin' });
+
+        // Also create in Firestore if needed for profile data
+        await db.collection('users').doc(userRecord.uid).set({
             email: ADMIN_EMAIL,
             role: 'admin',
             createdAt: new Date()
@@ -83,6 +84,21 @@ export async function seedAdminUser(password) {
         return { success: true, message: 'Admin created successfully' };
     } catch (error) {
         console.error('Error seeding admin:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+/**
+ * Set custom admin claims for the existing admin user
+ */
+export async function setAdminClaimsForCurrentAdmin() {
+    try {
+        const { auth } = await import('@/lib/firebase-admin');
+        const userRecord = await auth.getUserByEmail(ADMIN_EMAIL);
+        await auth.setCustomUserClaims(userRecord.uid, { admin: true, role: 'admin' });
+        return { success: true, message: 'Admin claims set successfully' };
+    } catch (error) {
+        console.error('Error setting admin claims:', error);
         return { success: false, error: error.message };
     }
 }

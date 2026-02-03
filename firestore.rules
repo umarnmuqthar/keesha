@@ -1,0 +1,93 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function unchangedUserId() {
+      return request.resource.data.userId == resource.data.userId;
+    }
+
+    // Users collection: user can read/write their own doc; admins can access all
+    match /users/{userId} {
+      allow read: if isAdmin() || isOwner(userId);
+      allow create: if isAdmin() || isOwner(userId);
+      allow update: if isAdmin() || isOwner(userId);
+      allow delete: if isAdmin();
+    }
+
+    // Subscriptions + Ledger
+    match /subscriptions/{subId} {
+      allow create: if isAdmin() || (isSignedIn() && request.resource.data.userId == request.auth.uid);
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow update: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid && unchangedUserId());
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+
+      match /ledger/{ledgerId} {
+        allow read, write: if isAdmin() ||
+          (isSignedIn() && get(/databases/$(database)/documents/subscriptions/$(subId)).data.userId == request.auth.uid);
+      }
+    }
+
+    // Loans + Payments
+    match /loans/{loanId} {
+      allow create: if isAdmin() || (isSignedIn() && request.resource.data.userId == request.auth.uid);
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow update: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid && unchangedUserId());
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+
+      match /payments/{paymentId} {
+        allow read, write: if isAdmin() ||
+          (isSignedIn() && get(/databases/$(database)/documents/loans/$(loanId)).data.userId == request.auth.uid);
+      }
+    }
+
+    // Credit cards + Transactions
+    match /creditcards/{cardId} {
+      allow create: if isAdmin() || (isSignedIn() && request.resource.data.userId == request.auth.uid);
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow update: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid && unchangedUserId());
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+
+      match /transactions/{transactionId} {
+        allow read, write: if isAdmin() ||
+          (isSignedIn() && get(/databases/$(database)/documents/creditcards/$(cardId)).data.userId == request.auth.uid);
+      }
+    }
+
+    // Debt accounts + Transactions
+    match /debt_accounts/{accountId} {
+      allow create: if isAdmin() || (isSignedIn() && request.resource.data.userId == request.auth.uid);
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow update: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid && unchangedUserId());
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+
+      match /transactions/{transactionId} {
+        allow read, write: if isAdmin() ||
+          (isSignedIn() && get(/databases/$(database)/documents/debt_accounts/$(accountId)).data.userId == request.auth.uid);
+      }
+    }
+
+    // Block client access to OTP/rate-limit collections (server-only)
+    match /otp_verifications/{id} {
+      allow read, write: if false;
+    }
+    match /otp_rate_limits/{id} {
+      allow read, write: if false;
+    }
+    match /otp_verify_rate_limits/{id} {
+      allow read, write: if false;
+    }
+  }
+}

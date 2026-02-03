@@ -1,22 +1,23 @@
 
 'use server'
 
-import { db } from '../lib/firebase-admin'
+// import { db } from '../lib/firebase-admin'
 import { revalidatePath } from 'next/cache'
-import { getSession } from './actions/authActions'
+import { getUserSession } from './actions/authActions'
 
 export async function addSubscription(formData) {
-    const session = await getSession();
+    const session = await getUserSession();
     if (!session) return { success: false, message: 'Unauthorized' };
 
     const isFreeTrial = formData.get('isFreeTrial') === 'true';
 
     // Logic: Calculate Dates
     const rawStartDate = formData.get('startDate');
-    console.log('[DEBUG] Raw Start Date:', rawStartDate);
 
     const startDate = new Date(rawStartDate);
-    console.log('[DEBUG] Parsed Start Date:', startDate.toISOString());
+    if (isNaN(startDate.getTime())) {
+        return { success: false, message: 'Invalid start date provided.' };
+    }
 
     let nextRenewalDate = new Date(startDate);
     let trialEndDate = null;
@@ -58,6 +59,7 @@ export async function addSubscription(formData) {
     }
 
     try {
+        const { db } = await import('../lib/firebase-admin');
         const docRef = await db.collection('subscriptions').add(rawData);
 
         // Handle History Backfill
@@ -129,6 +131,7 @@ export async function addSubscription(formData) {
 
 export async function updateSubscription(id, formData) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         const data = {
             name: formData.get('name'),
             billingCycle: formData.get('billingCycle'),
@@ -146,7 +149,7 @@ export async function updateSubscription(id, formData) {
         await db.collection('subscriptions').doc(id).update(data);
 
         revalidatePath('/');
-        revalidatePath(`/subscription/${id}`);
+        revalidatePath(`/subscriptions/${id}`);
         return { success: true, message: 'Subscription updated successfully' };
     } catch (e) {
         console.error('Update Subscription Error:', e);
@@ -156,6 +159,7 @@ export async function updateSubscription(id, formData) {
 
 export async function updateSubscriptionStatus(id, newStatus, effectiveDate) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         if (newStatus === 'Active') {
             // Reactivation Logic: Reset dates based on effective date (New Start Date)
             const startDate = new Date(effectiveDate);
@@ -184,7 +188,7 @@ export async function updateSubscriptionStatus(id, newStatus, effectiveDate) {
         });
 
         revalidatePath('/');
-        revalidatePath(`/subscription/${id}`);
+        revalidatePath(`/subscriptions/${id}`);
         return { success: true };
     } catch (e) {
         console.error('Update Status Error:', e);
@@ -194,20 +198,36 @@ export async function updateSubscriptionStatus(id, newStatus, effectiveDate) {
 
 export async function deleteSubscription(id) {
     try {
-        console.log('--- DELETE ACTION CALLED ---');
-        console.log('Received ID:', id);
+        const { db } = await import('../lib/firebase-admin');
 
-        // Recursive delete is handled by CLI usually, but for code we must delete subcollections manually?
-        // Actually, if we just delete the parent doc, the subcollections become orphaned but don't cost reads (though they take space).
+        // Security Check: Verify Ownership
+        const session = await getUserSession();
+        if (!session) return { success: false, message: 'Unauthorized' };
+
+        const subDoc = await db.collection('subscriptions').doc(id).get();
+        if (!subDoc.exists) return { success: false, message: 'Subscription not found' };
+
+        if (subDoc.data().userId !== session.uid) {
+            return { success: false, message: 'Forbidden' };
+        }
         // For this scale, we can just delete the doc. The UI won't query orphaned subcollections.
         // Better: delete ledger then doc.
 
         const ledgerSnapshot = await db.collection('subscriptions').doc(id).collection('ledger').get();
-        const batch = db.batch();
-        ledgerSnapshot.docs.forEach((doc) => {
-            batch.delete(doc.ref);
-        });
-        await batch.commit();
+        // Batch delete explicitly limited to 500 ops
+        const MAX_BATCH_SIZE = 500;
+        const chunks = [];
+        for (let i = 0; i < ledgerSnapshot.docs.length; i += MAX_BATCH_SIZE) {
+            chunks.push(ledgerSnapshot.docs.slice(i, i + MAX_BATCH_SIZE));
+        }
+
+        for (const chunk of chunks) {
+            const batch = db.batch();
+            chunk.forEach((doc) => {
+                batch.delete(doc.ref);
+            });
+            await batch.commit();
+        }
 
         await db.collection('subscriptions').doc(id).delete();
 
@@ -221,15 +241,22 @@ export async function deleteSubscription(id) {
 
 export async function updateProfile(formData) {
     try {
-        const session = await getSession();
+        const session = await getUserSession();
         if (!session) return { success: false, message: 'Not authenticated' };
+        const { db } = await import('../lib/firebase-admin');
+        const { auth } = await import('../lib/firebase-admin');
 
-        const data = {
-            name: formData.get('name'),
-            email: formData.get('email'),
-            phone: formData.get('phone'),
-            image: formData.get('image'),
-        };
+        const data = {};
+        if (formData.has('name')) data.name = formData.get('name');
+        if (formData.has('email')) data.email = formData.get('email');
+        if (formData.has('phone')) data.phone = formData.get('phone');
+        if (formData.has('image')) data.image = formData.get('image');
+        if (formData.has('dob')) data.dob = formData.get('dob');
+        if (formData.has('gender')) data.gender = formData.get('gender');
+
+        if (data.email && data.email !== session.email) {
+            await auth.updateUser(session.uid, { email: data.email });
+        }
 
         await db.collection('users').doc(session.uid).set(data, { merge: true });
 
@@ -243,6 +270,7 @@ export async function updateProfile(formData) {
 
 export async function recordPayment(subscriptionId, amount, date) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         // 1. Add to Ledger
         await db.collection('subscriptions').doc(subscriptionId).collection('ledger').add({
             amount: parseFloat(amount),
@@ -266,7 +294,7 @@ export async function recordPayment(subscriptionId, amount, date) {
         }
 
         revalidatePath('/');
-        revalidatePath(`/subscription/${subscriptionId}`);
+        revalidatePath(`/subscriptions/${subscriptionId}`);
         return { success: true };
     } catch (e) {
         console.error('Record Payment Error:', e);
@@ -276,6 +304,7 @@ export async function recordPayment(subscriptionId, amount, date) {
 
 export async function addManualPayment(subscriptionId, amount, date) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         await db.collection('subscriptions').doc(subscriptionId).collection('ledger').add({
             amount: parseFloat(amount),
             type: 'Payment',
@@ -283,7 +312,7 @@ export async function addManualPayment(subscriptionId, amount, date) {
         });
 
         revalidatePath('/');
-        revalidatePath(`/subscription/${subscriptionId}`);
+        revalidatePath(`/subscriptions/${subscriptionId}`);
         return { success: true };
     } catch (e) {
         console.error('Manual Payment Error:', e);
@@ -293,10 +322,11 @@ export async function addManualPayment(subscriptionId, amount, date) {
 
 export async function deletePaymentEntry(subscriptionId, ledgerId) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         await db.collection('subscriptions').doc(subscriptionId).collection('ledger').doc(ledgerId).delete();
 
         revalidatePath('/');
-        revalidatePath(`/subscription/${subscriptionId}`);
+        revalidatePath(`/subscriptions/${subscriptionId}`);
         return { success: true };
     } catch (e) {
         console.error('Delete Payment Error:', e);
@@ -306,13 +336,14 @@ export async function deletePaymentEntry(subscriptionId, ledgerId) {
 
 export async function updatePaymentEntry(subscriptionId, ledgerId, amount, date) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         await db.collection('subscriptions').doc(subscriptionId).collection('ledger').doc(ledgerId).update({
             amount: parseFloat(amount),
             date: new Date(date).toISOString()
         });
 
         revalidatePath('/');
-        revalidatePath(`/subscription/${subscriptionId}`);
+        revalidatePath(`/subscriptions/${subscriptionId}`);
         return { success: true };
     } catch (e) {
         console.error('Update Payment Error:', e);
@@ -322,6 +353,7 @@ export async function updatePaymentEntry(subscriptionId, ledgerId, amount, date)
 
 export async function addBulkPayments(subscriptionId, amount, dates) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         const batch = db.batch();
         const subRef = db.collection('subscriptions').doc(subscriptionId);
 
@@ -337,7 +369,7 @@ export async function addBulkPayments(subscriptionId, amount, dates) {
         await batch.commit();
 
         revalidatePath('/');
-        revalidatePath(`/subscription/${subscriptionId}`);
+        revalidatePath(`/subscriptions/${subscriptionId}`);
         return { success: true };
     } catch (e) {
         console.error('Bulk Pay Error:', e);
@@ -347,7 +379,7 @@ export async function addBulkPayments(subscriptionId, amount, dates) {
 
 export async function addLoan(formData) {
     try {
-        const session = await getSession();
+        const session = await getUserSession();
         if (!session) return { success: false, message: 'Unauthorized' };
 
         const rawData = {
@@ -370,6 +402,7 @@ export async function addLoan(formData) {
             createdAt: new Date().toISOString()
         };
 
+        const { db } = await import('../lib/firebase-admin');
         const docRef = await db.collection('loans').add(rawData);
 
         // Sync history to payments subcollection
@@ -398,6 +431,7 @@ export async function addLoan(formData) {
 export async function toggleLoanPayment(loanId, monthYear, isPaid) {
     // monthYear format: YYYY-MM or specific date tag
     try {
+        const { db } = await import('../lib/firebase-admin');
         const paymentRef = db.collection('loans').doc(loanId).collection('payments').doc(monthYear);
 
         if (isPaid) {
@@ -412,7 +446,7 @@ export async function toggleLoanPayment(loanId, monthYear, isPaid) {
         await checkAndAutoCloseLoan(loanId);
 
         revalidatePath('/loans');
-        revalidatePath(`/loan/${loanId}`);
+        revalidatePath(`/loans/${loanId}`);
         return { success: true };
     } catch (e) {
         console.error('Toggle Loan Payment Error:', e);
@@ -422,6 +456,7 @@ export async function toggleLoanPayment(loanId, monthYear, isPaid) {
 
 export async function updateLoanPayment(loanId, paymentDate, data) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         const paymentRef = db.collection('loans').doc(loanId).collection('payments').doc(paymentDate);
 
         // If the date changed, we need to delete the old document and create a new one
@@ -446,7 +481,7 @@ export async function updateLoanPayment(loanId, paymentDate, data) {
         }
 
         revalidatePath('/loans');
-        revalidatePath(`/loan/${loanId}`);
+        revalidatePath(`/loans/${loanId}`);
         return { success: true };
     } catch (e) {
         console.error('Update Loan Payment Error:', e);
@@ -456,12 +491,13 @@ export async function updateLoanPayment(loanId, paymentDate, data) {
 
 export async function deleteLoanPayment(loanId, paymentDate) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         await db.collection('loans').doc(loanId).collection('payments').doc(paymentDate).delete();
 
         await checkAndAutoCloseLoan(loanId);
 
         revalidatePath('/loans');
-        revalidatePath(`/loan/${loanId}`);
+        revalidatePath(`/loans/${loanId}`);
         return { success: true };
     } catch (e) {
         console.error('Delete Loan Payment Error:', e);
@@ -471,6 +507,7 @@ export async function deleteLoanPayment(loanId, paymentDate) {
 
 async function checkAndAutoCloseLoan(loanId) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         const loanDoc = await db.collection('loans').doc(loanId).get();
         if (!loanDoc.exists) return;
 
@@ -496,6 +533,7 @@ async function checkAndAutoCloseLoan(loanId) {
 
 export async function updateLoan(id, formData) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         const data = {
             name: formData.get('name'),
             loanAmount: parseFloat(formData.get('loanAmount') || 0),
@@ -535,7 +573,7 @@ export async function updateLoan(id, formData) {
         }
 
         revalidatePath('/loans');
-        revalidatePath(`/loan/${id}`);
+        revalidatePath(`/loans/${id}`);
         return { success: true, message: 'Loan updated successfully' };
     } catch (e) {
         console.error('Update Loan Error:', e);
@@ -545,6 +583,15 @@ export async function updateLoan(id, formData) {
 
 export async function deleteLoan(id) {
     try {
+        const { db } = await import('../lib/firebase-admin');
+        const session = await getUserSession();
+        if (!session) return { success: false, message: 'Unauthorized' };
+
+        // Security Check
+        const loanDoc = await db.collection('loans').doc(id).get();
+        if (!loanDoc.exists) return { success: false, message: 'Loan not found' };
+        if (loanDoc.data().userId !== session.uid) return { success: false, message: 'Forbidden' };
+
         // Delete payments subcollection first
         const paymentsSnapshot = await db.collection('loans').doc(id).collection('payments').get();
         const batch = db.batch();
@@ -564,8 +611,9 @@ export async function deleteLoan(id) {
 }
 export async function addCreditCard(formData) {
     try {
-        const session = await getSession();
+        const session = await getUserSession();
         if (!session) return { success: false, message: 'Unauthorized' };
+        const { db } = await import('../lib/firebase-admin');
 
         const rawData = {
             userId: session.uid,
@@ -592,6 +640,7 @@ export async function addCreditCard(formData) {
 
 export async function updateCreditCard(id, formData) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         const data = {
             name: formData.get('name'),
             expiry: formData.get('expiry'),
@@ -602,7 +651,7 @@ export async function updateCreditCard(id, formData) {
 
         await db.collection('creditcards').doc(id).update(data);
         revalidatePath('/creditcards');
-        revalidatePath(`/creditcard/${id}`);
+        revalidatePath(`/creditcards/${id}`);
         return { success: true, message: 'Card updated successfully' };
     } catch (e) {
         console.error('Update Card Error:', e);
@@ -612,6 +661,7 @@ export async function updateCreditCard(id, formData) {
 
 export async function deleteCreditCard(id) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         const txSnapshot = await db.collection('creditcards').doc(id).collection('transactions').get();
         const batch = db.batch();
         txSnapshot.docs.forEach((doc) => batch.delete(doc.ref));
@@ -628,6 +678,7 @@ export async function deleteCreditCard(id) {
 
 export async function addCardTransaction(cardId, formData) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         const type = formData.get('type'); // 'Expense' or 'Payment'
         const amount = parseFloat(formData.get('amount') || 0);
         const date = formData.get('date') || new Date().toISOString();
@@ -665,7 +716,7 @@ export async function addCardTransaction(cardId, formData) {
         });
 
         revalidatePath('/creditcards');
-        revalidatePath(`/creditcard/${cardId}`);
+        revalidatePath(`/creditcards/${cardId}`);
         return { success: true };
     } catch (e) {
         console.error('Add Card Transaction Error:', e);
@@ -675,6 +726,7 @@ export async function addCardTransaction(cardId, formData) {
 
 export async function deleteCardTransaction(cardId, transactionId) {
     try {
+        const { db } = await import('../lib/firebase-admin');
         const cardRef = db.collection('creditcards').doc(cardId);
         const txRef = cardRef.collection('transactions').doc(transactionId);
 
@@ -704,7 +756,7 @@ export async function deleteCardTransaction(cardId, transactionId) {
         });
 
         revalidatePath('/creditcards');
-        revalidatePath(`/creditcard/${cardId}`);
+        revalidatePath(`/creditcards/${cardId}`);
         return { success: true };
     } catch (e) {
         console.error('Delete Transaction Error:', e);
@@ -714,9 +766,10 @@ export async function deleteCardTransaction(cardId, transactionId) {
 
 export async function getUserProfile() {
     try {
-        const session = await getSession();
+        const session = await getUserSession();
         if (!session) return null;
 
+        const { db } = await import('../lib/firebase-admin');
         const doc = await db.collection('users').doc(session.uid).get();
         if (doc.exists) {
             return { ...doc.data(), uid: doc.id };

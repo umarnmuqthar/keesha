@@ -2,11 +2,13 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { createPortal } from 'react-dom'
 import { addSubscription, updateSubscription } from '../actions'
 import styles from './AddSubscriptionModal.module.css'
 
 export default function AddSubscriptionModal({ isOpen, onClose, initialData = null, existingNames = [], style }) {
+    const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [nameError, setNameError] = useState('');
     const [subName, setSubName] = useState(initialData?.name || '');
@@ -135,7 +137,7 @@ export default function AddSubscriptionModal({ isOpen, onClose, initialData = nu
         setIsSubmitting(false)
         if (result.success) {
             onClose()
-            if (isEditMode) window.location.reload();
+            if (isEditMode) router.refresh();
         } else {
             alert(result.message)
         }

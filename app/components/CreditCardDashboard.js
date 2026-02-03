@@ -5,6 +5,7 @@ import { Plus, CreditCard as CreditCardIcon } from 'lucide-react';
 import CreditCardItem from './CreditCardItem';
 import AddCreditCardModal from './AddCreditCardModal';
 import PageHeaderActions from './PageHeaderActions';
+import styles from './CreditCardDashboard.module.css';
 
 export default function CreditCardDashboard({ cards = [] }) {
     const [isModalOpen, setIsModalOpen] = useState(false);

@@ -128,4 +128,3 @@ export default function DebtDashboard({ initialAccounts = [] }) {
         </div>
     );
 }
-

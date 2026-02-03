@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+import { Pencil } from 'lucide-react';
 import Cropper from 'react-easy-crop';
 import styles from './ProfileImageUploader.module.css';
 import { storage } from '../lib/firebase';
@@ -99,8 +100,8 @@ export default function ProfileImageUploader({ currentImage, onUploadComplete, u
                         <span>📸</span>
                     </div>
                 )}
-                <label className={styles.uploadBtn}>
-                    Edit Photo
+                <label className={styles.uploadBtn} aria-label="Edit photo">
+                    <Pencil size={14} />
                     <input type="file" accept="image/*" onChange={onFileChange} hidden />
                 </label>
             </div>

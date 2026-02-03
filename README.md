@@ -69,6 +69,15 @@ A modern, intuitive personal finance application designed to help you track subs
 
    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Firestore Rules Deployment
+We keep Firestore rules in `firestore.rules` for version control. To deploy:
+
+```bash
+firebase deploy --only firestore:rules
+```
+
+This will overwrite the rules currently set in the Firebase Console.
+
 ## 📦 Building for Production
 
 To create an optimized production build:

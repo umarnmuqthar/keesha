@@ -112,7 +112,7 @@ export default function KeeshaDashboard({ subscriptions: initialSubscriptions = 
                         <div
                             key={sub.id}
                             className={styles.card}
-                            onClick={() => router.push(`/subscription/${sub.id}`)}
+                            onClick={() => router.push(`/subscriptions/${sub.id}`)}
                         >
                             <div className={styles.cardContent}>
                                 <div className={styles.cardHeader}>

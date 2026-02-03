@@ -61,8 +61,13 @@ export default function ClientLayout({ children, userProfile }) {
         setIsMounted(true);
     }, []);
 
-    const isAuthPage = pathname === '/login' || pathname === '/signup' || pathname === '/admin/login';
-    const isLoanDetailPage = pathname?.startsWith('/loan/');
+    const isAuthPage =
+        pathname === '/login' ||
+        pathname === '/signup' ||
+        pathname === '/forgot-password' ||
+        pathname === '/reset-password' ||
+        pathname === '/admin/login';
+    const isLoanDetailPage = pathname?.startsWith('/loans/');
     const isAdminUsersPage = pathname === '/admin/users';
 
     const toggleSidebar = () => {
@@ -133,8 +138,8 @@ export default function ClientLayout({ children, userProfile }) {
 
                         {isProfilePopupOpen && (
                             <div className="mobile-profile-popup">
-                                <Link
-                                    href="/profile"
+                                    <Link
+                                        href="/profile"
                                     className="mobile-profile-details"
                                     onClick={() => setIsProfilePopupOpen(false)}
                                 >

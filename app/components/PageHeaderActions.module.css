@@ -8,6 +8,10 @@
     margin-bottom: 1.5rem;
 }
 
+.noBottomMargin {
+    margin-bottom: 0 !important;
+}
+
 .titleRow {
     display: flex;
     justify-content: space-between;

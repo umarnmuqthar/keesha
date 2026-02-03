@@ -77,7 +77,7 @@ export default function LoanDashboard({ initialLoans = [] }) {
                     const progress = Math.min((paidAmount / loan.totalPayable) * 100, 100);
 
                     return (
-                        <Link href={`/loan/${loan.id}`} key={loan.id} className={styles.card}>
+                        <Link href={`/loans/${loan.id}`} key={loan.id} className={styles.card}>
                             <div className={styles.cardContent}>
                                 <div className={styles.cardHeader}>
                                     <h3 className={styles.cardTitle}>{loan.name}</h3>

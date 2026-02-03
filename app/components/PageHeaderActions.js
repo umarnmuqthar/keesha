@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
-import ActionButton from './ActionButton';
+import ActionButton from './ui/ActionButton/ActionButton';
 import styles from './PageHeaderActions.module.css';
 
 export default function PageHeaderActions({
@@ -19,11 +19,14 @@ export default function PageHeaderActions({
     onTabChange,
     actionLabel,
     onAction,
+    actionIcon,
     trailingActions
 }) {
+    const hasBottomActions = onSearchChange || (tabs && tabs.length > 0) || trailingActions;
+
     return (
         <div className={styles.container}>
-            <div className={styles.headerTitleSection}>
+            <div className={`${styles.headerTitleSection} ${!hasBottomActions ? styles.noBottomMargin : ''}`}>
                 <div className={styles.titleRow}>
                     <div className={styles.titleContent}>
                         {backPath && (
@@ -50,46 +53,49 @@ export default function PageHeaderActions({
                         <ActionButton
                             label={actionLabel}
                             onClick={onAction}
+                            icon={actionIcon}
                         />
                     )}
                 </div>
                 {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
             </div>
 
-            <div className={styles.actionsBar}>
-                <div className={styles.searchSection}>
-                    {onSearchChange && (
-                        <div className={styles.searchWrapper}>
-                            <Search size={18} className={styles.searchIcon} />
-                            <input
-                                type="text"
-                                placeholder={searchPlaceholder}
-                                className={styles.searchInput}
-                                value={searchQuery}
-                                onChange={(e) => onSearchChange(e.target.value)}
-                            />
-                        </div>
-                    )}
-                </div>
+            {hasBottomActions && (
+                <div className={styles.actionsBar}>
+                    <div className={styles.searchSection}>
+                        {onSearchChange && (
+                            <div className={styles.searchWrapper}>
+                                <Search size={18} className={styles.searchIcon} />
+                                <input
+                                    type="text"
+                                    placeholder={searchPlaceholder}
+                                    className={styles.searchInput}
+                                    value={searchQuery}
+                                    onChange={(e) => onSearchChange(e.target.value)}
+                                />
+                            </div>
+                        )}
+                    </div>
 
-                <div className={styles.rightActions}>
-                    {tabs.length > 0 && (
-                        <div className={styles.tabs}>
-                            {tabs.map(tab => (
-                                <button
-                                    key={tab}
-                                    onClick={() => onTabChange(tab)}
-                                    className={`${styles.tabBtn} ${activeTab === tab ? styles.activeTab : ''}`}
-                                >
-                                    {tab}
-                                </button>
-                            ))}
-                        </div>
-                    )}
+                    <div className={styles.rightActions}>
+                        {tabs.length > 0 && (
+                            <div className={styles.tabs}>
+                                {tabs.map(tab => (
+                                    <button
+                                        key={tab}
+                                        onClick={() => onTabChange(tab)}
+                                        className={`${styles.tabBtn} ${activeTab === tab ? styles.activeTab : ''}`}
+                                    >
+                                        {tab}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
 
-                    {trailingActions}
+                        {trailingActions}
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

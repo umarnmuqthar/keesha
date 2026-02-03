@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import {
     calculateDaysUntilDue,
     calculateAmortizedMonthlyCost,
@@ -13,6 +14,7 @@ import { updateSubscriptionStatus, recordPayment, deleteSubscription, addManualP
 import DeleteConfirmModal from './DeleteConfirmModal';
 
 export default function SubscriptionDetails({ subscription }) {
+    const router = useRouter();
     // Manual Payment State
     const [manualPaymentModal, setManualPaymentModal] = React.useState({
         isOpen: false,
@@ -71,7 +73,7 @@ export default function SubscriptionDetails({ subscription }) {
             }
 
             if (result.success) {
-                window.location.reload();
+                router.refresh();
             } else {
                 alert('Failed to save payment');
             }
@@ -125,7 +127,7 @@ export default function SubscriptionDetails({ subscription }) {
             const result = await updateSubscriptionStatus(subscription.id, newStatus, effectiveDate);
 
             if (result.success) {
-                window.location.reload();
+                router.refresh();
             } else {
                 alert('Failed to update: ' + (result.message || 'Unknown error'));
             }
@@ -148,7 +150,7 @@ export default function SubscriptionDetails({ subscription }) {
             onConfirm: async () => {
                 try {
                     const result = await recordPayment(subscription.id, subscription.currentCost, new Date());
-                    if (result.success) window.location.reload();
+                    if (result.success) router.refresh();
                     else alert('Failed to record payment');
                 } catch (err) { console.error(err); }
                 closeConfirmModal();
@@ -164,7 +166,7 @@ export default function SubscriptionDetails({ subscription }) {
             onConfirm: async () => {
                 try {
                     const result = await deleteSubscription(subscription.id);
-                    if (result.success) window.location.href = '/subscriptions';
+                    if (result.success) router.push('/subscriptions');
                     else alert('Failed to delete');
                 } catch (err) { console.error(err); }
                 setDeleteModal(prev => ({ ...prev, isOpen: false }));
@@ -473,7 +475,7 @@ export default function SubscriptionDetails({ subscription }) {
                                                 onConfirm: async () => {
                                                     await deletePaymentEntry(subscription.id, tx.id);
                                                     setDeleteModal(prev => ({ ...prev, isOpen: false }));
-                                                    window.location.reload();
+                                                    router.refresh();
                                                 }
                                             });
                                         }}

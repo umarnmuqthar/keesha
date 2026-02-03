@@ -37,7 +37,7 @@ export default function CreditCardItem({ card }) {
     };
 
     return (
-        <Link href={`/creditcard/${id}`} className={styles.card}>
+        <Link href={`/creditcards/${id}`} className={styles.card}>
             <div className={styles.cardTop}>
                 <div className={styles.cardInfo}>
                     <h3 title={name}>{name}</h3>
