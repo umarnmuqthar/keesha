@@ -762,6 +762,12 @@
     white-space: nowrap;
 }
 
+.emailNotice {
+    font-size: 0.75rem;
+    color: var(--warning);
+    font-weight: 600;
+}
+
 .modalField {
     display: flex;
     flex-direction: column;

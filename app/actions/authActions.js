@@ -322,6 +322,7 @@ export async function verifyEmailChangeOtp(verificationId, code, newEmail) {
         if (!verificationId || !code || !newEmail) return { success: false, error: 'Invalid request.' };
 
         const { db } = await import('@/lib/firebase-admin');
+        const { auth } = await import('@/lib/firebase-admin');
         const ref = db.collection('otp_verifications').doc(verificationId);
         const snapshot = await ref.get();
 
@@ -376,6 +377,15 @@ export async function verifyEmailChangeOtp(verificationId, code, newEmail) {
         }
 
         await ref.delete();
+
+        // Update Auth email (unique enforcement happens here)
+        try {
+            await auth.updateUser(session.uid, { email: newEmail });
+        } catch (e) {
+            const msg = e?.errorInfo?.message || e?.message || 'Failed to update auth email.';
+            return { success: false, error: msg };
+        }
+
         await db.collection('users').doc(session.uid).set({ email: newEmail, isVerified: true }, { merge: true });
         revalidatePath('/', 'layout');
         return { success: true };

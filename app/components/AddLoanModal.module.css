@@ -310,6 +310,28 @@
     color: var(--text-primary);
 }
 
+.interestRateRow {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+}
+
+.interestRateValue {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+.interestRateSuffix {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
 .adviceBox {
     padding: 0.75rem;
     border-radius: var(--radius);
@@ -346,6 +368,35 @@
     width: 100%;
 }
 
+.dateDisplay {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: 100%;
+}
+
+.dateDisplay span {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    min-width: 72px;
+}
+
+.daySelect {
+    padding: 4px 6px;
+    font-size: 0.8125rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text-primary);
+    width: 100%;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239b9a97' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1rem;
+    padding-right: 2rem;
+}
+
 .scheduleDateInput {
     padding: 4px 8px;
     font-size: 0.8125rem;
@@ -364,6 +415,11 @@
     font-weight: 500;
     margin-top: 0.2rem;
     display: block;
+}
+
+.requiredStar {
+    color: var(--danger);
+    margin-left: 0.15rem;
 }
 
 .immutableTypeContainer {

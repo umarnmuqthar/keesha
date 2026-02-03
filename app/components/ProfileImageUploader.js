@@ -4,8 +4,7 @@ import React, { useState, useCallback } from 'react';
 import { Pencil } from 'lucide-react';
 import Cropper from 'react-easy-crop';
 import styles from './ProfileImageUploader.module.css';
-import { storage } from '../lib/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getCloudinarySignature } from '@/app/actions';
 
 export default function ProfileImageUploader({ currentImage, onUploadComplete, userId }) {
     const [image, setImage] = useState(null);
@@ -60,10 +59,14 @@ export default function ProfileImageUploader({ currentImage, onUploadComplete, u
             pixelCrop.height
         );
 
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             canvas.toBlob((blob) => {
+                if (!blob) {
+                    reject(new Error('Image processing failed.'));
+                    return;
+                }
                 resolve(blob);
-            }, 'image/jpeg');
+            }, 'image/jpeg', 0.92);
         });
     };
 
@@ -73,19 +76,48 @@ export default function ProfileImageUploader({ currentImage, onUploadComplete, u
         setIsUploading(true);
         try {
             const croppedImageBlob = await getCroppedImg(image, croppedAreaPixels);
+            const transformation = 'q_auto,f_auto';
+            const signatureResult = await getCloudinarySignature(userId, transformation, {
+                overwrite: true,
+                invalidate: true
+            });
+            if (!signatureResult.success) {
+                throw new Error(signatureResult.error || 'Upload signature failed');
+            }
 
-            const reader = new FileReader();
-            reader.readAsDataURL(croppedImageBlob);
-            reader.onloadend = () => {
-                const base64data = reader.result;
-                onUploadComplete(base64data);
-                setShowCropper(false);
-                setImage(null);
-                setIsUploading(false);
-            };
+            const uploadData = new FormData();
+            uploadData.append('file', croppedImageBlob, 'profile.jpg');
+            uploadData.append('api_key', signatureResult.apiKey);
+            uploadData.append('timestamp', signatureResult.timestamp);
+            uploadData.append('signature', signatureResult.signature);
+            uploadData.append('folder', signatureResult.folder);
+            uploadData.append('transformation', signatureResult.transformation || transformation);
+            if (signatureResult.publicId) {
+                uploadData.append('public_id', signatureResult.publicId);
+                if (signatureResult.overwrite) uploadData.append('overwrite', signatureResult.overwrite);
+                if (signatureResult.invalidate) uploadData.append('invalidate', signatureResult.invalidate);
+            }
+
+            const uploadUrl = `https://api.cloudinary.com/v1_1/${signatureResult.cloudName}/image/upload`;
+            const response = await fetch(uploadUrl, {
+                method: 'POST',
+                body: uploadData
+            });
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result?.error?.message || 'Upload failed');
+            }
+
+            if (!result.secure_url) {
+                throw new Error('Upload succeeded but no URL was returned.');
+            }
+            onUploadComplete(result.secure_url);
+            setShowCropper(false);
+            setImage(null);
+            setIsUploading(false);
         } catch (error) {
-            console.error('Conversion failed:', error);
-            alert('Failed to process image');
+            console.error('Upload failed:', error);
+            alert(error.message || 'Failed to process image');
             setIsUploading(false);
         }
     };

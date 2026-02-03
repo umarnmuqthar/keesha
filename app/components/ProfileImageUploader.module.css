@@ -60,47 +60,48 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    /* Less intense overlay */
+    background: rgba(17, 17, 17, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 9999;
+    padding: 1.5rem;
 }
 
 .cropperModal {
-    background: white;
-    width: 90%;
-    max-width: 400px;
-    border-radius: var(--radius);
+    background: var(--surface);
+    width: 100%;
+    max-width: 440px;
+    border-radius: 20px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+    border: 1px solid var(--border);
 }
 
 .cropperHeader {
-    padding: 0.75rem;
+    padding: 1rem 1.25rem;
     border-bottom: 1px solid var(--border);
-    text-align: center;
+    text-align: left;
 }
 
 .cropperHeader h3 {
     margin: 0;
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 700;
     color: var(--text-primary);
 }
 
 .cropperContent {
     position: relative;
-    height: 300px;
+    height: 320px;
     background: #000;
 }
 
 .cropperControls {
-    padding: 1rem;
-    background: var(--sidebar-bg);
+    padding: 0.85rem 1.25rem;
+    background: #fafafa;
 }
 
 .zoomRange {
@@ -109,7 +110,7 @@
 }
 
 .cropperActions {
-    padding: 0.75rem;
+    padding: 0.9rem 1.25rem;
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
@@ -117,10 +118,10 @@
 }
 
 .cancelBtn {
-    padding: 4px 10px;
+    padding: 6px 12px;
     border-radius: var(--radius);
-    font-size: 0.8125rem;
-    font-weight: 500;
+    font-size: 0.8rem;
+    font-weight: 600;
     color: var(--text-secondary);
     background: transparent;
     border: 1px solid var(--border);
@@ -128,10 +129,10 @@
 }
 
 .saveBtn {
-    padding: 4px 10px;
+    padding: 6px 14px;
     border-radius: var(--radius);
-    font-size: 0.8125rem;
-    font-weight: 500;
+    font-size: 0.8rem;
+    font-weight: 600;
     color: white;
     background: var(--primary);
     border: none;

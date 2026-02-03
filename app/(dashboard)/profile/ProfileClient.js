@@ -27,6 +27,33 @@ export default function ProfileClient({ initialProfile }) {
     const formRef = useRef(null);
     const [isEditingName, setIsEditingName] = useState(false);
     const nameInputRef = useRef(null);
+    const emailChanged = (profile.email || '').trim().toLowerCase() !== (originalEmail || '').trim().toLowerCase();
+    const baselineProfile = useMemo(() => ({
+        name: initialProfile?.name || '',
+        email: (initialProfile?.email || '').trim().toLowerCase(),
+        phone: initialProfile?.phone || '',
+        dob: initialProfile?.dob ? initialProfile.dob.slice(0, 10) : '',
+        gender: initialProfile?.gender || '',
+        image: initialProfile?.image || initialProfile?.photoUrl || ''
+    }), [initialProfile]);
+
+    const normalizedProfile = useMemo(() => ({
+        name: profile?.name || '',
+        email: (profile?.email || '').trim().toLowerCase(),
+        phone: profile?.phone || '',
+        dob: profile?.dob ? profile.dob.slice(0, 10) : '',
+        gender: profile?.gender || '',
+        image: profile?.image || ''
+    }), [profile]);
+
+    const hasActualChanges = useMemo(() => {
+        return Object.keys(baselineProfile).some((key) => baselineProfile[key] !== normalizedProfile[key]);
+    }, [baselineProfile, normalizedProfile]);
+    const [validationErrors, setValidationErrors] = useState({
+        email: '',
+        phone: '',
+        dob: ''
+    });
     const verificationState = profile.isVerified === true
         ? 'verified'
         : profile.isVerified === false
@@ -86,6 +113,14 @@ export default function ProfileClient({ initialProfile }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (validationErrors.email || validationErrors.phone || validationErrors.dob) {
+            setMessage({ type: 'error', text: 'Please fix validation errors before saving.' });
+            return;
+        }
+        if (emailChanged) {
+            setMessage({ type: 'error', text: 'Verify your new email before saving changes.' });
+            return;
+        }
         setIsSubmitting(true);
         setMessage({ type: '', text: '' });
 
@@ -205,6 +240,7 @@ export default function ProfileClient({ initialProfile }) {
                 pendingFormDataRef.current = null;
             }
         } else {
+            setProfile(prev => ({ ...prev, email: originalEmail }));
             setVerificationError(result.error || 'Verification failed.');
         }
         setVerificationLoading(false);
@@ -302,12 +338,29 @@ export default function ProfileClient({ initialProfile }) {
                                         type="email"
                                         value={profile.email || ''}
                                         onChange={(e) => {
-                                            setProfile(prev => ({ ...prev, email: e.target.value }));
+                                            const value = e.target.value.trim().toLowerCase();
+                                            setProfile(prev => ({ ...prev, email: value }));
                                             setHasChanges(true);
+                                            const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                                            setValidationErrors(prev => ({
+                                                ...prev,
+                                                email: value && !valid ? 'Enter a valid email address.' : ''
+                                            }));
+                                        }}
+                                        onBlur={(e) => {
+                                            const normalized = e.target.value.trim().toLowerCase();
+                                            setProfile(prev => ({ ...prev, email: normalized }));
                                         }}
                                         placeholder="you@example.com"
                                         className={`${styles.metaInput} ${styles.emailInput}`}
+                                        required
                                     />
+                                    {emailChanged && (
+                                        <span className={styles.emailNotice}>Requires verification</span>
+                                    )}
+                                    {validationErrors.email && (
+                                        <span className={styles.errorNote}>{validationErrors.email}</span>
+                                    )}
                                 </div>
                             </div>
 
@@ -400,9 +453,22 @@ export default function ProfileClient({ initialProfile }) {
                                         type="tel"
                                         defaultValue={profile.phone}
                                         onChange={() => setHasChanges(true)}
+                                        onBlur={(e) => {
+                                            const digits = e.target.value.replace(/\D/g, '');
+                                            if (!digits) return;
+                                            if (digits.length === 10) {
+                                                e.target.value = digits;
+                                                setValidationErrors(prev => ({ ...prev, phone: '' }));
+                                            } else {
+                                                setValidationErrors(prev => ({ ...prev, phone: 'Phone must be 10 digits.' }));
+                                            }
+                                        }}
                                         placeholder="Add a phone number"
                                         className={styles.metaInput}
                                     />
+                                    {validationErrors.phone && (
+                                        <span className={styles.errorNote}>{validationErrors.phone}</span>
+                                    )}
                                 </div>
                                 <div className={styles.metaItem}>
                                     <span className={styles.metaLabel}>Date of Birth</span>
@@ -411,8 +477,37 @@ export default function ProfileClient({ initialProfile }) {
                                         type="date"
                                         defaultValue={profile.dob ? profile.dob.slice(0, 10) : ''}
                                         onChange={() => setHasChanges(true)}
+                                        onBlur={(e) => {
+                                            const value = e.target.value;
+                                            if (!value) return;
+                                            const dob = new Date(value);
+                                            if (Number.isNaN(dob.getTime())) {
+                                                setValidationErrors(prev => ({ ...prev, dob: 'Invalid date of birth.' }));
+                                                return;
+                                            }
+                                            const today = new Date();
+                                            const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                                            const dobDate = new Date(dob.getFullYear(), dob.getMonth(), dob.getDate());
+                                            if (dobDate > todayDate) {
+                                                setValidationErrors(prev => ({ ...prev, dob: 'Date of birth cannot be in the future.' }));
+                                                return;
+                                            }
+                                            let age = todayDate.getFullYear() - dobDate.getFullYear();
+                                            const m = todayDate.getMonth() - dobDate.getMonth();
+                                            if (m < 0 || (m === 0 && todayDate.getDate() < dobDate.getDate())) {
+                                                age--;
+                                            }
+                                            if (age < 13) {
+                                                setValidationErrors(prev => ({ ...prev, dob: 'You must be at least 13 years old.' }));
+                                                return;
+                                            }
+                                            setValidationErrors(prev => ({ ...prev, dob: '' }));
+                                        }}
                                         className={styles.metaInput}
                                     />
+                                    {validationErrors.dob && (
+                                        <span className={styles.errorNote}>{validationErrors.dob}</span>
+                                    )}
                                 </div>
                                 <div className={styles.metaItem}>
                                     <span className={styles.metaLabel}>Gender</span>
@@ -430,7 +525,7 @@ export default function ProfileClient({ initialProfile }) {
                                     </select>
                                 </div>
                             </div>
-                            {hasChanges && (
+                            {hasActualChanges && (
                                 <div className={styles.heroActions}>
                                     <button
                                         type="submit"
