@@ -6,6 +6,7 @@ import Link from 'next/link';
 import AddDebtModal from './AddDebtModal';
 import { User, Clock, ChevronRight, TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 import PageHeaderActions from './PageHeaderActions';
+import { CalendarCheck } from 'lucide-react';
 
 export default function DebtDashboard({ initialAccounts = [] }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,6 +42,11 @@ export default function DebtDashboard({ initialAccounts = [] }) {
 
     const totalToRecover = accounts.reduce((sum, curr) => curr.netBalance > 0 ? sum + curr.netBalance : sum, 0);
     const totalToPay = accounts.reduce((sum, curr) => curr.netBalance < 0 ? sum + Math.abs(curr.netBalance) : sum, 0);
+    const activeAccounts = accounts.filter(acc => (acc.status || 'Active') === 'Active');
+    const closedAccounts = accounts.filter(acc => (acc.status || 'Active') === 'Closed');
+    const largestBalance = accounts
+        .slice()
+        .sort((a, b) => Math.abs(b.netBalance || 0) - Math.abs(a.netBalance || 0))[0];
 
     return (
         <div className={styles.container}>
@@ -85,6 +91,49 @@ export default function DebtDashboard({ initialAccounts = [] }) {
                     </div>
                     <div className={`${styles.iconCircle} ${styles.payBg}`}>
                         <TrendingDown size={24} className={styles.payText} />
+                    </div>
+                </div>
+            </div>
+
+            <div className={styles.insightRow}>
+                <div className={styles.insightCard}>
+                    <div className={styles.insightHeader}>
+                        <span>Insights</span>
+                        <CalendarCheck size={16} />
+                    </div>
+                    <div className={styles.insightItems}>
+                        <div className={styles.insightItem}>
+                            <span className={styles.insightLabel}>Active accounts</span>
+                            <span className={styles.insightValue}>{activeAccounts.length}</span>
+                        </div>
+                        <div className={styles.insightItem}>
+                            <span className={styles.insightLabel}>Closed accounts</span>
+                            <span className={styles.insightValue}>{closedAccounts.length}</span>
+                        </div>
+                        <div className={styles.insightItem}>
+                            <span className={styles.insightLabel}>Largest balance</span>
+                            <span className={styles.insightValue}>{formatCurrency(largestBalance?.netBalance || 0)}</span>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.insightCard}>
+                    <div className={styles.insightHeader}>
+                        <span>Breakdown</span>
+                        <TrendingUp size={16} />
+                    </div>
+                    <div className={styles.insightItems}>
+                        <div className={styles.insightItem}>
+                            <span className={styles.insightLabel}>To recover</span>
+                            <span className={styles.insightValue}>{formatCurrency(totalToRecover)}</span>
+                        </div>
+                        <div className={styles.insightItem}>
+                            <span className={styles.insightLabel}>To pay</span>
+                            <span className={styles.insightValue}>{formatCurrency(totalToPay)}</span>
+                        </div>
+                        <div className={styles.insightItem}>
+                            <span className={styles.insightLabel}>Net balance</span>
+                            <span className={styles.insightValue}>{formatCurrency(totalToRecover - totalToPay)}</span>
+                        </div>
                     </div>
                 </div>
             </div>

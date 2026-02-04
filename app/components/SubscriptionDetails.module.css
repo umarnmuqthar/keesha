@@ -1,20 +1,19 @@
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    /* padding: 2rem; user requested removal */
+    padding: 0 1rem 2.5rem;
     color: var(--text-primary);
 }
 
-/* Back Link */
 .backLink {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     color: var(--text-secondary);
     text-decoration: none;
     font-size: 0.875rem;
-    font-weight: 500;
-    margin-bottom: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
     transition: color 0.2s;
 }
 
@@ -22,214 +21,173 @@
     color: var(--text-primary);
 }
 
-/* Header */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+.hero {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid #f3f4f6;
+    border-radius: 22px;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 1.4fr 0.9fr;
+    gap: 1.5rem;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
     margin-bottom: 1.5rem;
 }
 
-.headerLeft {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
+.heroContent {
+    position: relative;
+    z-index: 1;
 }
 
+.heroBadge {
+    background: #f3f4f6;
+    color: #6b7280;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.6rem;
+}
 
-
-.titleSection h1 {
-    font-size: 1.5rem;
+.heroTitle {
+    font-size: 1.6rem;
     font-weight: 700;
     margin: 0 0 0.25rem 0;
-    letter-spacing: -0.02em;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    letter-spacing: -0.01em;
 }
 
-.subtitle {
+.heroCategory {
     color: var(--text-secondary);
-    font-size: 1rem;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
     font-weight: 500;
 }
 
-.statusBadge {
-    padding: 4px 12px;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.statusActive {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.statusCancelled {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.headerActions {
-    display: flex;
+.heroMetrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0.75rem;
 }
 
-.actionBtn {
-    padding: 0.625rem 1.25rem;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 0.875rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.2s;
-    border: 1px solid var(--border);
-    background: white;
+.heroMetric {
+    background: #fafafa;
+    border-radius: 14px;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid #f1f5f9;
+    box-shadow: none;
+}
+
+.heroMetricLabel {
+    font-size: 0.62rem;
+    color: #9ca3af;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+}
+
+.heroMetricValue {
+    font-size: 1.1rem;
+    font-weight: 700;
     color: var(--text-primary);
 }
 
-.actionBtn:hover {
-    background: var(--background);
+.heroActions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
 }
 
-.deleteBtn {
-    background: #fee2e2;
-    color: #dc2626;
-    border-color: #fee2e2;
+.heroActions .actionBtn {
+    border-radius: 999px;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.75rem;
 }
 
-.deleteBtn:hover {
-    background: #fecaca;
-}
-
-/* Main Grid Layout */
-.grid {
+.heroSide {
+    position: relative;
+    z-index: 1;
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    gap: 0.6rem;
 }
 
-@media (max-width: 900px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
+.heroCard {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 0.85rem 1rem;
+    border: 1px solid #f3f4f6;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    box-shadow: none;
 }
 
-/* Cards */
+.heroCardAccent {
+    background: #fff5f6;
+    color: #111827;
+    border: 1px solid #ffe4e7;
+}
+
+.heroCardLabel {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #9ca3af;
+}
+
+.heroCardAccent .heroCardLabel {
+    color: #fb7185;
+}
+
+.heroCardValue {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
 .card {
     background: white;
-    border-radius: 16px;
-    padding: 1rem;
-    border: 1px solid var(--border);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    border-radius: 18px;
+    padding: 1.1rem;
+    border: 1px solid #f3f4f6;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
     position: relative;
     overflow: hidden;
+    margin-bottom: 1.5rem;
 }
 
-
-
-
-@media (max-width: 600px) {
-    .container {
-        padding: 0 1rem;
-        overflow-x: hidden;
-    }
-
-    .header {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-    }
-
-    .headerActions {
-        width: 100%;
-        justify-content: flex-start;
-        overflow-x: auto;
-        padding-bottom: 4px;
-        /* Space for scrollbar if needed */
-    }
-
-    .titleSection h1 {
-        font-size: 1.25rem;
-    }
-
-    .metricValue {
-        font-size: 1.125rem;
-    }
-
-    .yearlyAmount {
-        font-size: 1.375rem;
-    }
-
-    .lifetimeCard .lifetimeHeader {
-        font-size: 0.8125rem;
-    }
-
-    .lifetimeCard div:last-child {
-        font-size: 1.5rem !important;
-    }
-
-    .statusBadge {
-        font-size: 0.6875rem;
-        padding: 3px 10px;
-    }
-
-    .actionBtn {
-        font-size: 0.8125rem;
-        padding: 0.5rem 1rem;
-        flex-shrink: 0;
-        /* Prevent buttons from squishing */
-    }
-
-    .tableContainer {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: 0.5rem;
-    }
-
-    .tableHeader,
-    .tableRow {
-        min-width: 600px;
-        /* Force table to have width so it scroll */
-    }
-}
-
-/* Overview Card Specifics */
 .overviewHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .sectionTitle {
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.6rem;
 }
 
 .markPaidBtn {
-    background: var(--primary);
-    /* Keep using variable or fallback to new pink/red */
+    background: #16a34a;
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.875rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.75rem;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    box-shadow: 0 2px 4px rgba(255, 59, 48, 0.2);
+    gap: 0.4rem;
+    box-shadow: 0 6px 12px rgba(22, 163, 74, 0.2);
 }
 
 .metricsRow {
@@ -238,7 +196,7 @@
     gap: 1rem;
     margin-bottom: 1rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid #f3f4f6;
 }
 
 .metricLabel {
@@ -255,10 +213,6 @@
     font-weight: 700;
     color: var(--text-primary);
     font-feature-settings: "tnum";
-}
-
-.metricValueLarge {
-    font-size: 2rem;
 }
 
 .paymentMethodRow {
@@ -284,67 +238,12 @@
     color: var(--text-secondary);
 }
 
-.updateMethodLink {
-    color: var(--primary);
-    font-weight: 600;
-    font-size: 0.875rem;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* Sidebar Cards */
-.yearlyCard {
-    background: linear-gradient(135deg, #FF3B30 0%, #FF2D55 100%);
-    color: white;
-    border: none;
-    margin-bottom: 0;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.yearlyHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.yearlyLabel {
-    opacity: 0.9;
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.yearlyAmount {
-    font-size: 1.75rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    margin-bottom: 0.75rem;
-}
-
-
-
-.lifetimeCard {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 1rem;
-}
-
-.lifetimeHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-/* Payment History Section */
 .historySection {
     background: white;
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    padding: 1.25rem;
+    border-radius: 18px;
+    border: 1px solid #f3f4f6;
+    padding: 1.1rem;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
 }
 
 .historyHeader {
@@ -358,10 +257,10 @@
     background: #fff0f1;
     color: var(--primary);
     border: none;
-    padding: 0.6rem 1.25rem;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.875rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.75rem;
     cursor: pointer;
     transition: background 0.2s;
 }
@@ -370,7 +269,6 @@
     background: #ffe0e1;
 }
 
-/* Table Styles */
 .tableContainer {
     width: 100%;
 }
@@ -415,8 +313,6 @@
     font-size: 0.9375rem;
 }
 
-
-
 .amountCell {
     font-weight: 700;
     color: var(--text-primary);
@@ -460,4 +356,74 @@
 .iconBtnDanger:hover {
     color: var(--danger);
     background: #fee2e2;
+}
+
+.actionBtn {
+    padding: 0.6rem 1.1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text-primary);
+}
+
+.actionBtn:hover {
+    background: var(--background);
+}
+
+.deleteBtn {
+    background: #fee2e2;
+    color: #dc2626;
+    border-color: #fee2e2;
+}
+
+.deleteBtn:hover {
+    background: #fecaca;
+}
+
+@media (max-width: 900px) {
+    .hero {
+        grid-template-columns: 1fr;
+    }
+
+    .heroMetrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .hero {
+        padding: 1.25rem;
+    }
+
+    .heroMetrics {
+        grid-template-columns: 1fr;
+    }
+
+    .heroSide {
+        grid-template-columns: 1fr;
+    }
+
+    .actionBtn {
+        font-size: 0.75rem;
+        padding: 0.45rem 0.85rem;
+        flex-shrink: 0;
+    }
+
+    .tableContainer {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.5rem;
+    }
+
+    .tableHeader,
+    .tableRow {
+        min-width: 600px;
+    }
 }

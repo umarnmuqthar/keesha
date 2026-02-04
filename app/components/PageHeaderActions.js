@@ -11,6 +11,7 @@ export default function PageHeaderActions({
     subtitle,
     backPath,
     backLabel,
+    variant,
     searchQuery,
     onSearchChange,
     searchPlaceholder = "Search...",
@@ -25,7 +26,7 @@ export default function PageHeaderActions({
     const hasBottomActions = onSearchChange || (tabs && tabs.length > 0) || trailingActions;
 
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${variant === 'hero' ? styles.hero : ''}`}>
             <div className={`${styles.headerTitleSection} ${!hasBottomActions ? styles.noBottomMargin : ''}`}>
                 <div className={styles.titleRow}>
                     <div className={styles.titleContent}>

@@ -55,11 +55,14 @@ A modern, intuitive personal finance application designed to help you track subs
    ```
 
 3. **Environment Setup**
-   Create a `.env` file in the root directory and add your credentials:
+   Create a `.env` file in the root directory and add your credentials (see `.env.example`):
    ```env
    DATABASE_URL="your_database_url"
    NEXT_PUBLIC_FIREBASE_API_KEY="your_firebase_key"
    # ... add other firebase config keys
+   FIREBASE_SERVICE_ACCOUNT_KEY="your_firebase_service_account_json"
+   GMAIL_USER="your_gmail_address"
+   GMAIL_APP_PASSWORD="your_gmail_app_password"
    ```
 
 4. **Run the development server**
@@ -68,6 +71,27 @@ A modern, intuitive personal finance application designed to help you track subs
    ```
 
    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## 🧭 App Routes
+
+Public routes:
+- `/login`
+- `/signup`
+- `/forgot-password`
+- `/reset-password`
+
+Main app routes:
+- `/` (Dashboard)
+- `/subscriptions` and `/subscriptions/[id]`
+- `/loans` and `/loans/[id]`
+- `/creditcards` and `/creditcards/[id]`
+- `/debt` and `/debt/[id]`
+- `/profile`
+
+Admin routes:
+- `/admin/login`
+- `/admin`
+- `/admin/users`
 
 ### Firestore Rules Deployment
 We keep Firestore rules in `firestore.rules` for version control. To deploy:

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './Sidebar.module.css';
-import { ChevronLeft, ChevronRight, User, LogOut, Menu, X, LayoutDashboard, Repeat, CalendarDays, TrendingDown, CreditCard, PiggyBank, Banknote, Receipt, Users } from 'lucide-react';
+import { ChevronLeft, ChevronRight, User, LogOut, Menu, X, Home, Repeat2, CalendarClock, Scale, CreditCard, PiggyBank, Wallet, Receipt, Users } from 'lucide-react';
 import { logoutAdmin, logoutUser } from '../actions/authActions';
 
 import { useState, useEffect } from 'react';
@@ -18,17 +18,19 @@ export default function Sidebar({ isCollapsed, isMobileOpen, toggleSidebar, user
 
     const isAdmin = pathname?.startsWith('/admin');
 
+    const iconProps = { size: 18, strokeWidth: 1.7 };
+
     const navItems = isAdmin ? [
-        { name: 'Users', path: '/admin/users', icon: <Users size={20} /> }
+        { name: 'Users', path: '/admin/users', icon: <Users {...iconProps} /> }
     ] : [
-        { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={20} /> },
-        { name: 'Subscriptions', path: '/subscriptions', icon: <Repeat size={20} /> },
-        { name: 'EMI Tracker', path: '/loans', icon: <CalendarDays size={20} /> },
-        { name: 'Debt Tracker', path: '/debt', icon: <TrendingDown size={20} /> },
-        { name: 'Credit Cards', path: '/creditcards', icon: <CreditCard size={20} /> },
-        { name: 'Savings', path: '/savings', icon: <PiggyBank size={20} /> },
-        { name: 'Incomes', path: '/incomes', icon: <Banknote size={20} /> },
-        { name: 'Expenses', path: '/expenses', icon: <Receipt size={20} /> },
+        { name: 'Dashboard', path: '/', icon: <Home {...iconProps} /> },
+        { name: 'Subscriptions', path: '/subscriptions', icon: <Repeat2 {...iconProps} /> },
+        { name: 'EMI Tracker', path: '/loans', icon: <CalendarClock {...iconProps} /> },
+        { name: 'Debt Tracker', path: '/debt', icon: <Scale {...iconProps} /> },
+        { name: 'Credit Cards', path: '/creditcards', icon: <CreditCard {...iconProps} /> },
+        { name: 'Savings', path: '/savings', icon: <PiggyBank {...iconProps} /> },
+        { name: 'Incomes', path: '/incomes', icon: <Wallet {...iconProps} /> },
+        { name: 'Expenses', path: '/expenses', icon: <Receipt {...iconProps} /> },
     ];
 
     return (
@@ -69,7 +71,7 @@ export default function Sidebar({ isCollapsed, isMobileOpen, toggleSidebar, user
                                 className={`${styles.navItem} ${isActive ? styles.active : ''} ${isPending ? 'sidebar-item-pending' : ''}`}
                                 title={isCollapsed && !isMobileOpen ? item.name : ''}
                             >
-                                <span className={styles.icon}>{item.icon}</span>
+                                <span className={styles.iconWrap}>{item.icon}</span>
                                 {(!isCollapsed || isMobileOpen) && <span className={styles.label}>{item.name}</span>}
                             </Link>
                         );

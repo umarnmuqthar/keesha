@@ -7,15 +7,13 @@ import { useRouter } from 'next/navigation';
 import AddDebtEntryModal from './AddDebtEntryModal';
 import EditDebtModal from './EditDebtModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
+import InternalPageHeader from './InternalPageHeader';
 import {
-    ArrowLeft,
     Edit2,
     Trash2,
     Plus,
-    CheckCircle,
     TrendingUp,
     Briefcase,
-    Activity,
     History
 } from 'lucide-react';
 
@@ -83,11 +81,21 @@ export default function DebtDetailView({ account }) {
                 disabled={isDeleting}
             />
 
-            {/* Breadcrumb */}
-            <a href="/debt" className={styles.backLink}>
-                <ArrowLeft size={16} />
-                Back to Debt Tracker
-            </a>
+            <InternalPageHeader
+                backHref="/debt"
+                backLabel="Back to Debt Tracker"
+                actions={(
+                    <>
+                        <button onClick={() => setIsEditModalOpen(true)} className={styles.actionBtn}>
+                            <Edit2 size={18} />
+                            Edit
+                        </button>
+                        <button onClick={() => setIsDeleteModalOpen(true)} className={`${styles.actionBtn} ${styles.deleteBtn}`}>
+                            <Trash2 size={18} />
+                        </button>
+                    </>
+                )}
+            />
 
             {/* Header */}
             <header className={styles.header}>
@@ -101,15 +109,6 @@ export default function DebtDetailView({ account }) {
                     <div className={styles.subtitle}>{`Manage your ledger with ${account.name}`}</div>
                 </div>
 
-                <div className={styles.headerActions}>
-                    <button onClick={() => setIsEditModalOpen(true)} className={styles.actionBtn}>
-                        <Edit2 size={18} />
-                        Edit
-                    </button>
-                    <button onClick={() => setIsDeleteModalOpen(true)} className={`${styles.actionBtn} ${styles.deleteBtn}`}>
-                        <Trash2 size={18} />
-                    </button>
-                </div>
             </header>
 
             {/* Grid Area */}
@@ -190,7 +189,7 @@ export default function DebtDetailView({ account }) {
                                     </span>
                                 </div>
                                 <div>
-                                    <span className={styles.statusBadge} style={{ background: t.status === 'Settled' ? '#eff6ff' : '#f3f4f6', color: t.status === 'Settled' ? '#1e40af' : '#6b7280' }}>
+                                        <span className={styles.statusBadge} style={{ background: t.status === 'Settled' ? 'var(--primary-light)' : '#f3f4f6', color: t.status === 'Settled' ? 'var(--primary)' : '#6b7280' }}>
                                         {t.status}
                                     </span>
                                 </div>

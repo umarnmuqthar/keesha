@@ -1,0 +1,90 @@
+.card {
+    background: white;
+    border-radius: 24px;
+    border: 1px solid #f3f4f6;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
+    padding: 1.75rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6b7280;
+}
+
+.chart {
+    flex: 1;
+    width: 100%;
+}
+
+.empty {
+    flex: 1;
+    border-radius: 16px;
+    border: 1px dashed #e5e7eb;
+    background: #f8fafc;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.35rem;
+}
+
+.empty p {
+    margin: 0;
+    font-weight: 700;
+    color: #111827;
+}
+
+.empty span {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.emptyCta {
+    margin-top: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.9rem;
+    border-radius: 10px;
+    background: var(--primary);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.tooltip {
+    background: #111827;
+    color: white;
+    padding: 0.5rem 0.6rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.3);
+}

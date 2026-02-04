@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { addLoan } from '../actions';
 import PageHeaderActions from './PageHeaderActions';
+import { TrendingUp, CalendarCheck, Wallet } from 'lucide-react';
+import styles from './LoanTracker.module.css';
 
 export default function LoanTracker({ initialLoans }) {
     const router = useRouter();
@@ -24,17 +26,106 @@ export default function LoanTracker({ initialLoans }) {
     const formatMonth = (date) => date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 
     // Formatting currency
-    const formatCurrency = (amount) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
+    const formatCurrency = (amount) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount || 0);
+
+    const totalPayable = loans.reduce((sum, loan) => sum + (loan.totalPayable || 0), 0);
+    const totalMonthlyEmi = loans.reduce((sum, loan) => sum + (loan.emiAmount || 0), 0);
+    const highestEmi = loans.reduce((max, loan) => Math.max(max, loan.emiAmount || 0), 0);
+
+    const currentYear = today.getFullYear();
+    const currentMonth = String(today.getMonth() + 1).padStart(2, '0');
+    const currentMonthKey = `${currentYear}-${currentMonth}`;
+    const paidThisMonth = loans.reduce((sum, loan) => {
+        const isPaid = loan.payments && loan.payments[currentMonthKey];
+        return sum + (isPaid ? (loan.emiAmount || 0) : 0);
+    }, 0);
+    const remainingThisMonth = Math.max(0, totalMonthlyEmi - paidThisMonth);
+    const paidCountThisMonth = loans.filter(loan => loan.payments && loan.payments[currentMonthKey]).length;
 
     return (
-        <div>
-            <PageHeader
+        <div className={styles.container}>
+            <PageHeaderActions
                 title="EMI Tracker"
+                subtitle="Track monthly EMIs and upcoming payments."
                 actionLabel="Add New Loan"
                 onAction={() => setIsModalOpen(true)}
             />
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className={styles.summaryRow}>
+                <div className={`${styles.summaryCard} ${styles.emiCard}`}>
+                    <div className={styles.summaryInfo}>
+                        <p className={styles.summaryLabel}>TOTAL PAYABLE</p>
+                        <h2 className={`${styles.summaryValue} ${styles.emiText}`}>
+                            {formatCurrency(totalPayable)}
+                        </h2>
+                        <p className={styles.summarySubtext}>
+                            <TrendingUp size={14} /> Across {loans.length} loans
+                        </p>
+                    </div>
+                    <div className={`${styles.iconCircle} ${styles.emiBg}`}>
+                        <TrendingUp size={24} className={styles.emiText} />
+                    </div>
+                </div>
+                <div className={`${styles.summaryCard} ${styles.monthlyCard}`}>
+                    <div className={styles.summaryInfo}>
+                        <p className={styles.summaryLabel}>MONTHLY EMI</p>
+                        <h2 className={`${styles.summaryValue} ${styles.monthlyText}`}>
+                            {formatCurrency(totalMonthlyEmi)}
+                        </h2>
+                        <p className={styles.summarySubtext}>
+                            <Wallet size={14} /> Highest EMI {formatCurrency(highestEmi)}
+                        </p>
+                    </div>
+                    <div className={`${styles.iconCircle} ${styles.monthlyBg}`}>
+                        <Wallet size={24} className={styles.monthlyText} />
+                    </div>
+                </div>
+            </div>
+
+            <div className={styles.insightRow}>
+                <div className={styles.insightCard}>
+                    <div className={styles.insightHeader}>
+                        <span>Insights</span>
+                        <CalendarCheck size={16} />
+                    </div>
+                    <div className={styles.insightItems}>
+                        <div className={styles.insightItem}>
+                            <span className={styles.insightLabel}>Paid this month</span>
+                            <span className={styles.insightValue}>{formatCurrency(paidThisMonth)}</span>
+                        </div>
+                        <div className={styles.insightItem}>
+                            <span className={styles.insightLabel}>Remaining this month</span>
+                            <span className={styles.insightValue}>{formatCurrency(remainingThisMonth)}</span>
+                        </div>
+                        <div className={styles.insightItem}>
+                            <span className={styles.insightLabel}>Loans paid this month</span>
+                            <span className={styles.insightValue}>{paidCountThisMonth}/{loans.length}</span>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.insightCard}>
+                    <div className={styles.insightHeader}>
+                        <span>Next 12 Months</span>
+                        <TrendingUp size={16} />
+                    </div>
+                    <div className={styles.insightItems}>
+                        <div className={styles.insightItem}>
+                            <span className={styles.insightLabel}>Total EMI exposure</span>
+                            <span className={styles.insightValue}>{formatCurrency(totalMonthlyEmi * 12)}</span>
+                        </div>
+                        <div className={styles.insightItem}>
+                            <span className={styles.insightLabel}>Average EMI</span>
+                            <span className={styles.insightValue}>{formatCurrency(loans.length ? totalMonthlyEmi / loans.length : 0)}</span>
+                        </div>
+                        <div className={styles.insightItem}>
+                            <span className={styles.insightLabel}>Highest EMI</span>
+                            <span className={styles.insightValue}>{formatCurrency(highestEmi)}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className={styles.tableCard}>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left text-gray-500">
                         <thead className="text-xs text-gray-500 uppercase bg-gray-50/80 border-b border-gray-100">

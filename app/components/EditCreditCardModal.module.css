@@ -26,24 +26,21 @@
     padding: 1.25rem 1.5rem;
     border-bottom: 1px solid #f3f4f6;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 }
 
 .header h2 {
+    margin: 0;
     font-size: 1.15rem;
     font-weight: 700;
-    color: var(--text-primary);
-    margin: 0;
 }
 
 .closeBtn {
     background: transparent;
     border: none;
-    font-size: 1.5rem;
     color: #6b7280;
     cursor: pointer;
-    line-height: 1;
 }
 
 .form {
@@ -53,64 +50,47 @@
     gap: 1rem;
 }
 
-.group {
+.formGroup {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.group label {
+.formGroup label {
     font-size: 0.85rem;
     font-weight: 600;
     color: #4b5563;
 }
 
-.group input,
-.group select {
+.formGroup input {
     padding: 0.65rem 0.75rem;
     border-radius: 10px;
     border: 1px solid #e5e7eb;
     font-size: 0.9rem;
-    outline: none;
-    background: var(--surface);
-    color: var(--text-primary);
-}
-
-.group input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 .actions {
-    padding: 0 1.5rem 1.5rem;
     display: flex;
     gap: 0.75rem;
+    margin-top: 0.5rem;
 }
 
 .cancelBtn {
     flex: 1;
-    padding: 0.7rem 1rem;
-    border-radius: 12px;
     background: #f3f4f6;
     border: none;
+    border-radius: 12px;
+    padding: 0.7rem 1rem;
     font-weight: 600;
     color: #374151;
-    cursor: pointer;
-    font-size: 0.9rem;
 }
 
 .submitBtn {
     flex: 1;
-    padding: 0.7rem 1rem;
-    border-radius: 12px;
     background: var(--primary);
     border: none;
+    border-radius: 12px;
+    padding: 0.7rem 1rem;
     font-weight: 700;
     color: white;
-    cursor: pointer;
-    font-size: 0.9rem;
-}
-
-.submitBtn:disabled {
-    opacity: 0.6;
 }

@@ -2,11 +2,12 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Plus, History, TrendingDown, ArrowUpRight, ArrowDownRight, Trash2 } from 'lucide-react';
+import { Plus, History, TrendingDown, ArrowUpRight, ArrowDownRight, Trash2 } from 'lucide-react';
 import { deleteCreditCard, deleteCardTransaction } from '../actions';
 import AddCardTransactionModal from './AddCardTransactionModal';
 import EditCreditCardModal from './EditCreditCardModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
+import InternalPageHeader from './InternalPageHeader';
 import styles from './CreditCardDetailView.module.css';
 
 export default function CreditCardDetailView({ card, transactions = [] }) {
@@ -75,20 +76,23 @@ export default function CreditCardDetailView({ card, transactions = [] }) {
                 disabled={isDeleting}
             />
 
-            <a href="/creditcards" className={styles.backLink}>
-                <ArrowLeft size={16} /> Back to Credit Cards
-            </a>
+            <InternalPageHeader
+                backHref="/creditcards"
+                backLabel="Back to Credit Cards"
+                actions={(
+                    <>
+                        <button className={styles.actionBtn} onClick={() => setIsEditModalOpen(true)}>Edit Card</button>
+                        <button className={`${styles.actionBtn} ${styles.deleteBtn}`} onClick={() => setIsDeleteModalOpen(true)}>
+                            <Trash2 size={18} style={{ color: 'var(--danger)' }} />
+                        </button>
+                    </>
+                )}
+            />
 
             <header className={styles.header}>
                 <div>
                     <h1>{card.name}</h1>
                     <div className={styles.subtitle}>•••• {last4} | {card.brand}</div>
-                </div>
-                <div className={styles.headerActions}>
-                    <button className={styles.actionBtn} onClick={() => setIsEditModalOpen(true)}>Edit Card</button>
-                    <button className={`${styles.actionBtn} ${styles.deleteBtn}`} onClick={() => setIsDeleteModalOpen(true)}>
-                        <Trash2 size={18} style={{ color: 'var(--danger)' }} />
-                    </button>
                 </div>
             </header>
 

@@ -1,0 +1,177 @@
+.card {
+    background: white;
+    border-radius: 24px;
+    border: 1px solid #f3f4f6;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
+    padding: 1.75rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+.link {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.rowLeft {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dateBox {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: #9ca3af;
+}
+
+.dateDay {
+    font-size: 1.1rem;
+    color: #111827;
+    letter-spacing: normal;
+}
+
+.rowInfo h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.rowInfo p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.actionBtn {
+    padding: 0.5rem 0.9rem;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: #dcfce7;
+    color: #16a34a;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actionBtn:hover:not(.disabled) {
+    background: #16a34a;
+    color: white;
+}
+
+.disabled {
+    background: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.actionShort {
+    display: none;
+}
+
+.empty {
+    background: white;
+    border-radius: 24px;
+    border: 1px solid #f3f4f6;
+    padding: 2.5rem;
+    text-align: center;
+    color: #9ca3af;
+    font-weight: 600;
+}
+
+@media (max-width: 640px) {
+    .row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .rowLeft {
+        gap: 0.75rem;
+    }
+
+    .dateBox {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+    }
+
+    .rowInfo h4 {
+        font-size: 0.85rem;
+    }
+
+    .rowInfo p {
+        font-size: 0.7rem;
+    }
+
+    .actionBtn {
+        width: 56px;
+        height: 56px;
+        padding: 0;
+        border-radius: 16px;
+        border: 1px solid #bbf7d0;
+        background: #f0fdf4;
+        color: #15803d;
+        font-size: 0.65rem;
+        box-shadow: none;
+    }
+
+    .actionFull {
+        display: none;
+    }
+
+    .actionShort {
+        display: inline;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+}

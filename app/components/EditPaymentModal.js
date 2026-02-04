@@ -73,7 +73,7 @@ export default function EditPaymentModal({ isOpen, onClose, onSave, initialData 
                             value={formData.description}
                             onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                             placeholder="Add a note..."
-                            style={{ width: '100%', minHeight: '80px', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                            style={{ width: '100%', minHeight: '80px', padding: '0.65rem 0.75rem', borderRadius: '10px', border: '1px solid #e5e7eb' }}
                         />
                     </div>
 

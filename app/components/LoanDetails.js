@@ -7,7 +7,8 @@ import EditPaymentModal from './EditPaymentModal';
 import { deleteLoan, toggleLoanPayment, updateLoanPayment, deleteLoanPayment } from '../actions';
 import { useRouter } from 'next/navigation';
 import DeleteConfirmModal from './DeleteConfirmModal';
-import { ChevronLeft, Edit2, Trash2, CheckCircle, PieChart, TrendingUp, Calendar, ArrowLeft, MoreVertical, X } from 'lucide-react';
+import InternalPageHeader from './InternalPageHeader';
+import { Edit2, Trash2, CheckCircle, PieChart, TrendingUp, Calendar } from 'lucide-react';
 
 export default function LoanDetails({ loan }) {
     const router = useRouter();
@@ -126,11 +127,21 @@ export default function LoanDetails({ loan }) {
                 initialData={paymentToEdit}
             />
 
-            {/* Breadcrumb */}
-            <a href="/loans" className={styles.backLink}>
-                <ArrowLeft size={16} />
-                Back to EMI Tracker
-            </a>
+            <InternalPageHeader
+                backHref="/loans"
+                backLabel="Back to EMI Tracker"
+                actions={(
+                    <>
+                        <button onClick={() => setIsEditModalOpen(true)} className={styles.actionBtn}>
+                            <Edit2 size={18} />
+                            Edit
+                        </button>
+                        <button onClick={() => setIsDeleteModalOpen(true)} className={`${styles.actionBtn} ${styles.deleteBtn}`}>
+                            <Trash2 size={18} />
+                        </button>
+                    </>
+                )}
+            />
 
             {/* Header */}
             <header className={styles.header}>
@@ -144,15 +155,6 @@ export default function LoanDetails({ loan }) {
                     <div className={styles.subtitle}>{loan.lenderName || 'Loan Detail'}</div>
                 </div>
 
-                <div className={styles.headerActions}>
-                    <button onClick={() => setIsEditModalOpen(true)} className={styles.actionBtn}>
-                        <Edit2 size={18} />
-                        Edit
-                    </button>
-                    <button onClick={() => setIsDeleteModalOpen(true)} className={`${styles.actionBtn} ${styles.deleteBtn}`}>
-                        <Trash2 size={18} />
-                    </button>
-                </div>
             </header>
 
             {/* Grid Area */}

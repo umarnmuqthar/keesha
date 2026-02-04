@@ -9,6 +9,7 @@ import {
 } from '@/lib/keesha-logic';
 import styles from './SubscriptionDetails.module.css';
 import AddSubscriptionModal from './AddSubscriptionModal';
+import InternalPageHeader from './InternalPageHeader';
 
 import { updateSubscriptionStatus, recordPayment, deleteSubscription, addManualPayment, deletePaymentEntry, updatePaymentEntry, addBulkPayments } from '../actions';
 import DeleteConfirmModal from './DeleteConfirmModal';
@@ -96,6 +97,9 @@ export default function SubscriptionDetails({ subscription }) {
     const daysUntilDue = calculateDaysUntilDue(subscription.nextRenewalDate);
     const amortizedCost = calculateAmortizedMonthlyCost(subscription.currentCost, subscription.billingCycle);
     const yearlyCost = calculateProjectedYearlyCost(subscription.currentCost, subscription.billingCycle);
+    const nextPaymentLabel = subscription.nextRenewalDate
+        ? new Date(subscription.nextRenewalDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+        : 'N/A';
 
     const [isUpdatingStatus, setIsUpdatingStatus] = React.useState(false);
     const [showStatusModal, setShowStatusModal] = React.useState(false);
@@ -289,128 +293,80 @@ export default function SubscriptionDetails({ subscription }) {
                 </div>
             )}
 
-            <a href="/subscriptions" className={styles.backLink}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-                Back to Subscriptions
-            </a>
-
-            <header className={styles.header}>
-                <div className={styles.headerLeft}>
-                    <div className={styles.titleSection}>
-                        <h1>
-                            {subscription.name}
-                            <span className={`${styles.statusBadge} ${subscription.status === 'Cancelled' ? styles.statusCancelled : styles.statusActive}`}>
-                                {subscription.status}
-                            </span>
-                        </h1>
-                        <div className={styles.subtitle}>{subscription.category || 'Subscription'}</div>
-                    </div>
-                </div>
-
-                <div className={styles.headerActions}>
-                    <button onClick={() => setIsEditModalOpen(true)} className={styles.actionBtn}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                        Edit
-                    </button>
-
-                    {subscription.status === 'Active' ? (
-                        <button onClick={() => openStatusModal('Cancelled')} className={`${styles.actionBtn} ${styles.deleteBtn}`} style={{ color: 'var(--danger)', borderColor: '#fee2e2' }}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                            Cancel
+            <InternalPageHeader
+                backHref="/subscriptions"
+                backLabel="Back to Subscriptions"
+                actions={(
+                    <>
+                        <button onClick={() => setIsEditModalOpen(true)} className={styles.actionBtn}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            Edit
                         </button>
-                    ) : (
-                        <button onClick={() => openStatusModal('Active')} className={styles.actionBtn}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                            Resume
+
+                        {subscription.status === 'Active' ? (
+                            <button onClick={() => openStatusModal('Cancelled')} className={`${styles.actionBtn} ${styles.deleteBtn}`}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                                Cancel
+                            </button>
+                        ) : (
+                            <button onClick={() => openStatusModal('Active')} className={styles.actionBtn}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                Resume
+                            </button>
+                        )}
+
+                        <button onClick={handleDelete} className={`${styles.actionBtn} ${styles.deleteBtn}`}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         </button>
-                    )}
+                    </>
+                )}
+            />
 
-                    <button onClick={handleDelete} className={`${styles.actionBtn} ${styles.deleteBtn}`}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                    </button>
-                </div>
-            </header>
+            <section className={styles.hero}>
+                <div className={styles.heroContent}>
+                    <div className={styles.heroBadge}>{subscription.status}</div>
+                    <div className={styles.heroTitle}>{subscription.name}</div>
+                    <div className={styles.heroCategory}>{subscription.category || 'Subscription'}</div>
 
-            <div className={styles.grid}>
-                {/* Main Column */}
-                <div>
-                    {/* Subscription Overview Card */}
-                    <div className={styles.card} style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                        <div className={styles.overviewHeader}>
-                            <div className={styles.sectionTitle}>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                                Subscription Overview
-                            </div>
-                            {subscription.status === 'Active' && daysUntilDue <= 0 && (
-                                <button onClick={handlePayment} className={styles.markPaidBtn}>
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                    Mark as Paid
-                                </button>
-                            )}
+                    <div className={styles.heroMetrics}>
+                        <div className={styles.heroMetric}>
+                            <div className={styles.heroMetricLabel}>Monthly Cost</div>
+                            <div className={styles.heroMetricValue}>{formatCurrency(amortizedCost)}</div>
                         </div>
-
-                        <div className={styles.metricsRow}>
-                            <div>
-                                <div className={styles.metricLabel}>Monthly Cost</div>
-                                <div className={styles.metricValue}>{formatCurrency(amortizedCost)}</div>
-                            </div>
-                            <div>
-                                <div className={styles.metricLabel}>Billing Cycle</div>
-                                <div className={styles.metricValue} style={{ fontSize: '1.25rem' }}>{subscription.billingCycle}</div>
-                            </div>
-                            <div>
-                                <div className={styles.metricLabel}>Next Payment</div>
-                                <div className={styles.metricValue} style={{ fontSize: '1.25rem' }}>
-                                    {subscription.nextRenewalDate
-                                        ? new Date(subscription.nextRenewalDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-')
-                                        : 'N/A'}
-                                </div>
-                            </div>
+                        <div className={styles.heroMetric}>
+                            <div className={styles.heroMetricLabel}>Billing Cycle</div>
+                            <div className={styles.heroMetricValue}>{subscription.billingCycle}</div>
                         </div>
-
-                        <div className={styles.paymentMethodRow} style={{ marginTop: 'auto' }}>
-                            <div className={styles.methodInfo}>
-                                <div className={styles.methodIcon}>
-                                    {subscription.paymentMethod === 'UPI' ? (
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-                                    ) : (
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                                    )}
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                                        {subscription.paymentMethod || 'Card'}
-                                    </div>
-                                </div>
-                            </div>
-                            {/* Update Method Button Removed */}
+                        <div className={styles.heroMetric}>
+                            <div className={styles.heroMetricLabel}>Next Payment</div>
+                            <div className={styles.heroMetricValue}>{nextPaymentLabel}</div>
+                        </div>
+                        <div className={styles.heroMetric}>
+                            <div className={styles.heroMetricLabel}>Payment Method</div>
+                            <div className={styles.heroMetricValue}>{subscription.paymentMethod || 'Card'}</div>
                         </div>
                     </div>
+
                 </div>
 
-                {/* Sidebar Column */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    {/* Yearly Spending Card */}
-                    <div className={`${styles.card} ${styles.yearlyCard}`}>
-                        <div className={styles.yearlyHeader}>
-                            <div className={styles.yearlyLabel}>Yearly Spending</div>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.8 }}><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
-                        </div>
-                        <div className={styles.yearlyAmount}>{formatCurrency(yearlyCost)}</div>
+                <div className={styles.heroSide}>
+                    <div className={`${styles.heroCard} ${styles.heroCardAccent}`}>
+                        <div className={styles.heroCardLabel}>Yearly Spending</div>
+                        <div className={styles.heroCardValue}>{formatCurrency(yearlyCost)}</div>
                     </div>
-
-                    {/* Lifetime Total Card */}
-                    <div className={`${styles.card} ${styles.lifetimeCard}`}>
-                        <div className={styles.lifetimeHeader}>
-                            <div style={{ color: 'var(--text-tertiary)', fontSize: '0.875rem', fontWeight: 600 }}>Lifetime Total</div>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.3 }}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                        </div>
-                        <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.5rem' }}>
-                            {formatCurrency(lifetimeSpend)}
-                        </div>
+                    <div className={styles.heroCard}>
+                        <div className={styles.heroCardLabel}>Lifetime Total</div>
+                        <div className={styles.heroCardValue}>{formatCurrency(lifetimeSpend)}</div>
                     </div>
                 </div>
-            </div>
+            </section>
+
+            {subscription.status === 'Active' && daysUntilDue <= 0 && (
+                <button onClick={handlePayment} className={styles.markPaidBtn} style={{ marginBottom: '1.5rem' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Mark as Paid
+                </button>
+            )}
 
             {/* Payment History Section - Moved Outside Grid for Full Width */}
             <div className={styles.historySection}>
@@ -444,7 +400,7 @@ export default function SubscriptionDetails({ subscription }) {
                         ledgerHistory.map((tx) => (
                             <div key={tx.id} className={styles.tableRow}>
                                 <div className={styles.dateCell}>
-                                    <span className={styles.dayText}>{new Date(tx.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                                    <span className={styles.dayText}>{new Date(tx.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
 
                                 </div>
                                 <div className={styles.amountCell}>{formatCurrency(tx.amount)}</div>
@@ -471,7 +427,7 @@ export default function SubscriptionDetails({ subscription }) {
                                             setDeleteModal({
                                                 isOpen: true,
                                                 title: 'Delete Entry',
-                                                message: `Delete payment of ${formatCurrency(tx.amount)} from ${new Date(tx.date).toLocaleDateString()}?`,
+                                                message: `Delete payment of ${formatCurrency(tx.amount)} from ${new Date(tx.date).toLocaleDateString('en-IN')}?`,
                                                 onConfirm: async () => {
                                                     await deletePaymentEntry(subscription.id, tx.id);
                                                     setDeleteModal(prev => ({ ...prev, isOpen: false }));

@@ -1,0 +1,428 @@
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.summaryRow {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.summaryCard {
+    background: white;
+    padding: 1.5rem 2rem;
+    border-radius: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: box-shadow 0.2s;
+    position: relative;
+}
+
+.primaryCard {
+    border: 1px solid #ecfdf5;
+}
+
+.secondaryCard {
+    border: 1px solid var(--primary-light);
+}
+
+.summaryCard:hover {
+    box-shadow: var(--shadow-sm);
+}
+
+.summaryInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.summaryLabel {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.summaryValue {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+}
+
+.summarySubtext {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.primaryText {
+    color: #10b981;
+}
+
+.secondaryText {
+    color: var(--primary);
+}
+
+.iconCircle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.primaryBg {
+    background: #ecfdf5;
+}
+
+.secondaryBg {
+    background: var(--primary-light);
+}
+
+.insightRow {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.insightCard {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.insightHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.insightItems {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.insightItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.insightLabel {
+    font-weight: 500;
+}
+
+.insightValue {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid #f3f4f6;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.cardTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.cardSubtitle {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin: 0.2rem 0 0 0;
+}
+
+.statusBadge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+    height: fit-content;
+}
+
+.statusBadge.active {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.statusBadge.completed {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+.active {}
+.completed {}
+
+.cardAmounts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #9ca3af;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.value {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.progressWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.progressLabel {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.progressBar {
+    height: 8px;
+    background: #f3f4f6;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.3s ease;
+}
+
+.emptyState {
+    grid-column: 1 / -1;
+    padding: 3rem;
+    border: 1px dashed #e5e7eb;
+    border-radius: 20px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+}
+
+.emptyIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+}
+
+.emptyAction {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    z-index: 50;
+}
+
+.modal {
+    background: white;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 420px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.modalHeader {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modalHeader h2 {
+    margin: 0;
+    font-size: 1.15rem;
+}
+
+.closeBtn {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #6b7280;
+}
+
+.modalBody {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.modalBody label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #4b5563;
+    font-weight: 600;
+}
+
+.modalBody input {
+    padding: 0.65rem 0.75rem;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    font-size: 0.9rem;
+}
+
+.modalActions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.primaryBtn {
+    flex: 1;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.7rem 1rem;
+    font-weight: 600;
+}
+
+.secondaryBtn {
+    flex: 1;
+    background: #f3f4f6;
+    border: none;
+    border-radius: 12px;
+    padding: 0.7rem 1rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .summaryRow {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .summaryCard {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .summaryLabel {
+        font-size: 0.625rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .summaryValue {
+        font-size: 1.25rem;
+    }
+
+    .summarySubtext {
+        font-size: 0.7rem;
+    }
+
+    .iconCircle {
+        width: 32px;
+        height: 32px;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+
+    .iconCircle svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .insightRow {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .summaryValue {
+        font-size: 1.125rem;
+    }
+}

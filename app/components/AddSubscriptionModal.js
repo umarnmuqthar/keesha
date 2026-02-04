@@ -179,7 +179,7 @@ export default function AddSubscriptionModal({ isOpen, onClose, initialData = nu
                                         style={{ width: '20px', height: '20px', accentColor: 'var(--primary)' }}
                                     />
                                     <span style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.9375rem' }}>
-                                        {date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                        {date.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
                                     </span>
                                 </div>
                             )

@@ -1,7 +1,6 @@
 import React from 'react';
 import CreditCardDashboard from '@/app/components/CreditCardDashboard';
 import { db } from '@/lib/firebase-admin';
-import PageHeaderActions from '@/app/components/PageHeaderActions';
 import { getSession } from '@/app/actions/authActions';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
@@ -26,12 +25,7 @@ export default async function CreditCardsPage() {
 
     return (
         <main className="min-h-screen">
-            <div className="max-w-7xl mx-auto">
-                <PageHeaderActions
-                    title="Credit Cards"
-                    subtitle="Track your card balances and statement cycles."
-                    backPath="/"
-                />
+            <div className="max-w-7xl mx-auto space-y-8">
                 <CreditCardDashboard cards={cards} />
             </div>
         </main>

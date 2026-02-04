@@ -1,0 +1,126 @@
+.card {
+    background: white;
+    border-radius: 24px;
+    border: 1px solid #f3f4f6;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
+    padding: 1.75rem;
+    height: 100%;
+}
+
+.card h3 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.rowLeft {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+}
+
+.rowInfo h4 {
+    margin: 0 0 0.2rem 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.rowInfo p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.rowRight {
+    text-align: right;
+    font-weight: 700;
+    color: #111827;
+    font-size: 0.95rem;
+}
+
+.meta {
+    margin-top: 0.2rem;
+    font-size: 0.7rem;
+    color: #9ca3af;
+    font-weight: 600;
+}
+
+.empty {
+    border-radius: 16px;
+    border: 1px dashed #e5e7eb;
+    background: #f8fafc;
+    padding: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.empty p {
+    margin: 0;
+    font-weight: 700;
+    color: #111827;
+}
+
+.empty span {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.avatarGray {
+    background: #f3f4f6;
+}
+
+.avatarOrange {
+    background: #ffedd5;
+}
+
+.avatarGreen {
+    background: #ecfdf5;
+}
+
+.avatarPurple {
+    background: #ede9fe;
+}
+
+.textGray {
+    color: #6b7280;
+}
+
+.textOrange {
+    color: #f97316;
+}
+
+.textGreen {
+    color: #10b981;
+}
+
+.textPurple {
+    color: #8b5cf6;
+}
