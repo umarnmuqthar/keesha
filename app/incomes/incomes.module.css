@@ -1,0 +1,10 @@
+.page {
+  display: grid;
+  gap: var(--ds-space-6);
+}
+
+.placeholder {
+  text-align: center;
+  display: grid;
+  gap: var(--ds-space-3);
+}

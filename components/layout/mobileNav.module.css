@@ -1,0 +1,40 @@
+.nav {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(255, 255, 255, 0.96);
+    border-top: 1px solid var(--ds-color-border);
+    backdrop-filter: blur(10px);
+  }
+
+  .item {
+    flex: 0 0 auto;
+    min-height: 36px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    color: var(--ds-color-ink);
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    background: var(--ds-color-surface-soft, #f7f7f7);
+  }
+
+  .active {
+    background: var(--ds-color-accent-soft);
+    color: var(--ds-color-accent-strong);
+    font-weight: 600;
+  }
+
+  .nav::-webkit-scrollbar {
+    height: 0;
+  }
+}

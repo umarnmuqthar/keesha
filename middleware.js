@@ -31,13 +31,17 @@ export async function middleware(request) {
         '/login',
         '/signup',
         '/forgot-password',
-        '/reset-password'
+        '/reset-password',
+        '/verify-email'
     ];
     const isPublicUserPath = publicUserPaths.some(path => pathname.startsWith(path));
 
-    // Authenticated User on Public Page -> Redirect to Dashboard
-    if (userSession && isPublicUserPath) {
-        return NextResponse.redirect(new URL('/', request.url));
+    // Authenticated User Logic
+    if (userSession) {
+        // Prevent access to public auth pages (login, signup, etc.)
+        if (isPublicUserPath) {
+            return NextResponse.redirect(new URL('/', request.url));
+        }
     }
 
     // Unauthenticated User on Protected Page -> Redirect to Login

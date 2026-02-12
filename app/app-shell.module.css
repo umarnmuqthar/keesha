@@ -1,0 +1,60 @@
+.sidebar {
+  display: grid;
+  gap: var(--ds-space-6);
+}
+
+.brand {
+  font-size: var(--ds-font-size-4);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.nav {
+  display: grid;
+  gap: var(--ds-space-2);
+}
+
+.navItem {
+  padding: var(--ds-space-2) var(--ds-space-3);
+  border-radius: var(--ds-radius-2);
+  color: var(--ds-color-ink);
+  text-decoration: none;
+  font-size: var(--ds-font-size-2);
+  transition: background var(--ds-motion-fast) var(--ds-ease);
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-2);
+}
+
+.navItem:hover {
+  background: var(--ds-color-accent-soft);
+}
+
+.navItemLabel {
+  white-space: nowrap;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-4);
+}
+
+.header h1 {
+  font-size: var(--ds-font-size-5);
+  margin: 0;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: var(--ds-font-size-1);
+  color: var(--ds-color-ink-subtle);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-3);
+}

@@ -1,0 +1,7 @@
+.card {
+  background: var(--ds-color-surface);
+  border: 1px solid var(--ds-color-border);
+  border-radius: var(--ds-radius-3);
+  box-shadow: var(--ds-shadow-1);
+  padding: var(--ds-space-6);
+}

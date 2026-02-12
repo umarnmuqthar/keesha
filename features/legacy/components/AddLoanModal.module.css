@@ -1,0 +1,502 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.45);
+  display: grid;
+  place-items: center;
+  padding: var(--ds-space-5, 20px);
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.modal {
+  width: min(640px, 100%);
+  background: var(--ds-color-surface, #fff);
+  border: 1px solid var(--ds-color-border, #e5e7eb);
+  border-radius: var(--ds-radius-4, 18px);
+  box-shadow: var(--ds-shadow-2, 0 24px 50px rgba(0, 0, 0, 0.14));
+  color: var(--ds-color-ink, #111);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--ds-space-5, 20px) var(--ds-space-6, 24px);
+  border-bottom: 1px solid var(--ds-color-border, #e5e7eb);
+  background: #fff;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: clamp(1.12rem, 1.8vw, 1.3rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.stepIndicator {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 24px 0;
+}
+
+.stepDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #d4d4d8;
+  transition: width var(--ds-motion-fast, 0.18s) var(--ds-ease, ease);
+}
+
+.activeDot {
+  width: 22px;
+  background: var(--ds-color-accent-strong, #0f766e);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-4, 16px);
+  padding: var(--ds-space-5, 20px) var(--ds-space-6, 24px) var(--ds-space-6, 24px);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.row > * {
+  min-width: 0;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formGroup label {
+  font-size: var(--ds-font-size-2, 0.9rem);
+  font-weight: 600;
+  color: var(--ds-color-ink-muted, #52525b);
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea,
+.scheduleDateInput,
+.daySelect,
+.paymentItem input {
+  width: 100%;
+  border: 1px solid var(--ds-color-border, #e5e7eb);
+  border-radius: var(--ds-radius-2, 10px);
+  background: var(--ds-color-surface, #fff);
+  color: var(--ds-color-ink, #111);
+  padding: 10px 12px;
+  font-size: var(--ds-font-size-2, 0.92rem);
+  font-family: inherit;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus,
+.scheduleDateInput:focus,
+.daySelect:focus,
+.paymentItem input:focus {
+  outline: none;
+  border-color: var(--ds-color-accent-strong, #0f766e);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+}
+
+.typeSelector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #f3f4f6;
+  border: 1px solid var(--ds-color-border, #e5e7eb);
+  border-radius: var(--ds-radius-2, 10px);
+  padding: 3px;
+  gap: 3px;
+}
+
+.typeBtn {
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ds-color-ink-muted, #6b7280);
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 8px 10px;
+}
+
+.typeBtnActive {
+  background: var(--ds-color-surface, #fff);
+  color: var(--ds-color-accent-strong, #0f766e);
+  box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.14);
+}
+
+.checkboxRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: var(--ds-color-ink-muted, #52525b);
+}
+
+.checkboxRow input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--ds-color-accent-strong, #0f766e);
+}
+
+.nonEditable {
+  background: #f8f9fb !important;
+  color: #6b7280 !important;
+  border-style: dashed !important;
+}
+
+.scheduleWrapper {
+  border: 1px solid var(--ds-color-border, #e5e7eb);
+  border-radius: var(--ds-radius-3, 14px);
+  overflow: auto;
+  max-height: 300px;
+  background: #fcfcfb;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.scheduleHeader {
+  display: grid;
+  grid-template-columns: 38px 1.2fr 1fr 60px;
+  gap: 8px;
+  padding: 12px 14px;
+  background: #f7f8fa;
+  color: #5b616c;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid #e7e9ee;
+}
+
+.paymentItem {
+  display: grid;
+  grid-template-columns: 38px 1.2fr 1fr 60px;
+  gap: 8px;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--ds-color-border, #e5e7eb);
+  background: #fff;
+  transition: background var(--ds-motion-fast, 0.18s) var(--ds-ease, ease);
+}
+
+.paymentItem:hover {
+  background: #fbfdfd;
+}
+
+.paymentItem:last-child {
+  border-bottom: 0;
+}
+
+.indexLabel {
+  font-size: 0.78rem;
+  color: var(--ds-color-ink-subtle, #71717a);
+}
+
+.dateCell {
+  display: flex;
+  align-items: center;
+}
+
+.dateDisplay {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.dateDisplay span {
+  min-width: 70px;
+  color: #68707d;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.daySelect {
+  padding-right: 32px;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #64748b 50%), linear-gradient(135deg, #64748b 50%, transparent 50%);
+  background-position: calc(100% - 16px) 14px, calc(100% - 11px) 14px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.scheduleDateInput {
+  cursor: text;
+}
+
+.insightSection {
+  display: grid;
+  gap: 12px;
+}
+
+.insightGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.insightCard {
+  border: 1px solid #e5eaf0;
+  background: #fff;
+  border-radius: var(--ds-radius-3, 14px);
+  padding: 14px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.insightLabel {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ds-color-ink-muted, #6b7280);
+}
+
+.insightValue {
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: var(--ds-color-ink, #111);
+}
+
+.interestRateRow {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.interestRateValue {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.interestRateSuffix {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.adviceBox {
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: var(--ds-radius-3, 14px);
+  border: 1px solid rgba(15, 118, 110, 0.22);
+  background: rgba(15, 118, 110, 0.08);
+  color: var(--ds-color-accent-strong, #0f766e);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.totalSummary {
+  border-radius: var(--ds-radius-3, 14px);
+  padding: 14px;
+  background: #0f766e;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(15, 118, 110, 0.42);
+  box-shadow: none;
+}
+
+.totalSummary label {
+  font-size: 0.74rem;
+  opacity: 0.9;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.totalSummary span {
+  font-size: 1.22rem;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ds-color-border, #e5e7eb);
+  flex-wrap: wrap;
+}
+
+.cancelBtn,
+.submitBtn {
+  border: 0;
+  border-radius: var(--ds-radius-2, 10px);
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  background: #f2f4f6;
+  color: #374151;
+}
+
+.cancelBtn:hover {
+  background: #e6e8ec;
+}
+
+.submitBtn {
+  background: var(--ds-color-accent-strong, #0f766e);
+  color: #fff;
+}
+
+.submitBtn:hover {
+  background: #115e59;
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.paidHeader {
+  text-align: center;
+}
+
+.paidCell {
+  display: flex;
+  justify-content: center;
+}
+
+.paidToggle {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ds-color-accent-strong, #0f766e);
+}
+
+.interestCaption {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--ds-color-accent-strong, #0f766e);
+  display: block;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.tinyHint {
+  font-size: 0.72rem;
+  color: var(--ds-color-ink-subtle, #71717a);
+  display: block;
+  text-align: center;
+  margin-top: 2px;
+}
+
+.centeredError {
+  text-align: center;
+}
+
+.gstLabel {
+  margin-top: 4px;
+}
+
+.gstValue {
+  font-size: 0.76rem;
+  color: var(--ds-color-ink-subtle, #71717a);
+  margin-top: 4px;
+  display: block;
+}
+
+.nextError {
+  margin-top: 4px;
+  text-align: right;
+}
+
+.errorMessage {
+  display: block;
+  margin-top: 3px;
+  color: #b91c1c;
+  font-size: 0.76rem;
+  font-weight: 500;
+}
+
+.requiredStar {
+  margin-left: 2px;
+  color: #dc2626;
+}
+
+.immutableTypeContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.immutableTypeBadge {
+  border: 1px solid var(--ds-color-border, #e5e7eb);
+  background: #f6f4f0;
+  color: var(--ds-color-ink, #111);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+}
+
+.immutableTypeBadge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--ds-color-accent-strong, #0f766e);
+}
+
+@media (max-width: 960px) {
+  .overlay {
+    padding: 10px;
+    align-items: end;
+  }
+
+  .modal {
+    width: 100%;
+    max-height: min(92vh, 860px);
+    overflow: auto;
+    border-radius: 14px;
+  }
+
+  .form,
+  .header {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .row,
+  .insightGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .scheduleHeader,
+  .paymentItem {
+    grid-template-columns: 30px 1fr 1fr 50px;
+    padding: 8px 10px;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .cancelBtn,
+  .submitBtn {
+    flex: 1;
+  }
+}

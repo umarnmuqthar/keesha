@@ -1,0 +1,92 @@
+.button {
+  align-items: center;
+  background: var(--ds-color-accent);
+  border: 1px solid transparent;
+  border-radius: var(--ds-radius-pill);
+  color: #ffffff;
+  display: inline-flex;
+  font-family: var(--ds-font-sans);
+  font-weight: 600;
+  gap: var(--ds-space-2);
+  justify-content: center;
+  letter-spacing: -0.01em;
+  transition: transform var(--ds-motion-fast) var(--ds-ease),
+    box-shadow var(--ds-motion-fast) var(--ds-ease),
+    background var(--ds-motion-fast) var(--ds-ease),
+    border-color var(--ds-motion-fast) var(--ds-ease),
+    color var(--ds-motion-fast) var(--ds-ease);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+  box-shadow: none;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.button:not(:disabled):active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.primary {
+  background: var(--ds-color-accent);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.primary:not(:disabled):hover {
+  background: var(--ds-color-accent-strong);
+  box-shadow: var(--ds-shadow-2);
+}
+
+.secondary {
+  background: var(--ds-color-surface);
+  border-color: var(--ds-color-border);
+  color: var(--ds-color-ink);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.secondary:not(:disabled):hover {
+  border-color: var(--ds-color-ink-subtle);
+  box-shadow: var(--ds-shadow-2);
+}
+
+.ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ds-color-ink);
+}
+
+.ghost:not(:disabled):hover {
+  background: var(--ds-color-accent-soft);
+  color: var(--ds-color-accent-strong);
+}
+
+.sm {
+  font-size: var(--ds-font-size-1);
+  padding: var(--ds-space-2) var(--ds-space-3);
+}
+
+.md {
+  font-size: var(--ds-font-size-2);
+  padding: var(--ds-space-3) var(--ds-space-5);
+}
+
+.lg {
+  font-size: var(--ds-font-size-3);
+  padding: var(--ds-space-4) var(--ds-space-6);
+}

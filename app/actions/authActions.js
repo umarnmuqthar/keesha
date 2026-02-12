@@ -59,6 +59,18 @@ export async function createSession(idToken, checkAdmin = false) {
                 sameSite: 'lax',
                 path: '/'
             });
+
+            // Set Email Verified Cookie
+            const isEmailVerified = decodedToken.email_verified || false;
+            cookies().set('email_verified', String(isEmailVerified), {
+                maxAge: Math.floor(expiresIn / 1000),
+                httpOnly: true, // Should be readable by client? Maybe not strictly necessary if middleware handles it. Middleware can read httpOnly? Yes.
+                // Actually middleware runs on server. But if we want Client to know, we might need it not httpOnly or use a separate mechanism.
+                // For security, HttpOnly is better. Middleware can read it.
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/'
+            });
         }
 
         revalidatePath(checkAdmin ? '/admin' : '/', 'layout');
@@ -315,6 +327,138 @@ export async function verifySignupOTP(verificationId, code) {
     }
 }
 
+export async function verifyPasswordResetOtp(verificationId, code) {
+    try {
+        if (!verificationId || !code) return { success: false, error: 'Invalid request.' };
+
+        const { db } = await import('@/lib/firebase-admin');
+        const ref = db.collection('otp_verifications').doc(verificationId);
+        const snapshot = await ref.get();
+
+        if (!snapshot.exists) {
+            return { success: false, error: 'Invalid or expired code.' };
+        }
+
+        const data = snapshot.data();
+        const ip = getClientIp();
+        const emailLower = (data.email || '').toLowerCase();
+
+        if (emailLower) {
+            const verifyRateKey = crypto.createHash('sha256').update(`${emailLower}|${ip}`).digest('hex');
+            const verifyRateRef = db.collection('otp_verify_rate_limits').doc(verifyRateKey);
+            const verifyRateSnap = await verifyRateRef.get();
+            const now = Date.now();
+            if (verifyRateSnap.exists) {
+                const rateData = verifyRateSnap.data();
+                const windowStart = rateData.windowStart || now;
+                if (now - windowStart < OTP_VERIFY_RATE_WINDOW_MS && rateData.count >= OTP_VERIFY_RATE_MAX) {
+                    return { success: false, error: 'Too many attempts. Please try again later.' };
+                }
+                if (now - windowStart >= OTP_VERIFY_RATE_WINDOW_MS) {
+                    await verifyRateRef.set({ count: 1, windowStart: now }, { merge: true });
+                } else {
+                    await verifyRateRef.set({ count: (rateData.count || 0) + 1, windowStart }, { merge: true });
+                }
+            } else {
+                await verifyRateRef.set({ count: 1, windowStart: now });
+            }
+        }
+
+        if (Date.now() > data.expiresAt) {
+            await ref.delete();
+            return { success: false, error: 'Code has expired.' };
+        }
+
+        if ((data.attempts || 0) >= OTP_MAX_ATTEMPTS) {
+            await ref.delete();
+            return { success: false, error: 'Too many attempts. Please request a new code.' };
+        }
+
+        const candidateHash = hashOtp(code, data.salt);
+        if (data.otpHash !== candidateHash) {
+            await ref.set({ attempts: (data.attempts || 0) + 1 }, { merge: true });
+            return { success: false, error: 'Invalid code.' };
+        }
+
+        await ref.set({ verifiedAt: Date.now() }, { merge: true });
+        return { success: true };
+    } catch (error) {
+        console.error('Error verifying password reset OTP:', error);
+        return { success: false, error: 'Verification failed: ' + error.message };
+    }
+}
+
+export async function resetPasswordWithOtp(verificationId, code, newPassword) {
+    try {
+        if (!verificationId || !code || !newPassword) return { success: false, error: 'Invalid request.' };
+
+        const policy = await validatePasswordPolicy(newPassword);
+        if (!policy.success) return policy;
+
+        const { db, auth } = await import('@/lib/firebase-admin');
+        const ref = db.collection('otp_verifications').doc(verificationId);
+        const snapshot = await ref.get();
+
+        if (!snapshot.exists) {
+            return { success: false, error: 'Invalid or expired code.' };
+        }
+
+        const data = snapshot.data();
+        const ip = getClientIp();
+        const emailLower = (data.email || '').toLowerCase();
+
+        if (emailLower) {
+            const verifyRateKey = crypto.createHash('sha256').update(`${emailLower}|${ip}`).digest('hex');
+            const verifyRateRef = db.collection('otp_verify_rate_limits').doc(verifyRateKey);
+            const verifyRateSnap = await verifyRateRef.get();
+            const now = Date.now();
+            if (verifyRateSnap.exists) {
+                const rateData = verifyRateSnap.data();
+                const windowStart = rateData.windowStart || now;
+                if (now - windowStart < OTP_VERIFY_RATE_WINDOW_MS && rateData.count >= OTP_VERIFY_RATE_MAX) {
+                    return { success: false, error: 'Too many attempts. Please try again later.' };
+                }
+                if (now - windowStart >= OTP_VERIFY_RATE_WINDOW_MS) {
+                    await verifyRateRef.set({ count: 1, windowStart: now }, { merge: true });
+                } else {
+                    await verifyRateRef.set({ count: (rateData.count || 0) + 1, windowStart }, { merge: true });
+                }
+            } else {
+                await verifyRateRef.set({ count: 1, windowStart: now });
+            }
+        }
+
+        if (Date.now() > data.expiresAt) {
+            await ref.delete();
+            return { success: false, error: 'Code has expired.' };
+        }
+
+        if ((data.attempts || 0) >= OTP_MAX_ATTEMPTS) {
+            await ref.delete();
+            return { success: false, error: 'Too many attempts. Please request a new code.' };
+        }
+
+        const candidateHash = hashOtp(code, data.salt);
+        if (data.otpHash !== candidateHash) {
+            await ref.set({ attempts: (data.attempts || 0) + 1 }, { merge: true });
+            return { success: false, error: 'Invalid code.' };
+        }
+
+        if (!emailLower) {
+            return { success: false, error: 'Email not found for this request.' };
+        }
+
+        const user = await auth.getUserByEmail(emailLower);
+        await auth.updateUser(user.uid, { password: newPassword });
+
+        await ref.delete();
+        return { success: true };
+    } catch (error) {
+        console.error('Error resetting password via OTP:', error);
+        return { success: false, error: 'Reset failed: ' + error.message };
+    }
+}
+
 export async function verifyEmailChangeOtp(verificationId, code, newEmail) {
     try {
         const session = await getUserSession();
@@ -455,7 +599,24 @@ export async function verifyEmailOtp(verificationId, code) {
         }
 
         await ref.delete();
+        await ref.delete();
+
+        // Update Firebase Auth User
+        const { auth } = await import('@/lib/firebase-admin');
+        await auth.updateUser(session.uid, { emailVerified: true });
+
+        // Update User Doc
         await db.collection('users').doc(session.uid).set({ isVerified: true }, { merge: true });
+
+        // Update Cookie to allow access
+        cookies().set('email_verified', 'true', {
+            maxAge: 60 * 60 * 24 * 5, // 5 days
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/'
+        });
+
         revalidatePath('/', 'layout');
         return { success: true };
     } catch (error) {

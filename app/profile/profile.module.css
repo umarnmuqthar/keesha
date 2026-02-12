@@ -1,0 +1,49 @@
+.page {
+  display: grid;
+  gap: var(--ds-space-6);
+}
+
+.card {
+  display: grid;
+  gap: var(--ds-space-3);
+}
+
+.profileRow {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-4);
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--ds-color-border);
+}
+
+.avatarFallback {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--ds-color-accent-soft);
+  color: var(--ds-color-accent-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--ds-font-size-4);
+}
+
+.details {
+  display: grid;
+  gap: var(--ds-space-3);
+  border-top: 1px solid var(--ds-color-border);
+  padding-top: var(--ds-space-4);
+}
+
+.details span {
+  display: block;
+  font-size: var(--ds-font-size-1);
+  color: var(--ds-color-ink-subtle);
+}

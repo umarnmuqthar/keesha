@@ -1,0 +1,261 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.45);
+  display: grid;
+  place-items: center;
+  padding: var(--ds-space-4, 16px);
+  z-index: 1000;
+}
+
+.modal {
+  width: min(560px, 100%);
+  max-height: min(90vh, 760px);
+  background: var(--ds-color-surface, #fff);
+  border: 1px solid var(--ds-color-border, #e5e7eb);
+  border-radius: var(--ds-radius-4, 18px);
+  overflow: auto;
+  box-shadow: var(--ds-shadow-2, 0 24px 50px rgba(0, 0, 0, 0.14));
+}
+
+.header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--ds-color-border, #e5e7eb);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(180deg, #ffffff 0%, #f9f8f5 100%);
+}
+
+.header h2 {
+  margin: 0;
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ds-color-ink, #111);
+}
+
+.closeBtn {
+  border: 0;
+  background: #f2f4f6;
+  color: #6b7280;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+}
+
+.closeBtn:hover {
+  background: #e6e8ec;
+  color: #374151;
+}
+
+.previewSection {
+  padding: 12px 18px;
+  display: flex;
+  justify-content: center;
+  background: #f6f4f0;
+  border-bottom: 1px solid var(--ds-color-border, #e5e7eb);
+}
+
+.cardPreview {
+  width: 100%;
+  max-width: 290px;
+  aspect-ratio: 1.586 / 1;
+  border-radius: 14px;
+  padding: 14px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  position: relative;
+  overflow: hidden;
+  transition: background-color var(--ds-motion-fast, 0.18s) var(--ds-ease, ease);
+}
+
+.cardPreview::before {
+  content: '';
+  position: absolute;
+  top: -45%;
+  left: -35%;
+  width: 170%;
+  height: 170%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 62%);
+}
+
+.cardBrand,
+.cardNumberPreview,
+.cardFooter,
+.chip {
+  position: relative;
+  z-index: 1;
+}
+
+.cardBrand {
+  height: 24px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.brandLogo {
+  height: 100%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
+
+.chip {
+  width: 34px;
+  height: 24px;
+  background: linear-gradient(135deg, #f0d070 0%, #a4813f 100%);
+  border-radius: 7px;
+  margin-bottom: 8px;
+}
+
+.cardNumberPreview {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 1.6px;
+  font-family: 'Courier New', Courier, monospace;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.cardLabel {
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  opacity: 0.85;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.cardValue {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.form {
+  padding: 14px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formGroup label {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ds-color-ink-muted, #52525b);
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--ds-color-border, #e5e7eb);
+  border-radius: 9px;
+  font-size: 0.9rem;
+  transition: border-color var(--ds-motion-fast, 0.18s) var(--ds-ease, ease),
+    box-shadow var(--ds-motion-fast, 0.18s) var(--ds-ease, ease);
+  background: var(--ds-color-surface, #fff);
+  color: var(--ds-color-ink, #111);
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: var(--ds-color-accent-strong, #0f766e);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.modalActions {
+  padding: 8px 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  border-top: 1px solid var(--ds-color-border, #e5e7eb);
+  margin-top: 2px;
+  padding-top: 12px;
+}
+
+.cancelBtn,
+.submitBtn {
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  background: #f2f4f6;
+  color: #374151;
+}
+
+.cancelBtn:hover {
+  background: #e6e8ec;
+}
+
+.submitBtn {
+  background: var(--ds-color-accent-strong, #0f766e);
+  color: #fff;
+}
+
+.submitBtn:hover {
+  background: #115e59;
+}
+
+.submitBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 960px) {
+  .overlay {
+    padding: 10px;
+    align-items: end;
+  }
+
+  .modal {
+    width: 100%;
+    max-height: min(92vh, 780px);
+    overflow: auto;
+    border-radius: 14px;
+  }
+
+  .header,
+  .previewSection,
+  .form,
+  .modalActions {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .row,
+  .modalActions {
+    grid-template-columns: 1fr;
+  }
+
+  .cardPreview {
+    max-width: 100%;
+  }
+}
