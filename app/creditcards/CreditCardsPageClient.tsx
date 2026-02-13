@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { useMemo } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { useShellSearch } from '@/components/layout/ShellSearchContext';
 import { AddButton, Card } from '@/components/ui';
 import { useModalState } from '@/components/ui/useModalState';
 import AddCreditCardModal from '@/features/legacy/components/AddCreditCardModal';
@@ -28,8 +30,18 @@ const formatAmount = (value?: number) => {
 
 export default function CreditCardsPageClient({ cards }: CreditCardsPageClientProps) {
   const modal = useModalState(false);
+  const { query: searchQuery } = useShellSearch();
+  const query = searchQuery.trim().toLowerCase();
   const totalLimit = cards.reduce((sum, card) => sum + Number(card.totalLimit || 0), 0);
   const totalDue = cards.reduce((sum, card) => sum + Number(card.statementBalance || 0), 0);
+  const filteredCards = useMemo(() => {
+    if (!query) return cards;
+    return cards.filter((card) =>
+      [card.name, card.brand]
+        .map((value) => String(value || '').toLowerCase())
+        .some((value) => value.includes(query))
+    );
+  }, [cards, query]);
 
   return (
     <>
@@ -70,14 +82,18 @@ export default function CreditCardsPageClient({ cards }: CreditCardsPageClientPr
           </section>
 
           <section className={styles.list}>
-            {cards.length === 0 ? (
+            {filteredCards.length === 0 ? (
               <Card className={styles.placeholder}>
-                <h3>No credit cards yet</h3>
-                <p>Add your cards to track limits, due dates, and utilization.</p>
-                <AddButton size="sm" onClick={modal.open}>Add card</AddButton>
+                <h3>{query ? 'No matching cards' : 'No credit cards yet'}</h3>
+                <p>
+                  {query
+                    ? `No card found for "${searchQuery}".`
+                    : 'Add your cards to track limits, due dates, and utilization.'}
+                </p>
+                {!query ? <AddButton size="sm" onClick={modal.open}>Add card</AddButton> : null}
               </Card>
             ) : (
-              cards.map((card) => (
+              filteredCards.map((card) => (
                 <Link key={card.id} href={`/creditcards/${card.id}`} className={styles.itemLink}>
                   <Card className={styles.item}>
                     <div>

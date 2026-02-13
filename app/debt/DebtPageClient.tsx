@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { useMemo } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { useShellSearch } from '@/components/layout/ShellSearchContext';
 import { AddButton, Card } from '@/components/ui';
 import { useModalState } from '@/components/ui/useModalState';
 import AddDebtModal from '@/features/legacy/components/AddDebtModal';
@@ -28,12 +30,22 @@ const formatAmount = (value?: number) => {
 
 export default function DebtPageClient({ accounts }: DebtPageClientProps) {
   const modal = useModalState(false);
+  const { query: searchQuery } = useShellSearch();
+  const query = searchQuery.trim().toLowerCase();
 
   const activeAccounts = accounts.filter((account) => (account.status || 'Active') === 'Active').length;
   const totalOpenBalance = accounts.reduce(
     (sum, account) => sum + Math.abs(Number(account.netBalance || 0)),
     0
   );
+  const filteredAccounts = useMemo(() => {
+    if (!query) return accounts;
+    return accounts.filter((account) =>
+      [account.name, account.type, account.status]
+        .map((value) => String(value || '').toLowerCase())
+        .some((value) => value.includes(query))
+    );
+  }, [accounts, query]);
 
   return (
     <>
@@ -70,14 +82,18 @@ export default function DebtPageClient({ accounts }: DebtPageClientProps) {
           </section>
 
           <section className={styles.list}>
-            {accounts.length === 0 ? (
+            {filteredAccounts.length === 0 ? (
               <Card className={styles.placeholder}>
-                <h3>No debts added</h3>
-                <p>Add personal debts or IOUs to track repayments.</p>
-                <AddButton size="sm" onClick={modal.open}>Add debt</AddButton>
+                <h3>{query ? 'No matching debt accounts' : 'No debts added'}</h3>
+                <p>
+                  {query
+                    ? `No account found for "${searchQuery}".`
+                    : 'Add personal debts or IOUs to track repayments.'}
+                </p>
+                {!query ? <AddButton size="sm" onClick={modal.open}>Add debt</AddButton> : null}
               </Card>
             ) : (
-              accounts.map((account) => (
+              filteredAccounts.map((account) => (
                 <Link key={account.id} href={`/debt/${account.id}`} className={styles.itemLink}>
                   <Card className={styles.item}>
                     <div>

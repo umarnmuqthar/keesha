@@ -1,6 +1,6 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { Sidebar } from "@/components/layout/Sidebar";
-import { AddButton, Button, Card } from "@/components/ui";
+import { Button, Card } from "@/components/ui";
 import shellStyles from "./app-shell.module.css";
 import styles from "./dashboard.module.css";
 
@@ -20,6 +20,7 @@ export default function DashboardPage() {
   return (
     <AppShell
       sidebar={<Sidebar />}
+      showSearch={false}
       header={
         <div className={shellStyles.header}>
           <div>
@@ -35,7 +36,6 @@ export default function DashboardPage() {
             <h2>Financial command center</h2>
             <p>See your month at a glance and stay ahead of renewals.</p>
           </div>
-        <AddButton>Add expense</AddButton>
         </section>
 
         <section className={styles.grid}>

@@ -1,0 +1,29 @@
+.addButton {
+  min-width: fit-content;
+}
+
+.icon {
+  display: none;
+}
+
+.label {
+  display: inline;
+}
+
+@media (max-width: 960px) {
+  .addButton {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 999px;
+  }
+
+  .label {
+    display: none;
+  }
+
+  .icon {
+    display: inline-flex;
+  }
+}

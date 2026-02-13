@@ -7,7 +7,7 @@
     display: flex;
     gap: 8px;
     overflow-x: auto;
-    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    padding: 12px 12px calc(14px + env(safe-area-inset-bottom));
     background: rgba(255, 255, 255, 0.96);
     border-top: 1px solid var(--ds-color-border);
     backdrop-filter: blur(10px);
@@ -15,12 +15,12 @@
 
   .item {
     flex: 0 0 auto;
-    min-height: 36px;
-    padding: 8px 12px;
+    min-height: 44px;
+    padding: 10px 14px;
     border-radius: 999px;
     color: var(--ds-color-ink);
     text-decoration: none;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1;
     display: inline-flex;
     align-items: center;

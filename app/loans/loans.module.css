@@ -4,26 +4,20 @@
 }
 
 .hero {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
   gap: var(--ds-space-6);
-  flex-wrap: wrap;
-}
-
-.hero h2 {
-  font-size: var(--ds-font-size-5);
-  margin-bottom: var(--ds-space-2);
-}
-
-.hero p {
-  color: var(--ds-color-ink-muted);
 }
 
 .heroStats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--ds-space-4);
-  min-width: 280px;
+}
+
+.statCard {
+  border: 1px solid #e6ebe8;
 }
 
 .statCard h3 {
@@ -31,9 +25,48 @@
   margin-top: var(--ds-space-2);
 }
 
+.statSubtext {
+  display: inline-block;
+  margin-top: var(--ds-space-2);
+  color: var(--ds-color-ink-muted);
+  font-size: var(--ds-font-size-2);
+}
+
 .label {
   color: var(--ds-color-ink-muted);
   font-size: var(--ds-font-size-2);
+}
+
+.progressTrack {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  margin-top: var(--ds-space-3);
+  border-radius: 999px;
+  background: #d8d5d1;
+  overflow: hidden;
+}
+
+.progressFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #167a6f 0%, #31b49d 100%);
+}
+
+.salaryImpactCard {
+  display: grid;
+  gap: var(--ds-space-2);
+}
+
+.salaryImpactCard h3 {
+  font-size: var(--ds-font-size-5);
+}
+
+.salaryMeta {
+  color: var(--ds-color-ink-muted);
 }
 
 .list {
@@ -44,31 +77,203 @@
 .itemLink {
   text-decoration: none;
   color: inherit;
+  display: block;
+  width: 100%;
 }
 
 .item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--ds-space-4);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  height: 100%;
+  position: relative;
   transition: transform var(--ds-motion-fast) var(--ds-ease),
     box-shadow var(--ds-motion-fast) var(--ds-ease);
+}
+
+.itemStatusFloating {
+  position: absolute;
+  top: var(--ds-space-3);
+  right: var(--ds-space-3);
+  z-index: 1;
+}
+
+.itemIdentity {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  grid-column: 1;
+}
+
+.itemIdentity h3 {
+  margin: 0;
+}
+
+.metricBlock {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.metricMonthly {
+  grid-column: 1;
+}
+
+.metricOutstanding {
+  grid-column: 2;
+}
+
+.metricBlock strong {
+  color: var(--ds-color-ink);
+  font-size: var(--ds-font-size-3);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.itemDueBlock {
+  display: grid;
+  gap: 4px;
+  justify-items: end;
+  text-align: right;
+  min-width: 0;
+  grid-column: 2;
+}
+
+.dueDateValue {
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.itemProgress {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid #e6ebe8;
+  padding-top: 16px;
+  grid-column: 1 / -1;
+}
+
+.itemProgress .progressTrack {
+  margin-top: 0;
+}
+
+.progressRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: baseline;
+  gap: 12px;
+  color: var(--ds-color-ink-muted);
+  font-size: var(--ds-font-size-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.progressRow span:last-child {
+  justify-self: end;
+  text-align: right;
+}
+
+.progressAmount,
+.progressPercent {
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.progressPercent {
+  font-weight: 700;
+  color: var(--ds-color-accent-strong);
+}
+
+.nextEmi {
+  margin: 0;
+  font-size: var(--ds-font-size-1);
+  color: var(--ds-color-ink-muted);
+  text-align: left;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.nextMetaRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+.nextDueHint {
+  justify-self: end;
+  text-align: right;
+  line-height: 1;
+  font-size: var(--ds-font-size-1);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.nextDueHint.dueHintSoon {
+  color: var(--ds-color-ink-muted);
+  font-weight: 400;
+}
+
+.nextDueHint.dueHintDanger {
+  font-weight: 400;
 }
 
 .item p {
   color: var(--ds-color-ink-muted);
 }
 
-.itemMeta {
-  text-align: right;
-  display: grid;
-  gap: var(--ds-space-1);
-  color: var(--ds-color-ink-muted);
+.dueDate {
+  font-weight: 600;
 }
 
-.itemMeta strong {
-  color: var(--ds-color-ink);
-  font-size: var(--ds-font-size-3);
+.dueHint {
+  font-size: var(--ds-font-size-1);
+}
+
+.dueHintSoon {
+  font-size: var(--ds-font-size-1);
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.dueHintDanger {
+  font-size: var(--ds-font-size-1);
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.progressMeta {
+  color: var(--ds-color-ink-muted);
+  font-size: var(--ds-font-size-1);
+}
+
+.outstanding {
+  font-size: var(--ds-font-size-1);
+}
+
+.statusPaid,
+.statusSoon,
+.statusOverdue {
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 4px 10px;
+  width: fit-content;
+}
+
+.statusPaid {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.statusSoon {
+  background: #e0f2fe;
+  color: #0c4a6e;
+}
+
+.statusOverdue {
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .item:hover {
@@ -82,18 +287,80 @@
   gap: var(--ds-space-3);
 }
 
-@media (max-width: 960px) {
-  .hero {
-    flex-direction: column;
-    align-items: flex-start;
+@media (min-width: 1024px) {
+  .list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ds-space-4);
+  }
+
+  .itemLink {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .empty {
+    width: 100%;
   }
 
   .item {
-    flex-direction: column;
-    align-items: flex-start;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 20px;
+    row-gap: 8px;
+    align-items: start;
   }
 
-  .itemMeta {
-    text-align: left;
+  .itemIdentity {
+    grid-column: 1;
+  }
+
+  .metricMonthly {
+    grid-column: 2;
+  }
+
+  .metricOutstanding {
+    grid-column: 3;
+  }
+
+  .itemDueBlock {
+    grid-column: 4;
+    justify-items: end;
+    text-align: right;
+  }
+
+  .itemProgress {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .metricBlock {
+    min-height: 64px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ds-space-4);
+  }
+
+  .itemLink {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .heroStats {
+    grid-template-columns: 1fr;
+  }
+
+  .item {
+    gap: 12px;
   }
 }
