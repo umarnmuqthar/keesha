@@ -26,6 +26,7 @@ export default async function ProfilePage() {
   return (
     <AppShell
       sidebar={<Sidebar />}
+      showSearch={false}
       header={
         <div className={shellStyles.header}>
           <div>

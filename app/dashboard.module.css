@@ -111,6 +111,35 @@
   background: linear-gradient(90deg, var(--ds-color-accent) 0%, #2dd4bf 100%);
 }
 
+.profileLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.profileAvatar,
+.profileAvatarFallback {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid var(--ds-color-border);
+  background: #ffffff;
+}
+
+.profileAvatar {
+  object-fit: cover;
+}
+
+.profileAvatarFallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ds-color-ink-muted);
+  font-size: var(--ds-font-size-2);
+  font-weight: 700;
+}
+
 @media (max-width: 960px) {
   .hero {
     flex-direction: column;

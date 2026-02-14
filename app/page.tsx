@@ -1,6 +1,9 @@
+import Link from "next/link";
 import { AppShell } from "@/components/layout/AppShell";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Button, Card } from "@/components/ui";
+import { db } from "@/lib/firebase-admin";
+import { getSession } from "@/app/actions/authActions";
 import shellStyles from "./app-shell.module.css";
 import styles from "./dashboard.module.css";
 
@@ -16,7 +19,21 @@ const tasks = [
   { title: "Apple One", detail: "Renews Feb 18", amount: "₹16.95" },
 ];
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const session = await getSession();
+  const profileDoc = session?.uid
+    ? await db.collection("users").doc(session.uid).get()
+    : null;
+  const profile = profileDoc?.exists ? profileDoc.data() : null;
+  const sessionName = (session as { name?: string } | null)?.name;
+  const name = profile?.name || sessionName || "Keesha User";
+  const photo =
+    profile?.photoURL ||
+    profile?.photoUrl ||
+    profile?.photo ||
+    profile?.avatar ||
+    null;
+
   return (
     <AppShell
       sidebar={<Sidebar />}
@@ -26,6 +43,17 @@ export default function DashboardPage() {
           <div>
             <p className={shellStyles.eyebrow}>Today</p>
             <h1>Dashboard</h1>
+          </div>
+          <div className={shellStyles.headerActions}>
+            <Link href="/profile" className={styles.profileLink} aria-label="Open profile">
+              {photo ? (
+                <img className={styles.profileAvatar} src={photo} alt={name} />
+              ) : (
+                <span className={styles.profileAvatarFallback}>
+                  {name.slice(0, 1).toUpperCase()}
+                </span>
+              )}
+            </Link>
           </div>
         </div>
       }
