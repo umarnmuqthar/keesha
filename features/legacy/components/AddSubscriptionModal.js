@@ -161,31 +161,29 @@ export default function AddSubscriptionModal({ isOpen, onClose, initialData = nu
                 <div className={styles.header}>
                     <h2>Verify Past Payments</h2>
                 </div>
-                {/* ... existing history step content ... */}
-                <div style={{ padding: '1.5rem' }}>
-                    <p style={{ marginBottom: '1.25rem', color: 'var(--text-secondary)', fontSize: '0.9375rem', lineHeight: '1.4' }}>
+                <div className={styles.historyBody}>
+                    <p className={styles.helperText}>
                         This subscription started in the past. We found {potentialHistory.length} potential payment dates.
                         Uncheck any you missed.
                     </p>
-                    <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid var(--border)', borderRadius: '12px', background: 'var(--background)' }}>
+                    <div className={styles.historyList}>
                         {potentialHistory.map((date, idx) => {
                             const iso = date.toISOString();
                             return (
-                                <div key={idx} style={{ padding: '14px 16px', borderBottom: '1px solid var(--border)', display: 'flex', gap: '12px', alignItems: 'center', background: 'var(--surface)' }}>
+                                <div key={idx} className={styles.historyRow}>
                                     <input
                                         type="checkbox"
                                         checked={selectedHistory.has(iso)}
                                         onChange={() => toggleHistoryDate(iso)}
-                                        style={{ width: '20px', height: '20px', accentColor: 'var(--primary)' }}
                                     />
-                                    <span style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.9375rem' }}>
+                                    <span className={styles.historyDate}>
                                         {date.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
                                     </span>
                                 </div>
                             )
                         })}
                     </div>
-                    <div className={styles.actions} style={{ marginTop: '1.75rem' }}>
+                    <div className={`${styles.actions} ${styles.historyActions}`}>
                         <button onClick={() => proceedWithSubmit(pendingFormData, [])} className={styles.cancelBtn}>Skip History</button>
                         <button
                             onClick={() => proceedWithSubmit(pendingFormData, Array.from(selectedHistory).sort())}
@@ -280,13 +278,13 @@ export default function AddSubscriptionModal({ isOpen, onClose, initialData = nu
                                 checked={isFreeTrial}
                                 onChange={(e) => setIsFreeTrial(e.target.checked)}
                             />
-                            <label htmlFor="isFreeTrial" style={{ fontWeight: 600 }}>Does this subscription have a free trial?</label>
+                            <label htmlFor="isFreeTrial">Does this subscription have a free trial?</label>
                         </div>
                     )}
 
                     {/* Conditional Trial Duration Inputs */}
                     {isFreeTrial && !isEditMode && (
-                        <div className={styles.row} style={{ background: '#f7f7f7', padding: '1rem', borderRadius: '8px' }}>
+                        <div className={`${styles.row} ${styles.trialPanel}`}>
                             <div className={styles.formGroup}>
                                 <label>Trial Duration</label>
                                 <input
@@ -331,7 +329,7 @@ export default function AddSubscriptionModal({ isOpen, onClose, initialData = nu
                         </div>
                     </div>
 
-                    <div className={styles.checkboxGroup} style={{ marginTop: 0 }}>
+                    <div className={styles.checkboxGroup}>
                         <input
                             name="autoPayActive"
                             type="checkbox"

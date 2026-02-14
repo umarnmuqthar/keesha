@@ -82,6 +82,7 @@ export default function LoansPageClient({ loans, metrics }: LoansPageClientProps
   const modal = useModalState(false);
   const { query: searchQuery } = useShellSearch();
   const query = searchQuery.trim().toLowerCase();
+  const monthShort = new Date().toLocaleDateString('en-GB', { month: 'short' });
 
   const filteredLoans = useMemo(() => {
     const base = query
@@ -123,66 +124,18 @@ export default function LoansPageClient({ loans, metrics }: LoansPageClientProps
           <section className={styles.hero}>
             <div className={styles.heroStats}>
               <Card className={styles.statCard}>
-                <p className={styles.label}>Active loans</p>
+                <p className={styles.label}>Active Loans</p>
                 <h3>{metrics.activeLoans}</h3>
-                <span className={styles.statSubtext}>
-                  {metrics.closingInThreeMonths} loans closing in 3 months
-                </span>
               </Card>
               <Card className={styles.statCard}>
-                <p className={styles.label}>Total loan amount</p>
-                <h3>{formatAmount(metrics.totalPrincipal)}</h3>
-                <span className={styles.statSubtext}>
-                  Lifetime debt repaid {formatAmount(metrics.lifetimeDebtRepaid)}
-                </span>
-              </Card>
-              <Card className={styles.statCard}>
-                <p className={styles.label}>Total outstanding</p>
+                <p className={styles.label}>Total Outstanding</p>
                 <h3>{formatAmount(metrics.totalOutstanding)}</h3>
-                <span className={styles.statSubtext}>
-                  {Math.round(metrics.outstandingPercent)}% of principal remaining
-                </span>
-                <div className={styles.progressTrack}>
-                  <div
-                    className={styles.progressFill}
-                    style={{ width: `${Math.max(0, Math.min(metrics.outstandingPercent, 100))}%` }}
-                  />
-                </div>
               </Card>
               <Card className={styles.statCard}>
-                <p className={styles.label}>Monthly EMI</p>
-                <h3>{formatAmount(metrics.monthlyEmiDue)}</h3>
-                <span className={styles.statSubtext}>
-                  {formatAmount(metrics.monthlyEmiPaid)} paid / {formatAmount(metrics.monthlyEmiRemaining)} remaining
-                </span>
-                <span className={styles.statSubtext}>
-                  Installments {metrics.paidInstallments}/{metrics.totalInstallments}
-                </span>
+                <p className={styles.label}>Remaining EMI ({monthShort})</p>
+                <h3>{formatAmount(metrics.monthlyEmiRemaining)}</h3>
               </Card>
             </div>
-          </section>
-
-          <section>
-            <Card className={styles.salaryImpactCard}>
-              <p className={styles.label}>Salary impact</p>
-              {metrics.salaryImpactPercent !== null ? (
-                <h3>
-                  {Math.round(metrics.salaryImpactPercent)}% of monthly income
-                </h3>
-              ) : (
-                <h3>Monthly income not set</h3>
-              )}
-              <p className={styles.salaryMeta}>
-                {metrics.salaryImpactPercent !== null && metrics.monthlyIncome
-                  ? `${formatAmount(metrics.monthlyEmiDue)} of ${formatAmount(metrics.monthlyIncome)} is locked before the month begins.`
-                  : "Add monthly income in profile to see EMI impact on your salary."}
-              </p>
-              {metrics.totalPayable > 0 ? (
-                <p className={styles.salaryMeta}>
-                  Based on payable totals: {formatAmount(metrics.totalPayable)} borrowed across all loans.
-                </p>
-              ) : null}
-            </Card>
           </section>
 
           <section className={styles.list}>

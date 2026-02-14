@@ -1,0 +1,357 @@
+.page {
+  display: grid;
+  gap: var(--ds-space-5, 20px);
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.backLink {
+  text-decoration: none;
+  color: var(--ds-color-ink-muted, #6b7280);
+  font-size: var(--ds-font-size-2, 0.9rem);
+}
+
+.backLink:hover {
+  color: var(--ds-color-ink, #111);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--ds-space-4, 16px);
+}
+
+.summaryCard h3 {
+  margin: 8px 0 4px;
+  font-size: var(--ds-font-size-5, 1.5rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.label {
+  color: var(--ds-color-ink-muted, #6b7280);
+  font-size: var(--ds-font-size-2, 0.9rem);
+}
+
+.meta {
+  color: var(--ds-color-ink-subtle, #71717a);
+  font-size: var(--ds-font-size-1, 0.8rem);
+}
+
+.dueHintSoon {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.dueHintDanger {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.heroCard {
+  display: grid;
+  gap: 12px;
+}
+
+.identityRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.identityRow h2 {
+  margin: 0;
+  font-size: var(--ds-font-size-5, 1.5rem);
+}
+
+.identityRow p {
+  margin-top: 4px;
+  color: var(--ds-color-ink-muted, #6b7280);
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: #e8f5f2;
+  color: var(--ds-color-accent-strong, #0f766e);
+  border: 1px solid rgba(15, 118, 110, 0.15);
+  font-size: var(--ds-font-size-1, 0.8rem);
+  font-weight: 700;
+}
+
+.metaRow {
+  border-top: 1px solid var(--ds-color-border, #e5e7eb);
+  padding-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+  color: var(--ds-color-ink-muted, #6b7280);
+  font-size: var(--ds-font-size-2, 0.9rem);
+}
+
+.inlineActionRow {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.section {
+  display: grid;
+  gap: 12px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+}
+
+.sectionHeader p {
+  margin-top: 4px;
+  color: var(--ds-color-ink-muted, #6b7280);
+}
+
+.sectionIntro {
+  display: grid;
+  gap: 2px;
+}
+
+.logPaymentBtn {
+  white-space: nowrap;
+}
+
+.tableCard {
+  padding: 8px 0;
+  overflow: hidden;
+}
+
+.tableHead,
+.tableRow {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1.9fr 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+}
+
+.tableHead {
+  border-bottom: 1px solid #e8ece9;
+  background: transparent;
+  color: var(--ds-color-ink-muted, #6b7280);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-top: 8px;
+  padding-bottom: 10px;
+}
+
+.actionsHead {
+  text-align: right;
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--ds-color-border, #e5e7eb);
+  color: var(--ds-color-ink, #111);
+  font-size: var(--ds-font-size-2, 0.9rem);
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.tableRow:last-of-type {
+  border-bottom: 0;
+}
+
+.dateCell,
+.amountCell {
+  font-variant-numeric: tabular-nums;
+}
+
+.amountCell {
+  font-weight: 700;
+}
+
+.typeCell {
+  color: var(--ds-color-ink-muted, #6b7280);
+}
+
+.rowActions {
+  justify-self: end;
+  display: inline-flex;
+  gap: 4px;
+}
+
+.rowActionBtn {
+  padding: 6px 10px;
+  min-height: 30px;
+}
+
+.emptyState {
+  padding: 24px;
+  text-align: center;
+  color: var(--ds-color-ink-muted, #6b7280);
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.45);
+  display: grid;
+  place-items: center;
+  padding: var(--ds-space-4, 16px);
+  z-index: 1000;
+}
+
+.modal {
+  width: min(460px, 100%);
+  background: var(--ds-color-surface, #fff);
+  border: 1px solid var(--ds-color-border, #e5e7eb);
+  border-radius: var(--ds-radius-4, 18px);
+  box-shadow: var(--ds-shadow-2, 0 24px 50px rgba(0, 0, 0, 0.14));
+  padding: var(--ds-space-5, 20px);
+  display: grid;
+  gap: 12px;
+}
+
+.modal h3 {
+  margin: 0;
+  font-size: var(--ds-font-size-4, 1.25rem);
+}
+
+.modal p {
+  color: var(--ds-color-ink-muted, #6b7280);
+  font-size: var(--ds-font-size-2, 0.9rem);
+}
+
+.modalLabel {
+  display: grid;
+  gap: 6px;
+  color: var(--ds-color-ink-muted, #6b7280);
+  font-size: var(--ds-font-size-2, 0.9rem);
+}
+
+.modalLabel input {
+  width: 100%;
+  border: 1px solid var(--ds-color-border, #e5e7eb);
+  border-radius: var(--ds-radius-2, 10px);
+  background: var(--ds-color-surface, #fff);
+  color: var(--ds-color-ink, #111);
+  padding: 10px 12px;
+  font-size: var(--ds-font-size-2, 0.9rem);
+}
+
+.modalHint {
+  color: var(--ds-color-ink-subtle, #71717a);
+  font-size: var(--ds-font-size-1, 0.8rem);
+}
+
+.switchRow {
+  display: inline-flex;
+  gap: 6px;
+  border-bottom: 1px solid var(--ds-color-border, #e5e7eb);
+  padding-bottom: 6px;
+}
+
+.switchBtn {
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--ds-color-ink-muted, #6b7280);
+  font-size: var(--ds-font-size-1, 0.8rem);
+  font-weight: 600;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.switchBtnActive {
+  color: var(--ds-color-accent-strong, #0f766e);
+  border-bottom-color: var(--ds-color-accent-strong, #0f766e);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@media (max-width: 1100px) {
+  .summaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 960px) {
+  .sectionHeader {
+    align-items: center;
+  }
+
+  .tableHead {
+    display: none;
+  }
+
+  .tableRow {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "date amount"
+      "type type"
+      "actions actions";
+    gap: 8px 10px;
+    align-items: start;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid #e8ece9;
+    margin: 8px 14px;
+  }
+
+  .dateCell {
+    grid-area: date;
+  }
+
+  .amountCell {
+    grid-area: amount;
+    text-align: right;
+  }
+
+  .typeCell {
+    grid-area: type;
+  }
+
+  .rowActions {
+    grid-area: actions;
+    justify-self: start;
+  }
+}
+
+@media (max-width: 640px) {
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .modalActions {
+    justify-content: stretch;
+  }
+
+  .modalActions > * {
+    flex: 1;
+  }
+}

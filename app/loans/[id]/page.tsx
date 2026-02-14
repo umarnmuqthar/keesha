@@ -24,6 +24,7 @@ export default async function LoanDetailPage({ params }: { params: { id: string 
   return (
     <AppShell
       sidebar={<Sidebar />}
+      showSearch={false}
       header={
         <div className={shellStyles.header}>
           <div>

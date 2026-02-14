@@ -12,7 +12,7 @@
 
 .heroStats {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--ds-space-4);
 }
 
@@ -23,6 +23,7 @@
 .statCard h3 {
   font-size: var(--ds-font-size-5);
   margin-top: var(--ds-space-2);
+  line-height: 1.1;
 }
 
 .statSubtext {
@@ -357,7 +358,21 @@
   }
 
   .heroStats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--ds-space-2);
+  }
+
+  .statCard {
+    padding: var(--ds-space-3);
+  }
+
+  .statCard h3 {
+    font-size: var(--ds-font-size-4);
+    margin-top: 6px;
+  }
+
+  .label {
+    font-size: var(--ds-font-size-1);
   }
 
   .item {
