@@ -78,6 +78,27 @@ export async function toggleLoanPayment(loanId, monthYear, isPaid) {
   }
 }
 
+export async function markLoanPaidWithAmount(loanId, paymentDate, amount) {
+  try {
+    const { db } = await import('@/lib/firebase-admin');
+    const paymentRef = db.collection('loans').doc(loanId).collection('payments').doc(paymentDate);
+
+    await paymentRef.set({
+      paidAt: new Date().toISOString(),
+      amount: parseFloat(amount) || 0
+    }, { merge: true });
+
+    await checkAndAutoCloseLoan(loanId);
+
+    revalidatePath('/loans');
+    revalidatePath(`/loans/${loanId}`);
+    return { success: true };
+  } catch (e) {
+    console.error('Mark Loan Paid With Amount Error:', e);
+    return { success: false, message: 'Failed to mark as paid' };
+  }
+}
+
 export async function updateLoanPayment(loanId, paymentDate, data) {
   try {
     const { db } = await import('@/lib/firebase-admin');
