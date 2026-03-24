@@ -1,10 +1,16 @@
-import LoadingSkeleton from '@/features/legacy/components/LoadingSkeleton';
-
 export default function Loading() {
     return (
-        <div style={{ flex: 1, height: '100vh', width: '100%' }}>
-            {/* Simple skeleton loader to improve perceived performance */}
-            <LoadingSkeleton />
+        <div style={{ 
+            flex: 1, 
+            height: '100vh', 
+            width: '100%', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            color: 'var(--ds-color-ink-subtle)',
+            fontSize: 'var(--ds-font-size-2)'
+        }}>
+            Loading...
         </div>
     );
 }

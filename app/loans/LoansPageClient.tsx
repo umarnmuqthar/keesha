@@ -5,14 +5,14 @@ import { useMemo, useState, useTransition, useEffect, useRef } from 'react';
 import { markLoanPaidWithAmount } from '@/app/actions/loanActions';
 import { AppShell } from '@/components/layout/AppShell';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { PageHeader, TabButton, ActionButton } from '@/components/layout/PageHeader';
 import { useShellSearch } from '@/components/layout/ShellSearchContext';
 import { AddButton, Button, Card, Input } from '@/components/ui';
 import { useModalState } from '@/components/ui/useModalState';
 import AddLoanModal from '@/features/legacy/components/AddLoanModal';
-import { Filter } from 'lucide-react';
+import LoanDetailsModal from './LoanDetailsModal';
+import { Filter, LayoutDashboard } from 'lucide-react';
 import { ShellSearch } from '@/components/layout/ShellSearch';
-import shellStyles from '../app-shell.module.css';
-import appShellStyles from '@/components/layout/appShell.module.css';
 import styles from './loans.module.css';
 
 type Loan = {
@@ -37,6 +37,8 @@ type Loan = {
   nextDueAmount?: number;
   paidAmount?: number;
   outstandingBalance?: number;
+  payments?: Record<string, any>;
+  schedule?: any[];
 };
 
 type LoanMetrics = {
@@ -109,12 +111,15 @@ function MarkPaidButton({
   return (
     <button
       className={styles.markPaidBtn}
-      onClick={() => onSelect({
-        loanId: loan.id,
-        loanName: loan.name || 'Loan',
-        nextDueDate: loan.nextDueDate!,
-        defaultAmount: emiAmount
-      })}
+      onClick={(e) => {
+        e.stopPropagation();
+        onSelect({
+          loanId: loan.id,
+          loanName: loan.name || 'Loan',
+          nextDueDate: loan.nextDueDate!,
+          defaultAmount: emiAmount
+        });
+      }}
     >
       Mark paid ({monthStr})
     </button>
@@ -192,6 +197,8 @@ function MarkPaidModal({
 export default function LoansPageClient({ loans, metrics }: LoansPageClientProps) {
   const modal = useModalState(false);
   const [selectedPayment, setSelectedPayment] = useState<SelectedPayment>(null);
+  const [selectedLoanDetail, setSelectedLoanDetail] = useState<Loan | null>(null);
+  const [viewMode, setViewMode] = useState<'list' | 'dashboard'>('list');
   const [statusFilter, setStatusFilter] = useState<'Active' | 'Closed' | 'All'>('Active');
   const [timingFilter, setTimingFilter] = useState<'All' | 'Pending this Month' | 'Upcoming this Month' | 'Upcoming Next Month'>('All');
   const [isTimingDropdownOpen, setIsTimingDropdownOpen] = useState(false);
@@ -277,69 +284,72 @@ export default function LoansPageClient({ loans, metrics }: LoansPageClientProps
     <>
       <AppShell
         sidebar={<Sidebar />}
-        showSearch={false}
         header={
-          <div className={shellStyles.header}>
-            <div>
-              <p className={shellStyles.eyebrow}>Loans</p>
-              <h1>
-                <span className={shellStyles.desktopTitle}>Debt commitments</span>
-              </h1>
-            </div>
-            <div className={shellStyles.headerActions}>
+          <PageHeader
+            title=""
+            showSearch={true}
+            tabs={
+              <>
+                {(['Active', 'Closed', 'All'] as const).map(status => (
+                  <TabButton
+                    key={status}
+                    active={statusFilter === status}
+                    onClick={() => {
+                      setStatusFilter(status);
+                      setViewMode('list');
+                    }}
+                  >
+                    {status}
+                  </TabButton>
+                ))}
+              </>
+            }
+            filters={
+              <>
+                <div className={styles.funnelWrap} ref={timingDropdownRef}>
+                  <ActionButton
+                    active={timingFilter !== 'All'}
+                    onClick={() => setIsTimingDropdownOpen(!isTimingDropdownOpen)}
+                  >
+                    <Filter size={16} />
+                  </ActionButton>
+                  {isTimingDropdownOpen && (
+                    <div className={styles.funnelDropdown}>
+                      {(['All', 'Pending this Month', 'Upcoming this Month', 'Upcoming Next Month'] as const).map(filter => (
+                        <button
+                          key={filter}
+                          className={`${styles.dropdownItem} ${timingFilter === filter ? styles.dropdownItemActive : ''}`}
+                          onClick={() => {
+                            setTimingFilter(filter);
+                            setIsTimingDropdownOpen(false);
+                            setViewMode('list');
+                          }}
+                        >
+                          {filter}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  className={`${styles.funnelBtn} ${viewMode === 'dashboard' ? styles.funnelBtnActive : ''}`}
+                  onClick={() => setViewMode(prev => prev === 'dashboard' ? 'list' : 'dashboard')}
+                  title="Dashboard"
+                >
+                  <LayoutDashboard size={16} />
+                </button>
+              </>
+            }
+            actions={
               <AddButton size="sm" onClick={modal.open}>Add loan</AddButton>
-            </div>
-          </div>
+            }
+          />
         }
       >
         <div className={styles.page}>
-          <div className={styles.filtersRow}>
-            <div className={styles.leftFilters}>
-              <div className={styles.statusToggle}>
-                {(['Active', 'Closed', 'All'] as const).map(status => (
-                  <button
-                    key={status}
-                    className={`${styles.statusBtn} ${statusFilter === status ? styles.statusBtnActive : ''}`}
-                    onClick={() => setStatusFilter(status)}
-                  >
-                    {status}
-                  </button>
-                ))}
-              </div>
-
-              <div className={styles.funnelWrap} ref={timingDropdownRef}>
-                <button
-                  className={`${styles.funnelBtn} ${timingFilter !== 'All' ? styles.funnelBtnActive : ''}`}
-                  onClick={() => setIsTimingDropdownOpen(!isTimingDropdownOpen)}
-                >
-                  <Filter size={16} />
-                </button>
-                {isTimingDropdownOpen && (
-                  <div className={styles.funnelDropdown}>
-                    {(['All', 'Pending this Month', 'Upcoming this Month', 'Upcoming Next Month'] as const).map(filter => (
-                      <button
-                        key={filter}
-                        className={`${styles.dropdownItem} ${timingFilter === filter ? styles.dropdownItemActive : ''}`}
-                        onClick={() => {
-                          setTimingFilter(filter);
-                          setIsTimingDropdownOpen(false);
-                        }}
-                      >
-                        {filter}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <ShellSearch
-              formClassName={styles.searchForm}
-              inputClassName={styles.searchInput}
-            />
-          </div>
-
-          <section className={styles.hero}>
+          {viewMode === 'dashboard' && (
+            <section className={styles.hero}>
             <div className={styles.heroStats}>
               <Card className={styles.statCard}>
                 <p className={styles.label}>Active Loans</p>
@@ -355,8 +365,10 @@ export default function LoansPageClient({ loans, metrics }: LoansPageClientProps
               </Card>
             </div>
           </section>
+          )}
 
-          <section className={styles.list}>
+          {viewMode === 'list' && (
+            <section className={styles.list}>
             {filteredLoans.length === 0 ? (
               <Card className={styles.empty}>
                 <h3>{query ? 'No matching loans' : 'No loans yet'}</h3>
@@ -378,7 +390,7 @@ export default function LoansPageClient({ loans, metrics }: LoansPageClientProps
                       <th>Total Loan</th>
                       <th>Progress</th>
                       <th>Monthly EMI</th>
-                      <th>Action</th>
+                      <th className={styles.actionCell}>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -397,15 +409,20 @@ export default function LoansPageClient({ loans, metrics }: LoansPageClientProps
                       );
 
                       return (
-                        <tr key={loan.id} className={styles.tableRow}>
+                        <tr 
+                          key={loan.id} 
+                          className={styles.tableRow} 
+                          onClick={() => setSelectedLoanDetail(loan)} 
+                          style={{ cursor: 'pointer' }}
+                        >
                           <td className={styles.loanNameCell}>
-                            <Link href={`/loans/${loan.id}`} className={styles.loanLink}>
+                            <div className={styles.loanLink}>
                               <strong>{loan.name || 'Loan'}</strong>
                               <span className={styles.typeSubtext}>
                                 {loan.loanType === 'Consumer' ? 'Consumer' : 'Personal'}
                                 {loan.lender ? ` • ${loan.lender}` : ''}
                               </span>
-                            </Link>
+                            </div>
                           </td>
                           <td>
                             <div className={styles.dueCell}>
@@ -431,10 +448,8 @@ export default function LoansPageClient({ loans, metrics }: LoansPageClientProps
                             </div>
                           </td>
                           <td className={styles.amountCell}>{formatAmount(emiAmount)}</td>
-                          <td>
-                            <div className={styles.actionCell}>
-                              <MarkPaidButton loan={loan} onSelect={setSelectedPayment} />
-                            </div>
+                          <td className={styles.actionCell}>
+                            <MarkPaidButton loan={loan} onSelect={setSelectedPayment} />
                           </td>
                         </tr>
                       );
@@ -443,7 +458,8 @@ export default function LoansPageClient({ loans, metrics }: LoansPageClientProps
                 </table>
               </div>
             )}
-          </section>
+            </section>
+          )}
         </div>
       </AppShell>
 
@@ -456,6 +472,11 @@ export default function LoansPageClient({ loans, metrics }: LoansPageClientProps
       <MarkPaidModal
         selected={selectedPayment}
         onClose={() => setSelectedPayment(null)}
+      />
+
+      <LoanDetailsModal
+        loan={selectedLoanDetail}
+        onClose={() => setSelectedLoanDetail(null)}
       />
     </>
   );

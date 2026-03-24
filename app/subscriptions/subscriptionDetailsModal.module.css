@@ -1,0 +1,301 @@
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-space-4);
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.modalOverlayClosing {
+  animation: fadeOut 0.2s ease-in forwards;
+}
+
+.modalWindow {
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  background: white;
+  border-radius: 16px;
+  box-shadow: var(--ds-shadow-xl);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalContentPopIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.modalWindowClosing {
+  animation: modalContentPopOut 0.15s ease-in forwards;
+}
+
+.modalHeaderClose {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--ds-color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modalHeaderClose h2 {
+  font-size: var(--ds-font-size-4);
+  margin: 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ds-color-ink-muted);
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  display: flex;
+}
+
+.closeBtn:hover {
+  background: #f1f5f9;
+  color: var(--ds-color-ink);
+}
+
+.modalContent {
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.summaryCard {
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.summaryCard h3 {
+  font-size: var(--ds-font-size-4);
+  margin-top: 4px;
+}
+
+.label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--ds-color-ink-muted);
+}
+
+.meta {
+  font-size: 12px;
+  color: var(--ds-color-ink-muted);
+  margin-top: 2px;
+  display: block;
+}
+
+.dueHintSoon {
+  color: var(--ds-color-ink-muted);
+}
+
+.dueHintDanger {
+  color: var(--ds-color-danger-strong);
+}
+
+.statusCard {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.identityRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.statusBadge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #f1f5f9;
+  color: var(--ds-color-ink);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sectionHeader h2 {
+  font-size: var(--ds-font-size-3);
+  margin: 0;
+}
+
+.sectionHeader p {
+  color: var(--ds-color-ink-muted);
+  font-size: var(--ds-font-size-2);
+  margin-top: 2px;
+}
+
+.tableCard {
+  border: 1px solid #e2e8f0;
+}
+
+.tableHead {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 100px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--ds-color-ink-muted);
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 100px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  align-items: center;
+  font-size: 13px;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.rowActions {
+  display: flex;
+  gap: 4px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.emptyState {
+  padding: 40px;
+  text-align: center;
+  color: var(--ds-color-ink-muted);
+}
+
+/* Inner Modal */
+.innerModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal {
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--ds-shadow-lg);
+}
+
+.modal h3 {
+  margin: 0 0 8px;
+}
+
+.modal p {
+  font-size: 14px;
+  color: var(--ds-color-ink-muted);
+  margin-bottom: 20px;
+}
+
+.modalLabel {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.modalLabel input,
+.modalLabel select {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.switchRow {
+  display: flex;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.switchBtn {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.switchBtnActive {
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes modalContentPopIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes modalContentPopOut {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to { opacity: 0; transform: scale(0.95) translateY(5px); }
+}
+
+@media (max-width: 640px) {
+  .summary {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -160,6 +160,13 @@ export default function AddCreditCardModal({ isOpen, onClose }) {
                             <input name="dueDate" type="date" required />
                         </div>
                     </div>
+                    <div className={styles.formGroup}>
+                        <label>Status</label>
+                        <select name="status" defaultValue="Active" className={styles.select}>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
 
                     <div className={styles.modalActions}>
                         <button type="button" onClick={onClose} className={styles.cancelBtn}>Cancel</button>

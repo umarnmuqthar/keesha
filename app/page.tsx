@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { AppShell } from "@/components/layout/AppShell";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { Button, Card } from "@/components/ui";
 import { db } from "@/lib/firebase-admin";
 import { getSession } from "@/app/actions/authActions";
-import shellStyles from "./app-shell.module.css";
 import styles from "./dashboard.module.css";
 
 const highlights = [
@@ -37,14 +37,12 @@ export default async function DashboardPage() {
   return (
     <AppShell
       sidebar={<Sidebar />}
-      showSearch={false}
       header={
-        <div className={shellStyles.header}>
-          <div>
-            <p className={shellStyles.eyebrow}>Today</p>
-            <h1>Dashboard</h1>
-          </div>
-          <div className={shellStyles.headerActions}>
+        <PageHeader
+          title="Dashboard"
+          eyebrow="Today"
+          showSearch={false}
+          actions={
             <Link href="/profile" className={styles.profileLink} aria-label="Open profile">
               {photo ? (
                 <img className={styles.profileAvatar} src={photo} alt={name} />
@@ -54,8 +52,8 @@ export default async function DashboardPage() {
                 </span>
               )}
             </Link>
-          </div>
-        </div>
+          }
+        />
       }
     >
       <div className={styles.page}>
@@ -100,8 +98,8 @@ export default async function DashboardPage() {
           <Card className={styles.insight}>
             <h3>Cashflow forecast</h3>
             <p>
-              You are projected to finish the month with 18% more savings than
-              last month.
+              Your financial health is looking strong this month with a consistent
+              balance across your accounts.
             </p>
             <div className={styles.progress}>
               <span style={{ width: "72%" }} />

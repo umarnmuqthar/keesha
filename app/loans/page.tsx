@@ -140,6 +140,7 @@ const getLoans = cache(async function getLoans(userId?: string) {
         paymentStatus,
         paidAmount,
         outstandingBalance,
+        payments: Object.fromEntries(paymentsByDate),
       };
     })
   );

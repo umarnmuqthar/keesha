@@ -19,7 +19,7 @@ export async function addCreditCard(formData) {
       statementBalance: parseFloat(formData.get('statementBalance') || 0),
       totalPaid: 0,
       dueDate: formData.get('dueDate'),
-      status: 'Active',
+      status: formData.get('status') || 'Active',
       createdAt: new Date().toISOString()
     };
 
@@ -40,7 +40,8 @@ export async function updateCreditCard(id, formData) {
       expiry: formData.get('expiry'),
       totalLimit: parseFloat(formData.get('totalLimit') || 0),
       statementBalance: parseFloat(formData.get('statementBalance') || 0),
-      dueDate: formData.get('dueDate')
+      dueDate: formData.get('dueDate'),
+      status: formData.get('status') || 'Active'
     };
 
     await db.collection('creditcards').doc(id).update(data);
@@ -157,3 +158,24 @@ export async function deleteCardTransaction(cardId, transactionId) {
     return { success: false, message: 'Failed to delete transaction' };
   }
 }
+
+export async function getCardTransactions(cardId) {
+  try {
+    const { db } = await import('@/lib/firebase-admin');
+    const snapshot = await db
+      .collection('creditcards')
+      .doc(cardId)
+      .collection('transactions')
+      .orderBy('date', 'desc')
+      .get();
+
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (e) {
+    console.error('Get Card Transactions Error:', e);
+    return [];
+  }
+}
+

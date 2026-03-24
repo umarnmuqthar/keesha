@@ -120,7 +120,6 @@ export async function updateSubscription(id, formData) {
 
     await db.collection('subscriptions').doc(id).update(data);
     revalidatePath('/');
-    revalidatePath(`/subscriptions/${id}`);
     return { success: true, message: 'Subscription updated successfully' };
   } catch (e) {
     console.error('Update Subscription Error:', e);
@@ -157,7 +156,6 @@ export async function updateSubscriptionStatus(id, newStatus, effectiveDate) {
     });
 
     revalidatePath('/');
-    revalidatePath(`/subscriptions/${id}`);
     return { success: true };
   } catch (e) {
     console.error('Update Status Error:', e);
@@ -222,7 +220,6 @@ export async function recordPayment(subscriptionId, amount, date) {
     }
 
     revalidatePath('/');
-    revalidatePath(`/subscriptions/${subscriptionId}`);
     return { success: true };
   } catch (e) {
     console.error('Record Payment Error:', e);
@@ -240,7 +237,6 @@ export async function addManualPayment(subscriptionId, amount, date) {
     });
 
     revalidatePath('/');
-    revalidatePath(`/subscriptions/${subscriptionId}`);
     return { success: true };
   } catch (e) {
     console.error('Manual Payment Error:', e);
@@ -254,7 +250,6 @@ export async function deletePaymentEntry(subscriptionId, ledgerId) {
     await db.collection('subscriptions').doc(subscriptionId).collection('ledger').doc(ledgerId).delete();
 
     revalidatePath('/');
-    revalidatePath(`/subscriptions/${subscriptionId}`);
     return { success: true };
   } catch (e) {
     console.error('Delete Payment Error:', e);
@@ -271,7 +266,6 @@ export async function updatePaymentEntry(subscriptionId, ledgerId, amount, date)
     });
 
     revalidatePath('/');
-    revalidatePath(`/subscriptions/${subscriptionId}`);
     return { success: true };
   } catch (e) {
     console.error('Update Payment Error:', e);
@@ -297,7 +291,6 @@ export async function addBulkPayments(subscriptionId, amount, dates) {
     await batch.commit();
 
     revalidatePath('/');
-    revalidatePath(`/subscriptions/${subscriptionId}`);
     return { success: true };
   } catch (e) {
     console.error('Bulk Pay Error:', e);

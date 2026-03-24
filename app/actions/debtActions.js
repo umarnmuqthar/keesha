@@ -23,6 +23,7 @@ export async function addDebtAccount(formData) {
         name,
         type,
         status: 'Active',
+        netBalance: 0,
         createdAt: new Date().toISOString(),
         lastInteraction: new Date().toISOString()
     };
@@ -49,31 +50,70 @@ export async function addDebtEntry(accountId, formData) {
 
     if (!amount || !type) return { error: 'Amount and type are required' };
 
-    const batch = db.batch();
-
-    // 1. Add the transaction
-    const transRef = db.collection('debt_accounts').doc(accountId).collection('transactions').doc();
-    batch.set(transRef, {
-        amount,
-        description,
-        type,
-        date,
-        status: 'Pending',
-        createdAt: new Date().toISOString()
-    });
-
-    // 2. Update account last interaction
     const accountRef = db.collection('debt_accounts').doc(accountId);
-    batch.update(accountRef, {
-        lastInteraction: new Date().toISOString(),
-        ...(reminderDate ? { reminderDate } : {})
-    });
 
-    await batch.commit();
+    try {
+        await db.runTransaction(async (transaction) => {
+            const accountDoc = await transaction.get(accountRef);
+            if (!accountDoc.exists) throw new Error('Account not found');
 
-    revalidatePath(`/debt/${accountId}`);
-    revalidatePath('/debt');
-    return { success: true };
+            const accountData = accountDoc.data();
+            const currentBalance = accountData.netBalance || 0;
+            
+            // GIVE is negative (money going out), GOT is positive (money coming in)
+            // Wait, looking at DebtDetailsModal: 
+            // {t.type === 'GIVE' ? '- ' : '+ '}{formatAmount(t.amount)}
+            // and 125: const isOweMe = (account.netBalance || 0) > 0;
+            // So GOT (Received) increases the balance (they owe you less/you owe them more?)
+            // Actually, usually:
+            // GIVE: You give money (They owe you more) -> + Balance
+            // GOT: You get money (They owe you less) -> - Balance
+            // Let's check DebtDetailsModal logic again.
+            // 151: h1 className={isOweMe ? styles.posBalance : styles.negBalance}
+            // 8: ArrowUpRight (GIVE), 9: ArrowDownLeft (GOT)
+            // If I GIVE, it's an outflow. If I GOT, it's an inflow.
+            // In typical debt tracking:
+            // GIVE means I'm lending or paying back.
+            // If Balance > 0 means "They owe me".
+            // If I GIVE money to someone who owes me, Balance increases.
+            // If I GOT money from someone who owes me, Balance decreases.
+            
+            let netChange = type === 'GIVE' ? amount : -amount;
+            const newBalance = currentBalance + netChange;
+            
+            // Auto-settle logic
+            let newStatus = accountData.status || 'Active';
+            if (Math.abs(newBalance) < 0.01) {
+                newStatus = 'Settled';
+            } else if (newStatus === 'Settled') {
+                newStatus = 'Active';
+            }
+
+            const transRef = accountRef.collection('transactions').doc();
+            transaction.set(transRef, {
+                amount,
+                description,
+                type,
+                date,
+                status: 'Pending',
+                createdAt: new Date().toISOString()
+            });
+
+            transaction.update(accountRef, {
+                netBalance: newBalance,
+                status: newStatus,
+                lastInteraction: new Date().toISOString(),
+                ...(reminderDate ? { reminderDate } : {})
+            });
+        });
+
+        revalidatePath(`/debt/${accountId}`);
+        revalidatePath('/debt');
+        return { success: true };
+    } catch (e) {
+        console.error('Add Debt Entry Error:', e);
+        return { error: 'Failed to add entry' };
+    }
 }
 
 /**
@@ -122,18 +162,37 @@ export async function updateDebtAccount(accountId, formData) {
     const { db } = await import('@/lib/firebase-admin');
     const name = formData.get('name');
     const type = formData.get('type');
+    const status = formData.get('status');
 
-    if (!name) return { error: 'Name is required' };
-
-    await db.collection('debt_accounts').doc(accountId).update({
-        name,
-        type,
+    const updateData = {
         lastInteraction: new Date().toISOString()
-    });
+    };
+    if (name) updateData.name = name;
+    if (type) updateData.type = type;
+    if (status) updateData.status = status;
+
+    await db.collection('debt_accounts').doc(accountId).update(updateData);
 
     revalidatePath(`/debt/${accountId}`);
     revalidatePath('/debt');
     return { success: true };
+}
+
+/**
+ * Get all transactions for a debt account
+ */
+export async function getDebtTransactions(accountId) {
+    const { db } = await import('@/lib/firebase-admin');
+    const snapshot = await db.collection('debt_accounts')
+        .doc(accountId)
+        .collection('transactions')
+        .orderBy('date', 'desc')
+        .get();
+    
+    return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
 }
 
 /**
@@ -156,3 +215,4 @@ export async function deleteDebtAccount(accountId) {
     revalidatePath('/debt');
     return { success: true };
 }
+

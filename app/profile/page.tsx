@@ -1,7 +1,7 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { Button, Card } from "@/components/ui";
-import shellStyles from "../app-shell.module.css";
 import styles from "./profile.module.css";
 import { logoutUser, getSession } from "@/app/actions/authActions";
 import { db } from "@/lib/firebase-admin";
@@ -26,14 +26,12 @@ export default async function ProfilePage() {
   return (
     <AppShell
       sidebar={<Sidebar />}
-      showSearch={false}
       header={
-        <div className={shellStyles.header}>
-          <div>
-            <p className={shellStyles.eyebrow}>Profile</p>
-            <h1>Your account</h1>
-          </div>
-        </div>
+        <PageHeader
+          title="Your account"
+          eyebrow="Profile"
+          showSearch={false}
+        />
       }
     >
       <div className={styles.page}>

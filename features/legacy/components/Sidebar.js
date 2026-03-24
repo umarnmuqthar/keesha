@@ -28,9 +28,7 @@ export default function Sidebar({ isCollapsed, isMobileOpen, toggleSidebar, user
         { name: 'EMI Tracker', path: '/loans', icon: <CalendarClock {...iconProps} /> },
         { name: 'Debt Tracker', path: '/debt', icon: <Scale {...iconProps} /> },
         { name: 'Credit Cards', path: '/creditcards', icon: <CreditCard {...iconProps} /> },
-        { name: 'Savings', path: '/savings', icon: <PiggyBank {...iconProps} /> },
         { name: 'Incomes', path: '/incomes', icon: <Wallet {...iconProps} /> },
-        { name: 'Expenses', path: '/expenses', icon: <Receipt {...iconProps} /> },
     ];
 
     return (

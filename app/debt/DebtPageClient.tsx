@@ -1,14 +1,15 @@
 'use client';
 
-import Link from 'next/link';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { PageHeader, TabButton, ActionButton } from '@/components/layout/PageHeader';
 import { useShellSearch } from '@/components/layout/ShellSearchContext';
 import { AddButton, Card } from '@/components/ui';
 import { useModalState } from '@/components/ui/useModalState';
 import AddDebtModal from '@/features/legacy/components/AddDebtModal';
-import shellStyles from '../app-shell.module.css';
+import DebtDetailsModal from './DebtDetailsModal';
+import { LayoutDashboard } from 'lucide-react';
 import styles from './debt.module.css';
 
 type DebtAccount = {
@@ -30,87 +31,145 @@ const formatAmount = (value?: number) => {
 
 export default function DebtPageClient({ accounts }: DebtPageClientProps) {
   const modal = useModalState(false);
+  const [selectedAccount, setSelectedAccount] = useState<DebtAccount | null>(null);
+  const [viewMode, setViewMode] = useState<'list' | 'dashboard'>('list');
+  const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Settled'>('All');
   const { query: searchQuery } = useShellSearch();
   const query = searchQuery.trim().toLowerCase();
 
-  const activeAccounts = accounts.filter((account) => (account.status || 'Active') === 'Active').length;
+  const filteredByStatus = useMemo(() => {
+    if (statusFilter === 'All') return accounts;
+    return accounts.filter(acc => (acc.status || 'Active') === statusFilter);
+  }, [accounts, statusFilter]);
+
+  const filteredAccounts = useMemo(() => {
+    if (!query) return filteredByStatus;
+    return filteredByStatus.filter((account) =>
+      (account.name || '').toLowerCase().includes(query) ||
+      (account.type || '').toLowerCase().includes(query)
+    );
+  }, [filteredByStatus, query]);
+
   const totalOpenBalance = accounts.reduce(
     (sum, account) => sum + Math.abs(Number(account.netBalance || 0)),
     0
   );
-  const filteredAccounts = useMemo(() => {
-    if (!query) return accounts;
-    return accounts.filter((account) =>
-      [account.name, account.type, account.status]
-        .map((value) => String(value || '').toLowerCase())
-        .some((value) => value.includes(query))
-    );
-  }, [accounts, query]);
 
   return (
     <>
       <AppShell
         sidebar={<Sidebar />}
         header={
-          <div className={shellStyles.header}>
-            <div>
-              <p className={shellStyles.eyebrow}>Debt</p>
-              <h1>Balances & IOUs</h1>
-            </div>
-            <div className={shellStyles.headerActions}>
-              <AddButton size="sm" onClick={modal.open}>Add debt</AddButton>
-            </div>
-          </div>
+          <PageHeader
+            title=""
+            showSearch={true}
+            tabs={
+              <>
+                {(['All', 'Active', 'Settled'] as const).map(status => (
+                  <TabButton
+                    key={status}
+                    active={statusFilter === status}
+                    onClick={() => {
+                      setStatusFilter(status);
+                      setViewMode('list');
+                    }}
+                  >
+                    {status}
+                  </TabButton>
+                ))}
+              </>
+            }
+            filters={
+              <ActionButton
+                active={viewMode === 'dashboard'}
+                onClick={() => setViewMode(prev => prev === 'dashboard' ? 'list' : 'dashboard')}
+                title="Toggle Dashboard"
+              >
+                <LayoutDashboard size={16} />
+              </ActionButton>
+            }
+            actions={<AddButton size="sm" onClick={modal.open}>Add debt</AddButton>}
+          />
         }
       >
         <div className={styles.page}>
-          <section className={styles.hero}>
-            <div>
-              <h2>Track every personal balance</h2>
-              <p>Manage what you owe and what others owe you in one place.</p>
-            </div>
-            <div className={styles.heroStats}>
-              <Card className={styles.statCard}>
-                <p className={styles.label}>Active accounts</p>
-                <h3>{activeAccounts}</h3>
-              </Card>
-              <Card className={styles.statCard}>
-                <p className={styles.label}>Open balance</p>
-                <h3>{formatAmount(totalOpenBalance)}</h3>
-              </Card>
-            </div>
-          </section>
+          {viewMode === 'dashboard' && (
+            <section className={styles.hero}>
+              <div className={styles.heroStats}>
+                <Card className={styles.statCard}>
+                  <p className={styles.label}>Active accounts</p>
+                  <h3>{accounts.filter(a => (a.status || 'Active') === 'Active').length}</h3>
+                </Card>
+                <Card className={styles.statCard}>
+                  <p className={styles.label}>Total open balance</p>
+                  <h3>{formatAmount(totalOpenBalance)}</h3>
+                </Card>
+              </div>
+            </section>
+          )}
 
-          <section className={styles.list}>
-            {filteredAccounts.length === 0 ? (
-              <Card className={styles.placeholder}>
-                <h3>{query ? 'No matching debt accounts' : 'No debts added'}</h3>
-                <p>
-                  {query
-                    ? `No account found for "${searchQuery}".`
-                    : 'Add personal debts or IOUs to track repayments.'}
-                </p>
-                {!query ? <AddButton size="sm" onClick={modal.open}>Add debt</AddButton> : null}
-              </Card>
-            ) : (
-              filteredAccounts.map((account) => (
-                <Link key={account.id} href={`/debt/${account.id}`} className={styles.itemLink}>
-                  <Card className={styles.item}>
-                    <div>
-                      <h3>{account.name || 'Debt account'}</h3>
-                      <p>{account.type || 'Account'}</p>
-                    </div>
-                    <div className={styles.itemMeta}>
-                      <span>{account.status || 'Active'}</span>
-                      <strong>{formatAmount(account.netBalance || 0)}</strong>
-                    </div>
-                  </Card>
-                </Link>
-              ))
-            )}
-          </section>
+          {viewMode === 'list' && (
+            <section className={styles.list}>
+              {filteredAccounts.length === 0 ? (
+                <Card className={styles.placeholder}>
+                  <h3>{query ? 'No matching accounts' : 'No debts yet'}</h3>
+                  <p>
+                    {query
+                      ? `No account found for "${searchQuery}".`
+                      : 'Add personal debts or IOUs to track repayments.'}
+                  </p>
+                  {!query ? <AddButton size="sm" onClick={modal.open}>Add debt</AddButton> : null}
+                </Card>
+              ) : (
+                <div className={styles.tableContainer}>
+                  <table className={styles.table}>
+                    <thead>
+                      <tr>
+                        <th className={styles.nameCell}>Person / Entity</th>
+                        <th className={styles.typeCell}>Type</th>
+                        <th className={styles.statusCell}>Status</th>
+                        <th className={styles.amountCell}>Net Balance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredAccounts.map((account) => (
+                        <tr 
+                          key={account.id} 
+                          className={styles.tableRow}
+                          onClick={() => setSelectedAccount(account)}
+                        >
+                          <td className={styles.nameCell}>
+                            <div className={styles.accountInfo}>
+                              <strong>{account.name || "Debt Account"}</strong>
+                            </div>
+                          </td>
+                          <td>{account.type || "Personal"}</td>
+                          <td className={styles.statusCell}>
+                            <span className={`
+                              ${styles.statusBadge} 
+                              ${(account.status || 'Active') === 'Active' ? styles.statusActive : styles.statusSettled}
+                            `}>
+                              {account.status || 'Active'}
+                            </span>
+                          </td>
+                          <td className={`${styles.amountCol} ${account.status === 'Settled' ? styles.settledText : (account.netBalance || 0) > 0 ? styles.posText : styles.negText}`}>
+                            {formatAmount(account.netBalance)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
+          )}
         </div>
       </AppShell>
+
+      <DebtDetailsModal
+        account={selectedAccount}
+        onClose={() => setSelectedAccount(null)}
+      />
 
       <AddDebtModal
         isOpen={modal.isOpen}
@@ -120,3 +179,4 @@ export default function DebtPageClient({ accounts }: DebtPageClientProps) {
     </>
   );
 }
+

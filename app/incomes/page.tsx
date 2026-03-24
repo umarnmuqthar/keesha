@@ -1,32 +1,14 @@
-import { AppShell } from "@/components/layout/AppShell";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { AddButton, Card } from "@/components/ui";
-import shellStyles from "../app-shell.module.css";
-import styles from "./incomes.module.css";
+import { getSession } from "@/app/actions/authActions";
+import { getIncomes } from "@/app/actions/incomeActions";
+import { getUserProfile } from "@/app/actions/profileActions";
+import IncomesPageClient from "./IncomesPageClient";
 
-export default function IncomesPage() {
-  return (
-    <AppShell
-      sidebar={<Sidebar />}
-      header={
-        <div className={shellStyles.header}>
-          <div>
-            <p className={shellStyles.eyebrow}>Income</p>
-            <h1>Cash inflows</h1>
-          </div>
-          <div className={shellStyles.headerActions}>
-            <AddButton size="sm">Add income</AddButton>
-          </div>
-        </div>
-      }
-    >
-      <div className={styles.page}>
-        <Card className={styles.placeholder}>
-          <h3>No income entries yet</h3>
-          <p>Add income sources to track monthly cash inflow.</p>
-          <AddButton size="sm">Add income</AddButton>
-        </Card>
-      </div>
-    </AppShell>
-  );
+export default async function IncomesPage() {
+  const session = await getSession();
+  const [incomes, userProfile] = await Promise.all([
+    session ? getIncomes(session.uid) : [],
+    getUserProfile()
+  ]);
+
+  return <IncomesPageClient initialIncomes={incomes as any[]} userProfile={userProfile as any} />;
 }

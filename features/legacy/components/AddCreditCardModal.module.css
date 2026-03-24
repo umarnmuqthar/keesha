@@ -174,10 +174,21 @@
   color: var(--ds-color-ink, #111);
 }
 
-.formGroup input:focus {
+.formGroup input:focus, .formGroup select:focus {
   outline: none;
   border-color: var(--ds-color-accent-strong, #0f766e);
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+}
+
+.select {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--ds-color-border, #e5e7eb);
+  border-radius: 9px;
+  font-size: 0.9rem;
+  background: var(--ds-color-surface, #fff);
+  color: var(--ds-color-ink, #111);
+  cursor: pointer;
 }
 
 .row {

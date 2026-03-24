@@ -1,96 +1,190 @@
 .page {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--ds-space-6);
 }
 
 .hero {
   display: grid;
-  gap: var(--ds-space-4);
   grid-template-columns: 1fr;
-}
-
-.hero h2 {
-  margin: 0;
-  font-size: var(--ds-font-size-6);
-}
-
-.hero p {
-  margin: var(--ds-space-2) 0 0;
-  color: var(--ds-color-ink-muted);
+  align-items: stretch;
+  gap: var(--ds-space-6);
 }
 
 .heroStats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--ds-space-3);
-}
-
-.statCard {
-  display: grid;
-  gap: var(--ds-space-2);
-}
-
-.label {
-  margin: 0;
-  color: var(--ds-color-ink-muted);
-}
-
-.statCard h3 {
-  margin: 0;
-  font-size: var(--ds-font-size-6);
-}
-
-.list {
-  display: grid;
   gap: var(--ds-space-4);
 }
 
-.itemLink {
-  text-decoration: none;
-  color: inherit;
+.statCard {
+  border: 1px solid #e6ebe8;
 }
+
+.statCard h3 {
+  font-size: var(--ds-font-size-5);
+  margin-top: var(--ds-space-2);
+  line-height: 1.1;
+}
+
+.label {
+  color: var(--ds-color-ink-muted);
+  font-size: var(--ds-font-size-2);
+}
+
+.list {
+  display: block;
+  width: 100%;
+}
+
+/* Table Styles */
+.tableContainer {
+  width: auto;
+  margin-left: calc(var(--ds-space-7) * -1);
+  margin-right: calc(var(--ds-space-7) * -1);
+  overflow: visible;
+  background: transparent;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--ds-font-size-2);
+  text-align: left;
+}
+
+.table th {
+  padding: var(--ds-space-4);
+  font-weight: 600;
+  color: var(--ds-color-ink-muted);
+  background: #f6f4f0;
+  border-bottom: 1px solid #e6ebe8;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.table td {
+  padding: var(--ds-space-4);
+  border-bottom: 1px solid #f1f5f3;
+  vertical-align: middle;
+}
+
+.table th:first-child,
+.table td:first-child {
+  padding-left: var(--ds-space-7);
+}
+
+.table th:last-child,
+.table td:last-child {
+  padding-right: var(--ds-space-7);
+}
+
+.tableRow {
+  transition: background-color var(--ds-motion-fast) var(--ds-ease);
+  cursor: pointer;
+}
+
+.tableRow:hover {
+  background-color: #f9fafb;
+}
+
+.tableRow:last-child td {
+  border-bottom: none;
+}
+
+.nameCell {
+  width: 35%;
+}
+
+.typeCell {
+  width: 20%;
+}
+
+.accountInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.accountInfo strong {
+  font-size: var(--ds-font-size-3);
+  font-weight: 700;
+  color: var(--ds-color-ink);
+}
+
+.amountCol {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.amountCell {
+  text-align: right !important;
+  width: 25%;
+}
+
+.settledText {
+  color: var(--ds-color-ink) !important;
+}
+
+.statusCell {
+  text-align: left;
+  width: 20%;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.statusActive {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.statusSettled {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.posText { color: #16a34a; }
+.negText { color: #dc2626; }
 
 .placeholder {
   text-align: center;
   display: grid;
   gap: var(--ds-space-3);
+  width: 100%;
+  padding: 40px;
 }
 
-.item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--ds-space-4);
-}
-
-.item p {
-  color: var(--ds-color-ink-muted);
-}
-
-.itemMeta {
-  text-align: right;
-  display: grid;
-  gap: var(--ds-space-1);
-  color: var(--ds-color-ink-muted);
-}
-
-.itemMeta strong {
-  color: var(--ds-color-ink);
-  font-size: var(--ds-font-size-3);
-}
-
-.item {
-  transition: transform var(--ds-motion-fast) var(--ds-ease),
-    box-shadow var(--ds-motion-fast) var(--ds-ease);
-}
-
-.item:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--ds-shadow-2);
-}
-
-@media (max-width: 720px) {
+@media (max-width: 960px) {
   .heroStats {
     grid-template-columns: 1fr;
+    gap: var(--ds-space-2);
+  }
+
+  .tableContainer {
+    margin-left: calc(var(--ds-space-4) * -1);
+    margin-right: calc(var(--ds-space-4) * -1);
+    overflow-x: auto;
+  }
+
+  .table th:first-child,
+  .table td:first-child {
+    padding-left: var(--ds-space-4);
+  }
+
+  .table th:last-child,
+  .table td:last-child {
+    padding-right: var(--ds-space-4);
   }
 }

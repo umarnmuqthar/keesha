@@ -29,6 +29,10 @@ export async function updateProfile(formData) {
       data.phone = normalizedPhone;
     }
     if (formData.has('image')) data.image = formData.get('image');
+    if (formData.has('baseSalary')) {
+      const salary = parseFloat(formData.get('baseSalary'));
+      if (!isNaN(salary)) data.baseSalary = salary;
+    }
 
     if (formData.has('dob')) {
       const rawDob = formData.get('dob');

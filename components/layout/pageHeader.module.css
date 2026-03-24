@@ -1,0 +1,140 @@
+/* PageHeader — sits inside AppShell's sticky header container */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-4);
+  width: 100%;
+  min-height: 44px; /* Ensure consistent vertical footprint */
+}
+
+/* ── Left side ────────────────────────────────── */
+.left {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-4);
+  min-width: 0;
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: var(--ds-font-size-1);
+  color: var(--ds-color-ink-subtle);
+  margin: 0;
+}
+
+.title {
+  font-size: var(--ds-font-size-5);
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* ── Tabs row (Standardized) ── */
+.tabsRow {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-3);
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  background: #f1f5f9;
+  border-radius: 999px;
+  padding: 4px;
+  height: 36px;
+  box-sizing: border-box;
+}
+
+.statusBtn {
+  padding: 0 16px;
+  height: 28px;
+  border-radius: 999px;
+  font-size: var(--ds-font-size-2);
+  font-weight: 500;
+  color: var(--ds-color-ink-muted);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.statusBtnActive {
+  background: white;
+  color: var(--ds-color-ink);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-2);
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--ds-color-border, #e6ebe8);
+  background: white;
+  cursor: pointer;
+  color: var(--ds-color-ink-muted);
+  transition: all 0.2s;
+}
+
+.actionBtn:hover,
+.actionBtnActive {
+  background: #f1f5f9;
+  color: var(--ds-color-ink);
+}
+
+/* ── Right side ───────────────────────────────── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-3);
+  flex-shrink: 0;
+}
+
+.searchForm {
+  width: min(320px, 100%);
+  position: relative;
+}
+
+.searchInput {
+  width: 100%;
+  height: 36px;
+  border: 1px solid var(--ds-color-border, #e6ebe8);
+  border-radius: 999px;
+  padding: 0 16px;
+  background: var(--ds-color-surface, #fff);
+  color: var(--ds-color-ink, #111);
+  font-size: var(--ds-font-size-2, 0.92rem);
+  outline: none;
+  transition: all 0.2s;
+}
+
+.searchInput::placeholder {
+  color: var(--ds-color-ink-subtle, #71717a);
+}
+
+.searchInput:focus {
+  border-color: var(--ds-color-accent-strong, #0f766e);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+}
+
