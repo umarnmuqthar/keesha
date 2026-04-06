@@ -174,6 +174,7 @@ export default function DebtPageClient({ accounts }: DebtPageClientProps) {
       <AddDebtModal
         isOpen={modal.isOpen}
         onClose={modal.close}
+        accounts={accounts}
         onAccountAdded={() => undefined}
       />
     </>

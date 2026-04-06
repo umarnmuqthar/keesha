@@ -1,9 +1,17 @@
+import { 
+  Home, 
+  Receipt, 
+  Users, 
+  CreditCard, 
+  Landmark, 
+  Repeat 
+} from 'lucide-react';
+
 export const navItems = [
-  { href: '/', label: 'Dashboard' },
-  { href: '/subscriptions', label: 'Subscriptions' },
-  { href: '/loans', label: 'Loans' },
-  { href: '/creditcards', label: 'Cards' },
-  { href: '/debt', label: 'Debt' },
-  { href: '/incomes', label: 'Income' },
-  { href: '/profile', label: 'Profile' }
+  { href: '/', label: 'Home', icon: Home },
+  { href: '/expenses', label: 'Expenses', icon: Receipt },
+  { href: '/debt', label: 'Debt', icon: Users },
+  { href: '/creditcards', label: 'Cards', icon: CreditCard },
+  { href: '/loans', label: 'Loans', icon: Landmark },
+  { href: '/subscriptions', label: 'Subscriptions', icon: Repeat }
 ];

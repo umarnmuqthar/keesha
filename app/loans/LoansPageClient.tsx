@@ -11,6 +11,7 @@ import { AddButton, Button, Card, Input } from '@/components/ui';
 import { useModalState } from '@/components/ui/useModalState';
 import AddLoanModal from '@/features/legacy/components/AddLoanModal';
 import LoanDetailsModal from './LoanDetailsModal';
+import LoanEMIChart from './LoanEMIChart';
 import { Filter, LayoutDashboard } from 'lucide-react';
 import { ShellSearch } from '@/components/layout/ShellSearch';
 import styles from './loans.module.css';
@@ -364,6 +365,7 @@ export default function LoansPageClient({ loans, metrics }: LoansPageClientProps
                 <h3>{formatAmount(metrics.monthlyEmiRemaining)}</h3>
               </Card>
             </div>
+            <LoanEMIChart loans={loans} />
           </section>
           )}
 

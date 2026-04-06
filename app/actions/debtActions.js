@@ -13,14 +13,27 @@ export async function addDebtAccount(formData) {
     if (!session) return { error: 'Unauthorized' };
     const { db } = await import('@/lib/firebase-admin');
 
-    const name = formData.get('name');
+    const name = formData.get('name')?.trim();
     const type = formData.get('type') || 'Friend'; // Friend, Family, Business, etc.
 
     if (!name) return { error: 'Name is required' };
+    const nameLowercase = name.toLowerCase();
+
+    // Server-side uniqueness check
+    const existingSnapshot = await db.collection('debt_accounts')
+        .where('userId', '==', session.uid)
+        .where('nameLowercase', '==', nameLowercase)
+        .limit(1)
+        .get();
+
+    if (!existingSnapshot.empty) {
+        return { error: 'An account with this name already exists' };
+    }
 
     const newAccount = {
         userId: session.uid,
         name,
+        nameLowercase,
         type,
         status: 'Active',
         netBalance: 0,
@@ -42,11 +55,17 @@ export async function addDebtAccount(formData) {
  */
 export async function addDebtEntry(accountId, formData) {
     const { db } = await import('@/lib/firebase-admin');
-    const amount = parseFloat(formData.get('amount'));
-    const description = formData.get('description');
-    const type = formData.get('type'); // GIVE or GOT
-    const date = formData.get('date') || new Date().toISOString();
-    const reminderDate = formData.get('reminderDate') || null;
+    // Normalize inputs if coming from Map instead of FormData
+    const getVal = (name) => {
+        if (formData && typeof formData.get === 'function') return formData.get(name);
+        return formData[name];
+    };
+
+    const amount = parseFloat(getVal('amount'));
+    const description = getVal('description');
+    const type = getVal('type'); // GIVE or GOT
+    const date = getVal('date') || new Date().toISOString();
+    const reminderDate = getVal('reminderDate') || null;
 
     if (!amount || !type) return { error: 'Amount and type are required' };
 
@@ -214,5 +233,70 @@ export async function deleteDebtAccount(accountId) {
 
     revalidatePath('/debt');
     return { success: true };
+}
+
+/**
+ * Recalculate and sync the netBalance for a debt account from its transactions
+ */
+export async function recalculateDebtBalance(accountId) {
+    const { db } = await import('@/lib/firebase-admin');
+    const accountRef = db.collection('debt_accounts').doc(accountId);
+    
+    try {
+        const transactionsSnapshot = await accountRef.collection('transactions').get();
+        let calculatedBalance = 0;
+        
+        transactionsSnapshot.docs.forEach(doc => {
+            const data = doc.data();
+            const amount = parseFloat(data.amount || 0);
+            // GIVE increases balance (+), GOT decreases balance (-)
+            if (data.type === 'GIVE') {
+                calculatedBalance += amount;
+            } else {
+                calculatedBalance -= amount;
+            }
+        });
+        
+        await accountRef.update({
+            netBalance: calculatedBalance,
+            lastInteraction: new Date().toISOString()
+        });
+        
+        revalidatePath(`/debt/${accountId}`);
+        revalidatePath('/debt');
+        return { success: true, newBalance: calculatedBalance };
+    } catch (e) {
+        console.error('Recalculate Debt Balance Error:', e);
+        return { error: 'Failed to recalculate balance' };
+    }
+}
+
+/**
+ * Check if a debt account with the given name already exists for the user
+ */
+export async function checkDebtAccountExists(name) {
+    if (!name || name.trim() === '') return false;
+    
+    const session = await getSession();
+    if (!session) return false;
+    
+    const { db } = await import('@/lib/firebase-admin');
+    
+    const snapshot = await db.collection('debt_accounts')
+        .where('userId', '==', session.uid)
+        .where('nameLowercase', '==', name.trim().toLowerCase())
+        .limit(1)
+        .get();
+        
+    if (!snapshot.empty) return true;
+
+    // Fallback for legacy records without nameLowercase
+    const legacySnapshot = await db.collection('debt_accounts')
+        .where('userId', '==', session.uid)
+        .where('name', '==', name.trim())
+        .limit(1)
+        .get();
+
+    return !legacySnapshot.empty;
 }
 

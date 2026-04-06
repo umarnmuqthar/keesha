@@ -158,3 +158,19 @@
     padding-right: 12px;
   }
 }
+
+.error {
+    color: #ef4444;
+    font-size: 11px;
+    margin-top: 4px;
+    display: block;
+    font-weight: 500;
+}
+
+.validating {
+    color: var(--ds-color-ink-subtle, #6b7280);
+    font-size: 10px;
+    margin-top: 4px;
+    display: block;
+    font-style: italic;
+}

@@ -15,7 +15,8 @@ import {
   addDebtEntry, 
   settleDebtAccount, 
   deleteDebtAccount,
-  updateDebtAccount
+  updateDebtAccount,
+  recalculateDebtBalance
 } from '@/app/actions/debtActions';
 import { Button, Card, Input } from '@/components/ui';
 import styles from './debtDetailsModal.module.css';
@@ -108,6 +109,18 @@ export default function DebtDetailsModal({ account, onClose }: DebtDetailsModalP
     });
   };
 
+  const handleSync = () => {
+    if (!account?.id) return;
+    
+    startTransition(async () => {
+        const result = await recalculateDebtBalance(account.id);
+        if (result.success) {
+            loadTransactions();
+            alert(`Balance synced successfully! New balance: ${formatAmount(result.newBalance)}`);
+        }
+    });
+  };
+
   const handleDelete = () => {
     if (!account?.id) return;
     if (!confirm('Delete this account and all transactions? This cannot be undone.')) return;
@@ -150,6 +163,14 @@ export default function DebtDetailsModal({ account, onClose }: DebtDetailsModalP
             </p>
             <h1 className={account.status === 'Settled' ? styles.settledText : (isOweMe ? styles.posBalance : styles.negBalance)}>
               {formatAmount(absBalance)}
+              <button 
+                className={styles.syncBtn} 
+                onClick={handleSync} 
+                title="Sync Balance"
+                disabled={isPending}
+              >
+                <CheckCircle2 size={14} className={isPending ? styles.rotating : ''} />
+              </button>
             </h1>
           </div>
           <div className={styles.mainActions}>
@@ -221,8 +242,8 @@ export default function DebtDetailsModal({ account, onClose }: DebtDetailsModalP
                           <span>{t.description || (t.type === 'GIVE' ? 'Amount Given' : 'Amount Received')}</span>
                         </div>
                       </td>
-                      <td className={`${styles.amountCol} ${t.type === 'GIVE' ? styles.negText : styles.posText}`}>
-                        {t.type === 'GIVE' ? '- ' : '+ '}{formatAmount(t.amount)}
+                      <td className={`${styles.amountCol} ${t.type === 'GIVE' ? styles.posText : styles.negText}`}>
+                        {t.type === 'GIVE' ? '+ ' : '- '}{formatAmount(t.amount)}
                       </td>
                     </tr>
                   ))}

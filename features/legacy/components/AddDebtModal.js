@@ -1,28 +1,61 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './AddDebtModal.module.css';
-import { addDebtAccount } from '@/app/actions/debtActions';
+import { addDebtAccount, checkDebtAccountExists } from '@/app/actions/debtActions';
 import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 
-export default function AddDebtModal({ isOpen, onClose, onAccountAdded }) {
+export default function AddDebtModal({ isOpen, onClose, onAccountAdded, accounts = [] }) {
     const router = useRouter();
+    const [name, setName] = useState('');
+    const [nameExists, setNameExists] = useState(false);
+    const [isValidating, setIsValidating] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const trimmed = name.trim().toLowerCase();
+        if (!trimmed) {
+            setNameExists(false);
+            setIsValidating(false);
+            return;
+        }
+
+        // Check against existing accounts prop (Instant & Case-Insensitive)
+        const localMatch = accounts.some(acc => (acc.name || '').toLowerCase() === trimmed);
+        if (localMatch) {
+            setNameExists(true);
+            setIsValidating(false);
+            return;
+        }
+
+        // Optional: Also check server if not found locally (e.g. if list is paginated in future)
+        const timer = setTimeout(async () => {
+            setIsValidating(true);
+            const exists = await checkDebtAccountExists(name);
+            setNameExists(exists);
+            setIsValidating(false);
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [name, accounts]);
 
     if (!isOpen) return null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (nameExists || isValidating) return;
+        
         setLoading(true);
-        const formData = new FormData(e.target);
+        const formData = new FormData(e.currentTarget);
         const result = await addDebtAccount(formData);
         if (result.success) {
             router.refresh();
             if (onAccountAdded) onAccountAdded(result.account);
+            setName('');
             onClose();
         } else {
-            alert(result.error || 'Something went wrong');
+            alert(result.message || 'Something went wrong');
         }
         setLoading(false);
     };
@@ -40,7 +73,17 @@ export default function AddDebtModal({ isOpen, onClose, onAccountAdded }) {
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <div className={styles.group}>
                         <label>Person / Entity Name</label>
-                        <input name="name" type="text" placeholder="e.g. Arjun Nair, Priya Thomas, Khan Traders" required autoFocus />
+                        <input 
+                            name="name" 
+                            type="text" 
+                            placeholder="e.g. Arjun Nair, Priya Thomas, Khan Traders" 
+                            required 
+                            autoFocus 
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                        {isValidating && <span className={styles.validating}>Checking availability...</span>}
+                        {nameExists && <span className={styles.error}>Account already exists</span>}
                     </div>
 
                     <div className={styles.group}>
@@ -55,7 +98,11 @@ export default function AddDebtModal({ isOpen, onClose, onAccountAdded }) {
 
                     <div className={styles.actions}>
                         <button type="button" onClick={onClose} className={styles.cancelBtn}>Cancel</button>
-                        <button type="submit" className={styles.submitBtn} disabled={loading}>
+                        <button 
+                            type="submit" 
+                            className={styles.submitBtn} 
+                            disabled={loading || nameExists || isValidating || !name.trim()}
+                        >
                             {loading ? 'Creating...' : 'Create Account'}
                         </button>
                     </div>

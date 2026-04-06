@@ -1,0 +1,136 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.45);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  background: #fff;
+  width: min(440px, 100%);
+  border: 1px solid #eef2f6;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.15);
+}
+
+.header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(180deg, #ffffff 0%, #f9f8f5 100%);
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.closeBtn {
+  border: 0;
+  background: #f1f5f9;
+  color: #64748b;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s ease;
+}
+
+.closeBtn:hover {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.group input,
+.group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fff;
+  color: #111;
+}
+
+.group input:focus,
+.group select:focus {
+  outline: none;
+  border-color: var(--ds-color-accent-strong);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+}
+
+.actions {
+  padding: 10px 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.cancelBtn {
+  padding: 12px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  border: 0;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.submitBtn {
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--ds-color-accent-strong);
+  border: 0;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submitBtn:hover {
+  background: #115e59;
+}

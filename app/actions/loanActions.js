@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { getUserSession } from './authActions';
+import { addExpense } from './expenseActions';
 
 export async function addLoan(formData) {
   try {
@@ -63,6 +64,17 @@ export async function toggleLoanPayment(loanId, monthYear, isPaid) {
         paidAt: new Date().toISOString(),
         amount: 0
       });
+      
+      // Automation: Add to Expenses
+      const loanDoc = await db.collection('loans').doc(loanId).get();
+      const loanData = loanDoc.data();
+      await addExpense({
+        amount: loanData.emiAmount || 0,
+        description: `Loan Payment: ${loanData.name}`,
+        category: 'Loan Repayment',
+        date: monthYear.split('-').reverse().join('-'), // Convert DD-MM-YYYY to YYYY-MM-DD if needed
+        source: 'Loan'
+      });
     } else {
       await paymentRef.delete();
     }
@@ -87,6 +99,17 @@ export async function markLoanPaidWithAmount(loanId, paymentDate, amount) {
       paidAt: new Date().toISOString(),
       amount: parseFloat(amount) || 0
     }, { merge: true });
+
+    // Automation: Add to Expenses
+    const loanDoc = await db.collection('loans').doc(loanId).get();
+    const loanData = loanDoc.data();
+    await addExpense({
+      amount: parseFloat(amount) || 0,
+      description: `Loan Payment: ${loanData.name}`,
+      category: 'Loan Repayment',
+      date: paymentDate.split('-').reverse().join('-'),
+      source: 'Loan'
+    });
 
     await checkAndAutoCloseLoan(loanId);
 
