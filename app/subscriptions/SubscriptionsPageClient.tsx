@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from "react";
+import { useShellSearch } from "@/components/layout/ShellSearchContext";
 import { AppShell } from "@/components/layout/AppShell";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { PageHeader, TabButton, ActionButton } from "@/components/layout/PageHeader";
@@ -57,12 +58,41 @@ const getAnnualAmount = (amount: number, billingCycle?: string) => {
   return amount * 12;
 };
 
+const getInitials = (name?: string) => {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return parts[0].substring(0, 2).toUpperCase();
+};
+
+const getAvatarStyle = (name?: string) => {
+  if (!name) return { bg: 'linear-gradient(135deg, #e6f4f1 0%, #f6f4f0 100%)', color: '#0f766e' };
+  
+  const gradients = [
+    { bg: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)', color: '#dc2626' }, // Rose/Red
+    { bg: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)', color: '#0284c7' }, // Blue
+    { bg: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)', color: '#15803d' }, // Green
+    { bg: 'linear-gradient(135deg, #fef9c3 0%, #fef08a 100%)', color: '#a16207' }, // Yellow/Gold
+    { bg: 'linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%)', color: '#7e22ce' }, // Purple
+    { bg: 'linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%)', color: '#c2410c' }, // Orange
+  ];
+  
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % gradients.length;
+  return gradients[index];
+};
+
 export default function SubscriptionsPageClient({ subscriptions }: SubscriptionsPageClientProps) {
   const modal = useModalState(false);
   const [selectedSub, setSelectedSub] = useState<Subscription | null>(null);
   const [viewMode, setViewMode] = useState<'list' | 'dashboard'>('list');
   const [statusFilter, setStatusFilter] = useState<'Active' | 'Cancelled' | 'All'>('Active');
-  const [searchQuery, setSearchQuery] = useState('');
+  const { query: searchQuery } = useShellSearch();
 
   const monthShort = new Date().toLocaleDateString("en-GB", { month: "short" });
 
@@ -163,46 +193,94 @@ export default function SubscriptionsPageClient({ subscriptions }: Subscriptions
                   <AddButton size="sm" onClick={modal.open}>Add subscription</AddButton>
                 </Card>
               ) : (
-                <div className={styles.tableContainer}>
-                  <table className={styles.table}>
-                    <thead>
-                      <tr>
-                        <th className={styles.nameCell}>Subscription</th>
-                        <th>Billing cycle</th>
-                        <th className={styles.amountCell}>Amount</th>
-                        <th className={styles.statusCell}>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredSubscriptions.map((sub) => (
-                        <tr 
+                <>
+                  <div className={styles.tableContainer}>
+                    <table className={styles.table}>
+                      <thead>
+                        <tr>
+                          <th className={styles.nameCell}>Subscription</th>
+                          <th>Billing cycle</th>
+                          <th className={styles.amountCell}>Amount</th>
+                          <th className={styles.statusCell}>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredSubscriptions.map((sub) => (
+                          <tr 
+                            key={sub.id} 
+                            className={styles.tableRow}
+                            onClick={() => openSubDetails(sub)}
+                          >
+                            <td className={styles.nameCell}>
+                              <div className={styles.subInfo}>
+                                <strong>{sub.name || "Subscription"}</strong>
+                                <span className={styles.categoryText}>{sub.category || "Uncategorized"}</span>
+                              </div>
+                            </td>
+                            <td className={styles.cycleCell}>{getCycle(sub)}</td>
+                            <td className={styles.amountCell}>
+                              ₹{getSubscriptionAmount(sub).toLocaleString("en-IN")}
+                            </td>
+                            <td className={styles.statusCell}>
+                              <span className={`
+                                ${styles.statusBadge} 
+                                ${(sub.status || 'Active') === 'Active' ? styles.statusActive : styles.statusCancelled}
+                              `}>
+                                {sub.status || 'Active'}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className={styles.mobileList}>
+                    {filteredSubscriptions.map((sub) => {
+                      const initials = getInitials(sub.name || 'Subscription');
+                      const avatarStyle = getAvatarStyle(sub.name || 'Subscription');
+                      const cycle = getCycle(sub);
+
+                      return (
+                        <div 
                           key={sub.id} 
-                          className={styles.tableRow}
+                          className={styles.mobileCard}
                           onClick={() => openSubDetails(sub)}
                         >
-                          <td className={styles.nameCell}>
-                            <div className={styles.subInfo}>
-                              <strong>{sub.name || "Subscription"}</strong>
-                              <span className={styles.categoryText}>{sub.category || "Uncategorized"}</span>
+                          <div className={styles.mobileCardLeft}>
+                            <div 
+                              className={styles.avatar}
+                              style={{ background: avatarStyle.bg, color: avatarStyle.color }}
+                            >
+                              {initials}
                             </div>
-                          </td>
-                          <td className={styles.cycleCell}>{getCycle(sub)}</td>
-                          <td className={styles.amountCell}>
-                            ₹{getSubscriptionAmount(sub).toLocaleString("en-IN")}
-                          </td>
-                          <td className={styles.statusCell}>
+                            <div className={styles.mobileCardInfo}>
+                              <span className={styles.mobileCardName}>
+                                {sub.name || "Subscription"}
+                              </span>
+                              <div className={styles.mobileCardSubtitle}>
+                                <span className={styles.mobileCardCat}>{sub.category || "Uncategorized"}</span>
+                                <span className={styles.dot}>•</span>
+                                <span className={styles.mobileCardCycle}>{cycle}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className={styles.mobileCardRight}>
+                            <span className={styles.mobileCardAmount}>
+                              ₹{getSubscriptionAmount(sub).toLocaleString("en-IN")}
+                            </span>
                             <span className={`
                               ${styles.statusBadge} 
                               ${(sub.status || 'Active') === 'Active' ? styles.statusActive : styles.statusCancelled}
                             `}>
                               {sub.status || 'Active'}
                             </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
               )}
             </section>
           )}
