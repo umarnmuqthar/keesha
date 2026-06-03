@@ -29,7 +29,7 @@ export default function DashboardClient({ highlights, tasks }: DashboardClientPr
         sidebar={<Sidebar />}
         header={
           <PageHeader
-            title=""
+            title="Keesha"
             showSearch={false}
             actions={
               <AddButton size="sm" onClick={modal.open}>
@@ -54,7 +54,7 @@ export default function DashboardClient({ highlights, tasks }: DashboardClientPr
             ))}
           </section>
 
-          <section className={styles.split}>
+          <section>
             <Card className={styles.listCard}>
               <div className={styles.listHeader}>
                 <div>
@@ -74,17 +74,6 @@ export default function DashboardClient({ highlights, tasks }: DashboardClientPr
                   </div>
                 ))}
               </div>
-            </Card>
-            <Card className={styles.insight}>
-              <h3>Cashflow forecast</h3>
-              <p>
-                Your financial health is looking strong this month with a consistent
-                balance across your accounts.
-              </p>
-              <div className={styles.progress}>
-                <span style={{ width: "72%" }} />
-              </div>
-              <Button size="sm">Open report</Button>
             </Card>
           </section>
         </div>

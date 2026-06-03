@@ -171,20 +171,118 @@
     grid-template-columns: 1fr;
     gap: var(--ds-space-2);
   }
+}
 
+/* Mobile List & Cards */
+.mobileList {
+  display: none;
+}
+
+@media (max-width: 768px) {
   .tableContainer {
-    margin-left: calc(var(--ds-space-4) * -1);
-    margin-right: calc(var(--ds-space-4) * -1);
-    overflow-x: auto;
+    display: none;
+  }
+  
+  .mobileList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ds-space-3);
+    padding: 0;
+  }
+  
+  .mobileCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--ds-color-surface, #fff);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    padding: var(--ds-space-4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .mobileCard:active {
+    transform: scale(0.98);
+    background: var(--ds-color-surface-soft, #f9fafb);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  }
+  
+  .mobileCardLeft {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-3);
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: var(--ds-font-size-2, 0.9rem);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+  }
+  
+  .mobileCardInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  
+  .mobileCardName {
+    font-weight: 700;
+    color: var(--ds-color-ink, #111);
+    font-size: var(--ds-font-size-3, 1rem);
+  }
+  
+  .mobileCardSubtitle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .dot {
+    color: var(--ds-color-ink-subtle, #9ca3af);
+    font-size: 8px;
+    line-height: 1;
+    display: inline-block;
+  }
+  
+  .mobileCardType {
+    font-size: var(--ds-font-size-1, 0.8rem);
+    color: var(--ds-color-ink-muted, #6b7280);
+    text-transform: capitalize;
   }
 
-  .table th:first-child,
-  .table td:first-child {
-    padding-left: var(--ds-space-4);
+  .mobileCardStatus {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
-
-  .table th:last-child,
-  .table td:last-child {
-    padding-right: var(--ds-space-4);
+  
+  .statusActiveText {
+    color: #16a34a;
+  }
+  
+  .statusSettledText {
+    color: var(--ds-color-ink-muted, #71717a);
+  }
+  
+  .mobileCardRight {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  
+  .mobileCardAmount {
+    font-weight: 700;
+    font-size: var(--ds-font-size-3, 1.05rem);
+    font-variant-numeric: tabular-nums;
   }
 }

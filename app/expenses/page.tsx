@@ -9,5 +9,5 @@ export default async function ExpensesPage() {
 
   const expenses = await getExpenses();
 
-  return <ExpensesPageClient initialExpenses={expenses} />;
+  return <ExpensesPageClient initialExpenses={expenses as any} />;
 }

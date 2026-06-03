@@ -156,8 +156,108 @@
   font-size: 0.9rem;
 }
 
+.mobileList {
+  display: none;
+}
+
 @media (max-width: 768px) {
-  .catCell, .dateCell {
+  .tableContainer {
     display: none;
+  }
+  
+  .mobileList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ds-space-3);
+    padding: 0;
+  }
+  
+  .mobileCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--ds-color-surface, #fff);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    padding: var(--ds-space-4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .mobileCard:active {
+    transform: scale(0.98);
+    background: var(--ds-color-surface-soft, #f9fafb);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  }
+  
+  .mobileCardLeft {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-3);
+    min-width: 0;
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: var(--ds-font-size-2, 0.9rem);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    flex-shrink: 0;
+  }
+  
+  .mobileCardInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  
+  .mobileCardName {
+    font-weight: 700;
+    color: var(--ds-color-ink, #111);
+    font-size: var(--ds-font-size-3, 1rem);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .mobileCardSubtitle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  
+  .dot {
+    color: var(--ds-color-ink-subtle, #9ca3af);
+    font-size: 8px;
+    line-height: 1;
+    display: inline-block;
+  }
+  
+  .mobileCardDate, .mobileCardCat {
+    font-size: var(--ds-font-size-1, 0.8rem);
+    color: var(--ds-color-ink-muted, #6b7280);
+    white-space: nowrap;
+  }
+  
+  .mobileCardRight {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    margin-left: var(--ds-space-2);
+  }
+  
+  .mobileCardAmount {
+    font-weight: 700;
+    font-size: var(--ds-font-size-3, 1.05rem);
+    font-variant-numeric: tabular-nums;
   }
 }

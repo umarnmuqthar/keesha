@@ -86,6 +86,35 @@ const getDueTimestamp = (loan: Loan) => {
   return Number.isNaN(timestamp) ? Number.POSITIVE_INFINITY : timestamp;
 };
 
+const getInitials = (name?: string) => {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return parts[0].substring(0, 2).toUpperCase();
+};
+
+const getAvatarStyle = (name?: string) => {
+  if (!name) return { background: 'linear-gradient(135deg, #e6f4f1 0%, #f6f4f0 100%)', color: '#0f766e' };
+  
+  const gradients = [
+    { bg: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)', color: '#dc2626' }, // Rose/Red
+    { bg: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)', color: '#0284c7' }, // Blue
+    { bg: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)', color: '#15803d' }, // Green (darkened for better contrast)
+    { bg: 'linear-gradient(135deg, #fef9c3 0%, #fef08a 100%)', color: '#a16207' }, // Yellow/Gold (darkened for better contrast)
+    { bg: 'linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%)', color: '#7e22ce' }, // Purple (darkened for better contrast)
+    { bg: 'linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%)', color: '#c2410c' }, // Orange (darkened for better contrast)
+  ];
+  
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % gradients.length;
+  return { background: gradients[index].bg, color: gradients[index].color };
+};
+
 type SelectedPayment = {
   loanId: string;
   loanName: string;
@@ -371,94 +400,166 @@ export default function LoansPageClient({ loans, metrics }: LoansPageClientProps
 
           {viewMode === 'list' && (
             <section className={styles.list}>
-            {filteredLoans.length === 0 ? (
-              <Card className={styles.empty}>
-                <h3>{query ? 'No matching loans' : 'No loans yet'}</h3>
-                <p>
-                  {query
-                    ? `No loan found for "${searchQuery}".`
-                    : 'Add a loan to start tracking monthly repayments.'}
-                </p>
-                {!query ? <AddButton size="sm" onClick={modal.open}>Add loan</AddButton> : null}
-              </Card>
-            ) : (
-              <div className={styles.tableContainer}>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>Loan Name</th>
-                      <th>Next Due</th>
-                      <th>Outstanding</th>
-                      <th>Total Loan</th>
-                      <th>Progress</th>
-                      <th>Monthly EMI</th>
-                      <th className={styles.actionCell}>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredLoans.map((loan) => {
-                      const paidAmount = Number(loan.paidAmount || 0);
-                      const totalAmount = Number(loan.totalPayable || loan.amount || 0);
-                      const emiAmount = Number(loan.nextDueAmount || loan.emiAmount || loan.monthlyEmi || loan.amount || 0);
-                      const outstandingAmount = Number(loan.outstandingBalance || loan.remainingAmount || 0);
-                      const remainingBalance = Math.max(0, totalAmount - paidAmount);
-                      const progress = Math.max(
-                        0,
-                        Math.min(
-                          (paidAmount / Math.max(totalAmount, 1)) * 100,
-                          100
-                        )
-                      );
+              {filteredLoans.length === 0 ? (
+                <Card className={styles.empty}>
+                  <h3>{query ? 'No matching loans' : 'No loans yet'}</h3>
+                  <p>
+                    {query
+                      ? `No loan found for "${searchQuery}".`
+                      : 'Add a loan to start tracking monthly repayments.'}
+                  </p>
+                  {!query ? <AddButton size="sm" onClick={modal.open}>Add loan</AddButton> : null}
+                </Card>
+              ) : (
+                <>
+                  <div className={styles.tableContainer}>
+                  <table className={styles.table}>
+                    <thead>
+                      <tr>
+                        <th>Loan Name</th>
+                        <th>Next Due</th>
+                        <th>Outstanding</th>
+                        <th>Total Loan</th>
+                        <th>Progress</th>
+                        <th>Monthly EMI</th>
+                        <th className={styles.actionCell}>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredLoans.map((loan) => {
+                        const paidAmount = Number(loan.paidAmount || 0);
+                        const totalAmount = Number(loan.totalPayable || loan.amount || 0);
+                        const emiAmount = Number(loan.nextDueAmount || loan.emiAmount || loan.monthlyEmi || loan.amount || 0);
+                        const outstandingAmount = Number(loan.outstandingBalance || loan.remainingAmount || 0);
+                        const remainingBalance = Math.max(0, totalAmount - paidAmount);
+                        const progress = Math.max(
+                          0,
+                          Math.min(
+                            (paidAmount / Math.max(totalAmount, 1)) * 100,
+                            100
+                          )
+                        );
 
-                      return (
-                        <tr 
-                          key={loan.id} 
-                          className={styles.tableRow} 
-                          onClick={() => setSelectedLoanDetail(loan)} 
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <td className={styles.loanNameCell}>
-                            <div className={styles.loanLink}>
-                              <strong>{loan.name || 'Loan'}</strong>
-                              <span className={styles.typeSubtext}>
-                                {loan.loanType === 'Consumer' ? 'Consumer' : 'Personal'}
-                                {loan.lender ? ` • ${loan.lender}` : ''}
-                              </span>
-                            </div>
-                          </td>
-                          <td>
-                            <div className={styles.dueCell}>
-                              <span className={styles.dueDateText}>{formatDate(loan.nextDueDate)}</span>
-                              {loan.dueHint ? (
-                                <span className={`${styles.dueHintSmall} ${loan.isOverdue ? styles.dueHintDanger : styles.dueHintSoon}`}>
-                                  {loan.dueHint}
+                        return (
+                          <tr 
+                            key={loan.id} 
+                            className={styles.tableRow} 
+                            onClick={() => setSelectedLoanDetail(loan)} 
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <td className={styles.loanNameCell}>
+                              <div className={styles.loanLink}>
+                                <strong>{loan.name || 'Loan'}</strong>
+                                <span className={styles.typeSubtext}>
+                                  {loan.loanType === 'Consumer' ? 'Consumer' : 'Personal'}
+                                  {loan.lender ? ` • ${loan.lender}` : ''}
                                 </span>
-                              ) : null}
-                            </div>
-                          </td>
-                          <td className={styles.amountCell}>{formatAmount(outstandingAmount)}</td>
-                          <td className={styles.amountCell}>{formatAmount(totalAmount)}</td>
-                          <td>
-                            <div className={styles.progressContainer}>
-                              <div className={styles.progressTrackCompact}>
-                                <div
-                                  className={styles.progressFill}
-                                  style={{ width: `${progress}%` }}
-                                />
                               </div>
-                              <span className={styles.progressText}>{Math.round(progress)}%</span>
+                            </td>
+                            <td>
+                              <div className={styles.dueCell}>
+                                <span className={styles.dueDateText}>{formatDate(loan.nextDueDate)}</span>
+                                {loan.dueHint ? (
+                                  <span className={`${styles.dueHintSmall} ${loan.isOverdue ? styles.dueHintDanger : styles.dueHintSoon}`}>
+                                    {loan.dueHint}
+                                  </span>
+                                ) : null}
+                              </div>
+                            </td>
+                            <td className={styles.amountCell}>{formatAmount(outstandingAmount)}</td>
+                            <td className={styles.amountCell}>{formatAmount(totalAmount)}</td>
+                            <td>
+                              <div className={styles.progressContainer}>
+                                <div className={styles.progressTrackCompact}>
+                                  <div
+                                    className={styles.progressFill}
+                                    style={{ width: `${progress}%` }}
+                                  />
+                                </div>
+                                <span className={styles.progressText}>{Math.round(progress)}%</span>
+                              </div>
+                            </td>
+                            <td className={styles.amountCell}>{formatAmount(emiAmount)}</td>
+                            <td className={styles.actionCell}>
+                              <MarkPaidButton loan={loan} onSelect={setSelectedPayment} />
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className={styles.mobileList}>
+                  {filteredLoans.map((loan) => {
+                    const paidAmount = Number(loan.paidAmount || 0);
+                    const totalAmount = Number(loan.totalPayable || loan.amount || 0);
+                    const emiAmount = Number(loan.nextDueAmount || loan.emiAmount || loan.monthlyEmi || loan.amount || 0);
+                    const outstandingAmount = Number(loan.outstandingBalance || loan.remainingAmount || 0);
+                    const progress = Math.max(
+                      0,
+                      Math.min(
+                        (paidAmount / Math.max(totalAmount, 1)) * 100,
+                        100
+                      )
+                    );
+
+                    return (
+                      <div 
+                        key={loan.id} 
+                        className={styles.mobileCard}
+                        onClick={() => setSelectedLoanDetail(loan)}
+                      >
+                        <div className={styles.mobileCardMainRow}>
+                          <div className={styles.mobileCardLeft}>
+                            <div className={styles.avatar} style={getAvatarStyle(loan.name)}>
+                              {getInitials(loan.name)}
                             </div>
-                          </td>
-                          <td className={styles.amountCell}>{formatAmount(emiAmount)}</td>
-                          <td className={styles.actionCell}>
+                            <div className={styles.mobileCardInfo}>
+                              <span className={styles.mobileCardName}>{loan.name || 'Loan'}</span>
+                              <div className={styles.mobileCardSubtitle}>
+                                <span className={styles.mobileCardType}>
+                                  {loan.lender || (loan.loanType === 'Consumer' ? 'Consumer' : 'Personal')}
+                                </span>
+                                <span className={styles.dot}>•</span>
+                                <span className={styles.dueDateText}>Due {formatDate(loan.nextDueDate)}</span>
+                                {loan.dueHint && (
+                                  <>
+                                    <span className={styles.dot}>•</span>
+                                    <span className={`${styles.dueHintText} ${loan.isOverdue ? styles.dueHintDanger : styles.dueHintSoon}`}>
+                                      {loan.dueHint}
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className={styles.mobileCardRight}>
+                            <span className={styles.mobileCardAmount}>{formatAmount(outstandingAmount)}</span>
+                            <span className={styles.mobileCardEmi}>EMI: {formatAmount(emiAmount)}</span>
+                          </div>
+                        </div>
+
+                        <div className={styles.cardProgressRow}>
+                          <div className={styles.progressTrackCompact}>
+                            <div
+                              className={styles.progressFill}
+                              style={{ width: `${progress}%` }}
+                            />
+                          </div>
+                          <span className={styles.progressText}>{Math.round(progress)}% repaid</span>
+                        </div>
+
+                        {loan.nextDueDate && (
+                          <div className={styles.mobileCardActionRow} onClick={(e) => e.stopPropagation()}>
                             <MarkPaidButton loan={loan} onSelect={setSelectedPayment} />
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
             </section>
           )}

@@ -1,5 +1,4 @@
-'use client';
-
+import { Search } from 'lucide-react';
 import { useShellSearch } from './ShellSearchContext';
 
 type ShellSearchProps = {
@@ -11,14 +10,26 @@ export function ShellSearch({ formClassName, inputClassName }: ShellSearchProps)
   const { query, setQuery } = useShellSearch();
 
   return (
-    <div className={formClassName} role="search">
+    <div className={formClassName} role="search" style={{ position: 'relative' }}>
+      <Search 
+        size={16} 
+        style={{ 
+          position: 'absolute', 
+          left: '14px', 
+          top: '50%', 
+          transform: 'translateY(-50%)', 
+          color: 'var(--ds-color-ink-subtle, #71717a)',
+          pointerEvents: 'none'
+        }} 
+      />
       <input
         type="search"
         className={inputClassName}
-        placeholder="Search"
+        placeholder="Search..."
         aria-label="Search"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
+        style={{ paddingLeft: '36px' }}
       />
     </div>
   );

@@ -1,6 +1,10 @@
-import type { ReactNode } from 'react';
+'use client';
+
+import { ReactNode, useState } from 'react';
 import { ShellSearch } from './ShellSearch';
+import { useShellSearch } from './ShellSearchContext';
 import styles from './pageHeader.module.css';
+import { ArrowLeft, Search } from 'lucide-react';
 
 type PageHeaderProps = {
   /** Large page title */
@@ -21,32 +25,80 @@ type PageHeaderProps = {
  * Standard sticky page header used inside AppShell.
  */
 export function PageHeader({ title, eyebrow, tabs, filters, showSearch, actions }: PageHeaderProps) {
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const { setQuery } = useShellSearch();
+  const isDashboardStyle = !tabs && !filters && !showSearch;
+  
+  const handleCloseSearch = () => {
+    setIsSearchExpanded(false);
+    setQuery(''); // Clear query when collapsing search
+  };
+
   return (
-    <div className={styles.header}>
-      <div className={styles.left}>
-        {(title || eyebrow) && (
-          <div className={styles.titleBlock}>
-            {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
-            {title && <h1 className={styles.title}>{title}</h1>}
-          </div>
-        )}
-
-        {(tabs || filters) && (
-          <div className={styles.tabsRow}>
-            {tabs && <div className={styles.tabs}>{tabs}</div>}
-            {filters && <div className={styles.filters}>{filters}</div>}
-          </div>
-        )}
-      </div>
-
-      <div className={styles.actions}>
-        {showSearch && (
+    <div className={`
+      ${styles.header} 
+      ${isDashboardStyle ? styles.dashboardHeader : ''}
+      ${isSearchExpanded ? styles.searchExpanded : ''}
+    `}>
+      {/* Mobile Search Overlay */}
+      {showSearch && (
+        <div className={styles.mobileSearchOverlay}>
+          <button 
+            type="button" 
+            className={styles.backBtn} 
+            onClick={handleCloseSearch}
+            aria-label="Back"
+          >
+            <ArrowLeft size={20} />
+          </button>
           <ShellSearch
-            formClassName={styles.searchForm}
-            inputClassName={styles.searchInput}
+            formClassName={styles.searchFormExpanded}
+            inputClassName={styles.searchInputExpanded}
           />
-        )}
-        {actions}
+        </div>
+      )}
+
+      {/* Main Header Content */}
+      <div className={styles.mainContent}>
+        <div className={styles.left}>
+          {(title || eyebrow) && (
+            <div className={styles.titleBlock}>
+              {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
+              {title && <h1 className={styles.title}>{title}</h1>}
+            </div>
+          )}
+
+          {(tabs || filters) && (
+            <div className={styles.tabsRow}>
+              {tabs && <div className={styles.tabs}>{tabs}</div>}
+              {filters && <div className={styles.filters}>{filters}</div>}
+            </div>
+          )}
+        </div>
+
+        <div className={styles.actions}>
+          {showSearch && (
+            <>
+              {/* Desktop Search Bar */}
+              <div className={styles.desktopSearchWrap}>
+                <ShellSearch
+                  formClassName={styles.searchForm}
+                  inputClassName={styles.searchInput}
+                />
+              </div>
+              {/* Mobile Search Trigger Icon */}
+              <button 
+                type="button" 
+                className={styles.searchTriggerBtn} 
+                onClick={() => setIsSearchExpanded(true)}
+                aria-label="Search"
+              >
+                <Search size={16} />
+              </button>
+            </>
+          )}
+          {actions}
+        </div>
       </div>
     </div>
   );
